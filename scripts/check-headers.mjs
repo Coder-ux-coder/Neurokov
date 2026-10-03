@@ -1,9 +1,10 @@
 // Fails the build when the security headers would block the site's own code, or when
 // their two copies disagree: public/_headers is read by Netlify and Cloudflare Pages,
-// vercel.json by Vercel. The Content-Security-Policy lets an inline script run only by
-// its sha256 hash, and a hash changes whenever its script does (an edit to the theme
-// script in Base.astro, or an Astro upgrade that wraps it differently), so every inline
-// script in the build is hashed and looked up here.
+// vercel.json by Vercel, with the same rules path by path ("/*" there is "/(.*)" here).
+// The Content-Security-Policy lets an inline script run only by its sha256 hash, and a
+// hash changes whenever its script does (an edit to the theme script in Base.astro, or
+// an Astro upgrade that wraps it differently), so every inline script in the build is
+// hashed and looked up here.
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -13,26 +14,33 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const problems = [];
 
-// public/_headers: "Name: value" lines, indented under the one "/*" rule.
-const netlify = new Map(
-  (await readFile(join(root, 'public/_headers'), 'utf8'))
-    .split(/\r?\n/)
-    .filter((line) => /^\s+[\w-]+:/.test(line))
-    .map((line) => [line.slice(0, line.indexOf(':')).trim(), line.slice(line.indexOf(':') + 1).trim()]),
-);
+// public/_headers: a path on its own line, then its "Name: value" lines, indented. Keyed by the
+// path as vercel.json writes it.
+const netlify = new Map();
+let rule = null;
+for (const line of (await readFile(join(root, 'public/_headers'), 'utf8')).split(/\r?\n/)) {
+  if (!line.trim() || line.trim().startsWith('#')) continue;
+  if (/^\S/.test(line)) netlify.set(line.trim().replaceAll('*', '(.*)'), (rule = new Map()));
+  else if (rule && /^\s+[\w-]+:/.test(line)) rule.set(line.slice(0, line.indexOf(':')).trim(), line.slice(line.indexOf(':') + 1).trim());
+}
 const vercel = new Map(
-  (JSON.parse(await readFile(join(root, 'vercel.json'), 'utf8')).headers.find((rule) => rule.source === '/(.*)')?.headers ?? []).map(
-    (h) => [h.key, h.value],
-  ),
+  JSON.parse(await readFile(join(root, 'vercel.json'), 'utf8')).headers.map((r) => [r.source, new Map(r.headers.map((h) => [h.key, h.value]))]),
 );
-for (const name of new Set([...netlify.keys(), ...vercel.keys()])) {
-  if (netlify.get(name) !== vercel.get(name)) problems.push(`${name} differs between public/_headers and vercel.json.`);
+for (const source of new Set([...netlify.keys(), ...vercel.keys()])) {
+  const [a, b] = [netlify.get(source), vercel.get(source)];
+  if (!a || !b) {
+    problems.push(`The rule for ${source} is only in ${a ? 'public/_headers' : 'vercel.json'}.`);
+    continue;
+  }
+  for (const name of new Set([...a.keys(), ...b.keys()])) {
+    if (a.get(name) !== b.get(name)) problems.push(`${name} for ${source} differs between public/_headers and vercel.json.`);
+  }
 }
 
 // Astro copies public/ into the build. Without that copy, Netlify and Cloudflare send no headers at all.
 await readFile(join(dist, '_headers')).catch(() => problems.push('dist/_headers is missing. Run astro build first.'));
 
-const csp = netlify.get('Content-Security-Policy') ?? '';
+const csp = netlify.get('/(.*)')?.get('Content-Security-Policy') ?? '';
 const scriptSrc = csp.split(';').map((d) => d.trim()).find((d) => d.startsWith('script-src ')) ?? '';
 if (!scriptSrc) problems.push('The Content-Security-Policy has no script-src.');
 const allowed = new Set([...scriptSrc.matchAll(/'(sha256-[^']+)'/g)].map((m) => m[1]));

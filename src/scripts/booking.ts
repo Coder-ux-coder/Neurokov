@@ -11,9 +11,10 @@
  * Cal.com reads them the same way.
  *
  * The answers are also emailed to us the moment the form is sent (notify), so they
- * reach us even when no time gets picked.
+ * reach us even when no time gets picked. The same answers go once a day, however
+ * often they're sent (a second try at the calendar, a reload, another tab).
  */
-import { currentTheme, fine } from './lib';
+import { currentTheme, fine, store } from './lib';
 
 type CalFn = ((...args: unknown[]) => void) & {
   loaded?: boolean;
@@ -109,30 +110,6 @@ const calPage = (form: HTMLFormElement, answers: Answers) => `${form.action}?${n
 // Each answer prefills the event's hidden booking question of the same name.
 const calConfig = (answers: Answers) => ({ layout: 'month_view', theme: currentTheme(), ...answers });
 
-let lastSent = '';
-
-/** Emails us the answers (Web3Forms, to the address the form's data-notify key was made for). It never
- *  holds up the booking, and the same answers sent twice in a row go once. */
-function notify(form: HTMLFormElement, answers: Answers) {
-  const key = form.dataset.notify;
-  const sent = JSON.stringify(answers);
-  if (!key || sent === lastSent) return;
-  lastSent = sent;
-  const body = new FormData();
-  body.set('access_key', key);
-  body.set('subject', `New audit form: ${answers.business} (${answers.niche})`);
-  body.set('from_name', 'Neurokov website');
-  // Each answer under its question, as the visitor read it.
-  for (const [name, value] of Object.entries(answers)) {
-    const field = form.elements.namedItem(name) as HTMLInputElement | null;
-    body.set(field?.labels?.[0]?.textContent?.trim() || name, value);
-  }
-  body.set('Page', location.pathname + location.search);
-  // keepalive: it still goes when the page is left straight away (Cal.com's page opening in this tab).
-  // Accept: an answer in JSON, not a redirect to Web3Forms' thank-you page.
-  fetch(NOTIFY_URL, { method: 'POST', body, keepalive: true, headers: { Accept: 'application/json' } }).catch(() => {});
-}
-
 /** Where focus goes when the form comes up: with a mouse or keyboard, the first question still
  *  unanswered (or the button, once none is); on a touch screen the title, so the keyboard doesn't
  *  cover the form before it has been read. */
@@ -152,6 +129,80 @@ function follow(url: string) {
   else location.href = url;
 }
 
+/* ---------- The email ---------- */
+
+// Answers emailed from this browser in the last day, by hash (the answers themselves are never kept),
+// with when they went. In storage, so other tabs and later visits see it; `sentHere` stands in when
+// storage is blocked.
+const SENT_KEY = 'nk-sent';
+const SENT_FOR = 24 * 60 * 60 * 1000;
+let sentHere: Record<string, number> = {};
+
+// cyrb53: a quick 53-bit string hash, plenty to tell one set of answers from another.
+function hash(text: string) {
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 2654435761);
+    h2 = Math.imul(h2 ^ c, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+
+function sentLog(): Record<string, number> {
+  let saved: unknown = null;
+  try {
+    saved = JSON.parse(store.get(SENT_KEY) ?? 'null');
+  } catch {
+    /* unreadable: start afresh */
+  }
+  const now = Date.now();
+  return Object.fromEntries(
+    Object.entries({ ...sentHere, ...(saved && typeof saved === 'object' ? saved : {}) }).filter(
+      (e): e is [string, number] => typeof e[1] === 'number' && now - e[1] < SENT_FOR,
+    ),
+  );
+}
+
+function logSent(id: string, sent: boolean) {
+  const log = sentLog();
+  if (sent) log[id] = Date.now();
+  else delete log[id];
+  sentHere = log;
+  store.set(SENT_KEY, JSON.stringify(log));
+}
+
+/** Emails us the answers (Web3Forms, to the address the form's data-notify key was made for). It never
+ *  holds up the booking. Answers already emailed in the last day aren't sent again; an email that
+ *  didn't go through is tried again the next time the form is sent. */
+function notify(form: HTMLFormElement, answers: Answers) {
+  const key = form.dataset.notify;
+  if (!key) return;
+  const id = hash(JSON.stringify(answers));
+  if (id in sentLog()) return;
+  logSent(id, true);
+  const body = new FormData();
+  body.set('access_key', key);
+  body.set('subject', `New audit form: ${answers.business} (${answers.niche})`);
+  body.set('from_name', 'Neurokov website');
+  // Each answer under its question, as the visitor read it.
+  for (const [name, value] of Object.entries(answers)) {
+    const field = form.elements.namedItem(name) as HTMLInputElement | null;
+    body.set(field?.labels?.[0]?.textContent?.trim() || name, value);
+  }
+  body.set('Page', location.pathname + location.search);
+  // keepalive: it still goes when the page is left straight away (Cal.com's page opening in this tab).
+  // Accept: an answer in JSON, not a redirect to Web3Forms' thank-you page.
+  fetch(NOTIFY_URL, { method: 'POST', body, keepalive: true, headers: { Accept: 'application/json' } })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Web3Forms answered ${res.status}`);
+    })
+    .catch(() => logSent(id, false));
+}
+
 /* ---------- The dialog every booking button opens ---------- */
 
 const dialog = document.querySelector<HTMLDialogElement>('dialog[data-booking]');
@@ -159,6 +210,13 @@ const dialogForm = dialog?.querySelector('form');
 
 if (dialog && dialogForm) {
   const submit = dialogForm.querySelector<HTMLButtonElement>('[type="submit"]')!;
+  // Which send is current. Closing the form ends it, so a send still waiting on Cal.com when the
+  // form closes can't come back later and act on it, opened again by then for another try.
+  let current = 0;
+  dialog.addEventListener('close', () => {
+    current++;
+    submit.removeAttribute('aria-busy');
+  });
   dialog.querySelector('[data-booking-close]')?.addEventListener('click', () => dialog.close());
   // A click on the backdrop (the dialog itself, outside its box) closes it. Only a click that
   // started there too: selecting text in a field and letting go outside it isn't one.
@@ -175,11 +233,12 @@ if (dialog && dialogForm) {
     const answers = answersOf(dialogForm);
     if (!answers) return;
     notify(dialogForm, answers);
+    const send = ++current;
     // Cal.com still on its way: the arrow blinks until it lands (or the link takes over).
     submit.setAttribute('aria-busy', 'true');
     const ok = await calInTime();
+    if (send !== current) return; // closed while it waited: the visitor changed their mind
     submit.removeAttribute('aria-busy');
-    if (!dialog.open) return; // closed while it waited: the visitor changed their mind
     // Cal.com's popup can't sit above a modal dialog, so the form steps aside. Its answers stay
     // in it, for a second try.
     dialog.close();
@@ -209,6 +268,7 @@ if (inline && inlineForm && calStep && calEl) {
   inlineForm.addEventListener('focusin', loadCal, { once: true });
   inlineForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (inline.hidden) return; // sent already: the calendar has taken its place
     const answers = answersOf(inlineForm);
     if (!answers) return;
     notify(inlineForm, answers);

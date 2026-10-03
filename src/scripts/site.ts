@@ -38,9 +38,14 @@ const setMenu = (open: boolean) => {
   }
 };
 burger?.addEventListener('click', () => setMenu(!nav?.classList.contains('is-open')));
-mobileMenu?.addEventListener('click', (e) => {
-  if ((e.target as Element).closest('a')) setMenu(false);
-});
+// A link in the menu closes it, and so does one in the bar above it: the bar's booking button, shown
+// beside the menu button on a tablet, opens the booking form, which can't be used while the menu keeps
+// the rest of the page inert. On the menu and the bar, so it runs before booking.ts's handler on the document.
+const closeOnLink = (e: Event) => {
+  if (nav?.classList.contains('is-open') && (e.target as Element).closest('a')) setMenu(false);
+};
+mobileMenu?.addEventListener('click', closeOnLink);
+nav?.addEventListener('click', closeOnLink);
 addEventListener('keydown', (e) => {
   if (e.key !== 'Escape' || !nav?.classList.contains('is-open')) return;
   setMenu(false);
