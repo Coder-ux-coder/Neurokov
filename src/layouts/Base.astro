@@ -36,12 +36,15 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = new URL(image, Astro.site ?? site.url).href;
 
+// An Organization, not a ProfessionalService: that's a kind of LocalBusiness, which Google expects to
+// have a street address, and Neurokov works online. The logo is the 180px PNG: Google wants a raster
+// image of at least 112px.
 const organization = {
   '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
+  '@type': 'Organization',
   name: site.name,
   url: site.url,
-  logo: new URL('/favicon.svg', site.url).href,
+  logo: new URL('/apple-touch-icon.png', site.url).href,
   description: site.description,
   areaServed: 'Worldwide',
   email: site.email,
@@ -57,8 +60,8 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {/* A page kept out of search (the 404) names no canonical: its own address isn't a page at all. */}
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <meta name="theme-color" content="#f2efe8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />

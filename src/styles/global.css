@@ -4495,15 +4495,25 @@ html:not(.js) .clip__full {
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card-2);
-  transition: opacity 0.5s var(--ease), border-color 0.5s, box-shadow 0.5s;
+  transition: border-color 0.5s, box-shadow 0.5s;
 }
 
-.js:not(.calm) .scrolly__step {
+/* The steps you aren't reading step back: their film and icon fade. Their text keeps its full
+   contrast, so it reads wherever it is on the screen (faded text would be too faint to read). */
+.scrolly__step .scrolly__film {
+  transition: opacity 0.5s var(--ease);
+}
+
+.scrolly__step .card__icon {
+  transition: background-color 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s, opacity 0.5s var(--ease);
+}
+
+.js:not(.calm) .scrolly__step:not(.is-current) .scrolly__film,
+.js:not(.calm) .scrolly__step:not(.is-current) .card__icon {
   opacity: 0.4;
 }
 
 .js .scrolly__step.is-current {
-  opacity: 1;
   border-color: var(--text);
   box-shadow: 8px 8px 0 var(--accent);
 }
@@ -4544,7 +4554,8 @@ html:not(.js) .clip__full {
     display: none;
   }
 
-  .js:not(.calm) .scrolly__step {
+  .js:not(.calm) .scrolly__step:not(.is-current) .scrolly__film,
+  .js:not(.calm) .scrolly__step:not(.is-current) .card__icon {
     opacity: 1;
   }
 }
@@ -5902,7 +5913,8 @@ html:not(.js) .clip__full {
   .js [data-reveal],
   .js [data-reveal='clip'] > *,
   .js .timeline__step,
-  .js:not(.calm) .scrolly__step,
+  .js:not(.calm) .scrolly__step .scrolly__film,
+  .js:not(.calm) .scrolly__step .card__icon,
   .w > span {
     opacity: 1 !important;
     transform: none !important;

@@ -19,7 +19,11 @@ import Studies from '../components/Studies.astro';
 import Values from '../components/Values.astro';
 import Visual from '../components/Visual.astro';
 import { homeFaqs } from '../data/faqs';
+import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
+
+// On the homepage only: the name Google shows for the site in its results.
+const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: `${site.url}/` };
 
 // Callouts on Fig. 02, placed on the dashboard in the photo (percent of the frame).
 // A callout near the right edge flips, its label reading leftward so it stays in the frame.
@@ -30,7 +34,7 @@ const callouts = [
 ];
 ---
 
-<Base intro>
+<Base intro jsonLd={website}>
   <!-- Hero: the promise, then the proof flipping past on the right -->
   <section class="hero" data-hold>
     <div class="gridlines" aria-hidden="true"></div>
