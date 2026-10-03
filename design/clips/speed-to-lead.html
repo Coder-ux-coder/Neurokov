@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 20s" />
+    <meta name="poster" content="12.4" />
+    <title>Speed to lead</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // Case 03, told as a story: a lead writes in at 11:47 PM. The old way, the
+      // first reply took 19 hours; with the system it goes out in under 60
+      // seconds and the call is booked by morning. Real numbers only (case 03).
+      //
+      // Layout: the headline owns the top left of the frame (x < 1100, y < 360),
+      // so each set keeps that corner clear. The camera zooms about 1.2 around
+      // (960, 620): world y 435 lands at the headline's bottom edge (in act 1,
+      // framed round (960, 650), world y 465).
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE } = CAST;
+        const NIGHT = '#2b2f39';
+        const mixHex = (a, b, k) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(a.substr(i, 2), 16) * (1 - k) + parseInt(b.substr(i, 2), 16) * k).toString(16).padStart(2, '0')).join('');
+        const WALL = '#343945';
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 4.9],
+          [4.9, 9.4],
+          [9.4, 16.2],
+          [16.2, 20.1],
+        ]);
+        const { acts, within, act, hudAct, room, blinkAt, headline } = K;
+
+        const bg = S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400 }, S.cam);
+        S.track((t) => bg.setAttribute('fill', t < 16.2 ? NIGHT : PAPER));
+
+        // ---------- Act 1: 11:47 PM, a lead writes in ----------
+        const g1 = act(0);
+        room(g1);
+        const win1 = CAST.window(g1, { w: 320, h: 380 });
+        S.put(win1.g, { x: 1560, y: 530 });
+        S.put(CAST.moon(win1.outside, { r: 40 }), { x: 60, y: -90 });
+        const stars = [[-110, -130], [-40, -40], [-120, 40], [100, 60], [30, 130], [-60, 140]].map(([x, y]) =>
+          S.svg('circle', { cx: x, cy: y, r: 3.5, fill: PAPER }, win1.outside),
+        );
+        S.track((t) => stars.forEach((s, i) => s.setAttribute('opacity', (0.35 + 0.65 * S.wave(t, 1.6 + i * 0.3, i * 0.4)).toFixed(3))));
+        const clock1 = CAST.clock(g1, { r: 60 });
+        S.put(clock1.g, { x: 1330, y: 400 });
+        S.track((t) => clock1.set(11 + (46 + ramp(t, 0.6, 0.5, E.back)) / 60));
+        const plant1 = CAST.plant(g1);
+        S.put(plant1, { x: 210, y: 860, s: 1.15 });
+        // side table with a small lamp
+        const lamp = S.g(g1);
+        S.svg('path', { d: 'M -40 -250 L 40 -250 L 190 0 L -190 0 Z', fill: ORANGE, opacity: 0.12 }, lamp);
+        S.svg('rect', { x: -60, y: -120, width: 120, height: 16, rx: 4, fill: INK }, lamp);
+        S.svg('rect', { x: -8, y: -120, width: 16, height: 120, fill: INK }, lamp);
+        S.svg('line', { x1: 0, y1: -200, x2: 0, y2: -120, stroke: INK, 'stroke-width': 8 }, lamp);
+        S.svg('path', { d: 'M -44 -250 L 44 -250 L 62 -196 L -62 -196 Z', fill: PAPER, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, lamp);
+        S.put(lamp, { x: 1000, y: 860 });
+        const sofa = S.g(g1);
+        S.svg('rect', { x: -270, y: -250, width: 540, height: 190, rx: 40, fill: '#555b69', stroke: INK, 'stroke-width': 5 }, sofa);
+        S.svg('rect', { x: -250, y: -100, width: 500, height: 60, rx: 22, fill: '#6a7080', stroke: INK, 'stroke-width': 5 }, sofa);
+        for (const x of [-300, 230]) S.svg('rect', { x, y: -170, width: 70, height: 140, rx: 28, fill: '#555b69', stroke: INK, 'stroke-width': 5 }, sofa);
+        S.svg('rect', { x: -280, y: -44, width: 560, height: 30, rx: 8, fill: INK }, sofa);
+        for (const x of [-250, 230]) S.svg('rect', { x, y: -16, width: 20, height: 16, fill: INK }, sofa);
+        S.put(sofa, { x: 600, y: 860 });
+        const lead = CAST.person(g1, { shirt: ORANGE, hair: 'bun' });
+        const glow1 = S.svg('circle', { r: 48, fill: '#ffd9c2', opacity: 0 }, g1);
+        const phone1 = CAST.phone(g1, { w: 64, h: 116 });
+        const dots1 = [0, 1, 2].map((i) => S.svg('circle', { cx: -14 + i * 14, cy: 8, r: 4.5, fill: INK }, phone1.ui));
+        S.track((t) => {
+          const typing = env(t, 1.7, 3.1, 0.15);
+          const tap = Math.sin(t * 38) * 5 * typing;
+          const send = hit(t, 3.2, 0.6);
+          lead.set({
+            x: 580, y: 860, seated: 104, leg: [[84, -74], [90, -80]],
+            arm: [[22, 118 + tap], [30, 128 - tap - 30 * send]], headTilt: 10 - 6 * send, lean: -4,
+            blink: blinkAt(t, [1.2, 4.3]), mouth: t > 3.3 ? 'smile' : 'flat', look: [0.6, 0.6],
+          });
+          const [hx, hy] = lead.hand;
+          const px = 580 + hx + 6, py = 860 + hy - 30;
+          S.put(phone1.g, { x: px, y: py, r: 12 });
+          S.put(glow1, { x: px, y: py, o: 0.12 + 0.2 * typing });
+          dots1.forEach((d, i) => d.setAttribute('opacity', typing > 0.1 ? (0.3 + 0.7 * S.wave(t, 0.6, i * 0.2)).toFixed(2) : 0.25));
+        });
+        // (low enough to keep clear of the headline above it, even as it pops in)
+        const bub1 = CAST.bubble(g1, { w: 520, h: 112, tail: 'left' });
+        const say1 = S.html('<div class="say" style="left:1040px;top:550px;font-size:36px"></div>', S.hudCam);
+        hudAct(say1, 0);
+        S.track((t) => {
+          const p = S.spring(t, 1.7, { freq: 2.4, damp: 0.45 });
+          // sent: the bubble folds down into the envelope, its words with it
+          // (its words fade first, so the envelope never grows over them)
+          const out = ramp(t, 3.2, 0.3, E.in);
+          const sx = Math.max(0.001, p * (1 - out)), sy = Math.max(0.001, p * (1 - 0.7 * out));
+          S.put(bub1, { x: 1040, y: 550, sx, sy, o: p > 0.02 && out < 1 ? 1 : 0 });
+          S.type(t, say1, 'Can you help us this week?', 1.9, 30);
+          say1.style.transform = `translate(-50%,-50%) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+          say1.style.opacity = t < 1.9 ? 0 : (1 - ramp(t, 3.2, 0.12, E.linear)).toFixed(3);
+        });
+        const trail1 = S.svg('path', { d: 'M 1040 540 C 1260 350 1600 170 2150 140', fill: 'none', stroke: ORANGE, 'stroke-width': 6, 'stroke-dasharray': '4 18', 'stroke-linecap': 'round' }, g1);
+        const env1 = CAST.envelope(g1, { w: 110, h: 74 });
+        S.track((t) => {
+          const p = ramp(t, 3.45, 1.0, E.in);
+          if (!trail1._len) trail1._len = trail1.getTotalLength();
+          const pt = trail1.getPointAtLength(p * trail1._len);
+          S.put(env1.g, { x: pt.x, y: pt.y, r: -10 * (1 - p) + 20 * p, s: Math.max(0.001, 1.1 * E.back(ramp(t, 3.32, 0.32, E.linear))), o: t > 3.32 ? 1 : 0 });
+          trail1.setAttribute('stroke-dashoffset', (-t * 40).toFixed(1));
+          trail1.setAttribute('opacity', (ramp(t, 3.5, 0.3) * (1 - ramp(t, 4.4, 0.4))).toFixed(3));
+        });
+        headline(0, 'Fig. 1 · <b>11:47 PM</b> · A new enquiry', 'A lead writes in<br />at <em>11:47 PM</em>.', 0.45, 4.3);
+
+        // ---------- Act 2: the old way ----------
+        const g2 = act(1);
+        room(g2);
+        const desk2 = CAST.desk(g2, { w: 520, h: 200 });
+        S.put(desk2, { x: 470, y: 860 });
+        const lap2 = CAST.laptop(g2, { w: 300, h: 190 });
+        S.put(lap2.g, { x: 470, y: 660 });
+        const inbox = S.g(g2);
+        S.put(inbox, { x: 470, y: 660 });
+        const env2 = CAST.envelope(inbox, { w: 96, h: 64 });
+        const badge = S.g(inbox);
+        S.svg('circle', { r: 20, fill: ORANGE, stroke: INK, 'stroke-width': 4 }, badge);
+        const n2 = S.svg('text', { 'text-anchor': 'middle', y: 8, 'font-family': 'Archivo Variable', 'font-weight': 800, 'font-size': 22, fill: INK }, badge);
+        n2.textContent = '1';
+        const web = S.svg('path', { d: 'M -48 -32 L 6 22 M -48 -32 L -48 30 M -48 -32 L 30 -32 M -48 -6 Q -30 -8 -26 -32 M -48 14 Q -14 10 -8 -32 M -30 30 Q -8 6 10 -32', fill: 'none', stroke: INK, 'stroke-width': 2.5 }, inbox);
+        S.track((t) => {
+          const land = S.spring(t, 5.4, { freq: 2.6, damp: 0.4 });
+          S.put(env2.g, { y: -100, s: Math.max(0.001, land), r: -8 * (1 - Math.min(1, land)) });
+          S.put(badge, { x: 46, y: -128, s: Math.max(0.001, S.spring(t, 5.65)) });
+          S.put(web, { y: -100, o: ramp(t, 7.7, 0.8, E.out) });
+        });
+        const bed = CAST.bed(g2, { w: 470 });
+        S.put(bed.g, { x: 1330, y: 860 });
+        const lying = S.g(bed.sleeper);
+        S.put(lying, { x: 118, y: -104, r: -90 });
+        const owner2 = CAST.person(lying, { shirt: PAPER, hair: 'short' });
+        const zzz = CAST.zzz(g2);
+        S.put(zzz.g, { x: 1150, y: 690 });
+        S.track((t) => {
+          owner2.set({ s: 0.9, blink: 1, mouth: 'sleep', arm: [[0, 0], [0, 0]], leg: [[0, 0], [0, 0]], shadow: 0, headTilt: 8 });
+          S.put(bed.blanket, { y: -3 * S.wave(t, 2.4) });
+          zzz.set(t, 1);
+        });
+        const clock2 = CAST.clock(g2, { r: 80 });
+        S.put(clock2.g, { x: 1000, y: 530 });
+        // (the hours race by; the minute hand spins six times, not nineteen, so it reads)
+        const span2 = (t) => ramp(t, 5.7, 2.6, E.sine);
+        S.track((t) => clock2.set(11 + 47 / 60 + 19 * span2(t), 47 / 60 + 6 * span2(t)));
+        const hrs = S.html('<div class="mono" style="left:1000px;top:640px;transform:translateX(-50%);color:#f2efe8;font-size:26px"></div>', S.hudCam);
+        hudAct(hrs, 1);
+        const win2 = CAST.window(g2, { w: 250, h: 300 });
+        S.put(win2.g, { x: 1600, y: 440 });
+        const sun2 = CAST.sun(win2.outside, { r: 34 });
+        const moon2 = CAST.moon(win2.outside, { r: 30 });
+        S.track((t) => {
+          const gone = 19 * span2(t);
+          hrs.textContent = `+${String(Math.floor(gone)).padStart(2, '0')} hrs`;
+          hrs.style.opacity = ramp(t, 5.6, 0.3).toFixed(3);
+          const day = Math.sin(Math.PI * ramp(t, 5.9, 2.2, E.linear));
+          const lit = E.inOut(S.clamp((day - 0.2) / 0.3));
+          win2.sky.setAttribute('fill', mixHex('#1b2233', '#ffe2cf', lit));
+          S.put(sun2.g, { x: -60 + 120 * ramp(t, 5.9, 2.2, E.linear), y: 110 - 200 * day, o: lit });
+          S.put(moon2, { x: 40, y: -70, o: 1 - lit });
+        });
+        headline(1, 'Fig. 2 · The old way', 'The first reply<br />took <em>19 hours</em>.', 5.35, 8.85);
+
+        // ---------- Act 3: with the system ----------
+        const g3 = act(2);
+        // the action starts once the wipe has cleared
+        const LATE = 0.5;
+        const late = (fn) => S.track((t) => fn(t - LATE));
+        room(g3);
+        const desk3 = CAST.desk(g3, { w: 520, h: 200 });
+        S.put(desk3, { x: 420, y: 860 });
+        const lap3 = CAST.laptop(g3, { w: 300, h: 190 });
+        S.put(lap3.g, { x: 420, y: 660 });
+        // the inbox on its screen: the enquiry comes in, then shows as replied
+        const rowNew = S.g(lap3.ui);
+        S.svg('rect', { x: -126, y: -150, width: 252, height: 40, rx: 8, fill: '#ffe2cf', stroke: INK, 'stroke-width': 3 }, rowNew);
+        S.svg('rect', { x: -112, y: -136, width: 110, height: 11, rx: 5.5, fill: INK }, rowNew);
+        const tagNew = S.svg('rect', { x: 50, y: -140, width: 62, height: 20, rx: 10, fill: ORANGE, stroke: INK, 'stroke-width': 3 }, rowNew);
+        const tagDone = S.svg('rect', { x: 50, y: -140, width: 62, height: 20, rx: 10, fill: '#8aa37b', stroke: INK, 'stroke-width': 3 }, rowNew);
+        for (let i = 0; i < 2; i++) S.svg('rect', { x: -126, y: -100 + i * 32, width: 252, height: 24, rx: 6, fill: '#e4ddd0' }, lap3.ui);
+        late((t) => {
+          S.put(rowNew, { y: 12 * (1 - Math.min(1, S.spring(t, 9.7))), o: ramp(t, 9.7, 0.15, E.linear) });
+          tagNew.style.visibility = t < 12.9 ? '' : 'hidden';
+          tagDone.style.visibility = t >= 12.9 ? '' : 'hidden';
+        });
+        const bot = CAST.robot(g3);
+        const env3 = CAST.envelope(g3, { w: 100, h: 68 });
+        const beam = S.svg('path', { fill: ORANGE, opacity: 0.25 }, g3);
+        // (none of its lines points at NK-01, beside it: they would cross its name)
+        const burst3 = CAST.burst(g3, { color: ORANGE, r0: 60, r1: 110, keep: (a) => a < 45 || a > 135 });
+        const plane = S.svg('path', { d: 'M -40 0 L 44 -26 L 10 30 L 0 6 Z M 0 6 L 44 -26', fill: ORANGE, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g3);
+        late((t) => {
+          const hx = 930;
+          const bob = 10 * Math.sin(t * 2.6);
+          const drop = S.spring(t, 9.5, { freq: 1.6, damp: 0.45 });
+          // (its antenna stays clear of the headline's last line)
+          const by0 = 620 + bob - 700 * (1 - drop);
+          const arrive = ramp(t, 9.95, 0.7, E.out);
+          const caught = t >= 10.62;
+          const reading = env(t, 10.9, 12.5, 0.2);
+          const throwP = ramp(t, 12.9, 0.35, E.backIn);
+          const rest = ramp(t, 13.4, 0.3);
+          bot.set({
+            x: hx, y: by0, t, ground: 240 - bob, glow: 0.5 + 0.5 * S.wave(t, 0.8), flame: 0.5,
+            // an overhand throw, over the top and forward: its arm never sweeps across its name
+            arm: [[40 - 90 * reading, -40], caught && t < 12.9 ? [-110, -30] : t < 13.4 ? [220 - 130 * throwP, 20] : [90 - 60 * rest, 20 - 40 * rest]],
+            eyes: t > 13.2 ? 'happy' : t > 10.5 && t < 10.9 ? 'wide' : 'normal',
+            look: t < 10.6 ? [-1, 0.2] : reading > 0.5 ? [-0.6, 0.5] : [0, 0],
+            squash: hit(t, 10.62, 0.35) + 0.8 * hit(t, 9.78, 0.3), blink: blinkAt(t, [9.9, 14.6]), tilt: -6 * reading,
+          });
+          const [bx, by] = bot.hand;
+          if (!caught) S.put(env3.g, { x: 420 + (hx - 90 - 420) * arrive, y: 560 + (by0 - 560) * arrive - 40 * Math.sin(Math.PI * arrive), r: -20 * Math.sin(Math.PI * arrive), s: (0.45 + 0.55 * E.out(ramp(t, 9.95, 0.25))) * K.pop(t, 9.95), o: t > 9.95 ? 1 : 0 });
+          else S.put(env3.g, { x: hx + bx - 10, y: by0 + by - 20, r: -8, o: t < 12.95 ? 1 : 0, s: (1 - 0.2 * reading) * K.pop(t, -1, 12.95, 0.15) });
+          burst3.set(ramp(t, 10.62, 0.45, E.linear));
+          S.put(burst3.g, { x: hx - 110, y: by0 - 10 });
+          if (reading > 0.01) {
+            const ex = hx + bx - 10, ey = by0 + by - 20;
+            const sw = 26 * Math.sin(t * 9);
+            beam.setAttribute('d', `M ${hx - 40} ${by0 - 10} L ${ex - 60} ${ey - 40 + sw} L ${ex + 40} ${ey + 40 + sw} Z`);
+            beam.setAttribute('opacity', (0.28 * reading).toFixed(3));
+            beam.style.visibility = '';
+          } else beam.style.visibility = 'hidden';
+          // the reply, let go at the end of the throw: forward and off to the right,
+          // where her phone comes up (never back across the headline)
+          const fly = ramp(t, 13.2, 0.8, E.in);
+          S.put(plane, { x: hx + 70 + 1250 * fly, y: 640 - 150 * Math.sin(Math.PI * 0.6 * fly) - 40 * fly, r: 16 + 12 * fly, s: 1.1 * K.pop(t, 13.2), o: t > 13.2 && fly < 1 ? 1 : 0 });
+        });
+        [
+          ['Real enquiry, not spam', 11.15],
+          ['Fits your ideal client', 11.7],
+          ['Reply written and sent', 12.3],
+        ].forEach(([label, at], i) => {
+          const g = S.g(g3);
+          S.svg('rect', { x: 8, y: 10, width: 540, height: 92, rx: 18, fill: INK }, g);
+          S.svg('rect', { x: 0, y: 0, width: 540, height: 92, rx: 18, fill: PAPER, stroke: INK, 'stroke-width': 5 }, g);
+          const ck = CAST.check(g, { r: 24 });
+          S.put(ck.g, { x: 50, y: 46 });
+          const txt = S.svg('text', { x: 94, y: 57, 'font-family': 'Archivo Variable', 'font-size': 31, 'font-weight': 650, fill: INK }, g);
+          txt.textContent = label;
+          late((t) => {
+            const p = S.spring(t, at, { freq: 2.2, damp: 0.5 });
+            const out = ramp(t, 13.3, 0.35, E.in);
+            S.put(g, { x: 1180 + 60 * (1 - Math.min(1, p)) + 900 * out, y: 490 + i * 124, o: ramp(t, at, 0.15, E.linear) });
+            ck.set(ramp(t, at + 0.25, 0.3, E.out));
+          });
+        });
+        // a stopwatch (in screen space, over the set) runs while it works, and
+        // stops well inside a minute
+        const watch = S.g(S.art);
+        S.svg('rect', { x: -14, y: -108, width: 28, height: 26, rx: 6, fill: INK }, watch);
+        S.svg('circle', { r: 86, fill: PAPER, stroke: INK, 'stroke-width': 7 }, watch);
+        for (let i = 0; i < 12; i++) {
+          const a = (i * 30 * Math.PI) / 180;
+          S.svg('line', { x1: (Math.sin(a) * 70).toFixed(1), y1: (-Math.cos(a) * 70).toFixed(1), x2: (Math.sin(a) * 60).toFixed(1), y2: (-Math.cos(a) * 60).toFixed(1), stroke: INK, 'stroke-width': 4 }, watch);
+        }
+        const sweep = S.svg('path', { fill: ORANGE, opacity: 0.85 }, watch);
+        const hand = S.svg('line', { x1: 0, y1: 0, x2: 0, y2: -66, stroke: INK, 'stroke-width': 6, 'stroke-linecap': 'round' }, watch);
+        S.svg('circle', { r: 8, fill: INK }, watch);
+        K.stamp('&lt; 60 s', { x: 1520, y: 196, at: 13.5, until: 16.2 });
+        S.track((t) => {
+          const on = within(t, acts[2]);
+          t -= LATE;
+          watch.style.visibility = on ? '' : 'hidden';
+          const run = ramp(t, 10.0, 3.0, E.linear) * 0.68;
+          const a = run * 2 * Math.PI;
+          S.put(hand, { r: run * 360 });
+          sweep.setAttribute('d', run <= 0 ? '' : `M 0 0 L 0 -66 A 66 66 0 ${run > 0.5 ? 1 : 0} 1 ${(Math.sin(a) * 66).toFixed(2)} ${(-Math.cos(a) * 66).toFixed(2)} Z`);
+          const p = S.spring(t, 9.8);
+          S.put(watch, { x: 1740, y: 150, s: Math.max(0.001, Math.min(p, 1.1)) * 0.9 });
+        });
+        headline(2, 'Fig. 3 · With Neurokov · <b>11:47 PM</b>', 'The reply goes out<br />in <em>under 60 seconds</em>.', 10.2, 15.75);
+        // and she books: her phone, up close
+        const panel = S.g(g3);
+        S.svg('rect', { x: -340, y: -250, width: 680, height: 500, rx: 40, fill: '#ffe9dc', stroke: INK, 'stroke-width': 6 }, panel);
+        const clip = S.svg('clipPath', { id: 'panelclip' }, panel);
+        S.svg('rect', { x: -337, y: -247, width: 674, height: 494, rx: 37 }, clip);
+        const inner = S.g(panel, { 'clip-path': 'url(#panelclip)' });
+        CAST.dots(inner, { x0: -340, y0: -250, w: 680, h: 500, gap: 36, o: 0.18 });
+        const leadP = CAST.person(inner, { shirt: ORANGE, hair: 'bun' });
+        const ph3 = CAST.phone(inner, { w: 180, h: 330 });
+        const bubbleMsg = (y, w, h, fill, lines, right) => {
+          const g = S.g(ph3.ui);
+          S.svg('rect', { x: right ? 72 - w : -72, y, width: w, height: h, rx: 14, fill, stroke: INK, 'stroke-width': 3 }, g);
+          lines.forEach((l, i) => {
+            const tx = S.svg('text', { x: right ? 72 - w + 12 : -60, y: y + 26 + i * 23, 'font-family': 'Archivo Variable', 'font-size': 19, 'font-weight': 650, fill: INK }, g);
+            tx.textContent = l;
+          });
+          return g;
+        };
+        const inMsg = bubbleMsg(-118, 150, 74, '#e4ddd0', ['Happy to help!', 'Tue at 10:00?'], false);
+        const outMsg = bubbleMsg(-26, 110, 44, ORANGE, ['Perfect!'], true);
+        const cal = CAST.calendar(panel, { w: 220, h: 196, cols: 4, rows: 2 });
+        const tick = CAST.check(panel, { r: 26 });
+        late((t) => {
+          const p = S.spring(t, 13.7, { freq: 1.8, damp: 0.5 });
+          const out = ramp(t, 15.35, 0.3, E.in);
+          // (its top edge stays under the headline)
+          S.put(panel, { x: 1400, y: 745 + 700 * (1 - Math.min(p, 1)) + 800 * out, o: t > 13.65 ? 1 : 0 });
+          leadP.set({ x: -210, y: 360, arm: [[30, 96], [52, 104 - 10 * hit(t, 14.5, 0.4)]], mouth: t > 14.5 ? 'grin' : 'o', look: [0.9, -0.1], headTilt: 4, shadow: 0, blink: blinkAt(t, [14.2]) });
+          const [phx, phy] = leadP.hand;
+          S.put(ph3.g, { x: -210 + phx + 74, y: 360 + phy - 118, r: -5 });
+          S.put(inMsg, { y: 12 * (1 - Math.min(1, S.spring(t, 14.0))), o: ramp(t, 14.0, 0.15, E.linear) });
+          S.put(outMsg, { y: 12 * (1 - Math.min(1, S.spring(t, 14.55))), o: ramp(t, 14.55, 0.15, E.linear) });
+          S.put(cal.g, { x: 206, y: -40, s: Math.max(0.001, Math.min(1.1, S.spring(t, 14.75))), r: 4 });
+          const booked = t > 15.0;
+          cal.cells.forEach((c, i) => c.cell.setAttribute('fill', booked && i === 5 ? ORANGE : '#e4ddd0'));
+          S.put(tick.g, { x: 206 + cal.cells[5].cx + 30, y: -40 + cal.cells[5].cy - 28, s: booked ? Math.max(0.001, S.spring(t, 15.0, { freq: 3 })) : 0.001 });
+          tick.set(ramp(t, 15.1, 0.3));
+        });
+
+        // ---------- Act 4: morning ----------
+        const g4 = act(3);
+        CAST.dots(g4, { x0: -600, y0: -600, w: 3200, h: 2400 });
+        CAST.ground(g4).setAttribute('transform', 'translate(0 870)');
+        const sun4 = CAST.sun(g4, { r: 64 });
+        const desk4 = CAST.desk(g4, { w: 480, h: 200 });
+        S.put(desk4, { x: 470, y: 870 });
+        const lap4 = CAST.laptop(g4, { w: 290, h: 180 });
+        S.put(lap4.g, { x: 440, y: 670 });
+        const owner = CAST.person(g4, { shirt: PAPER, hair: 'short', glasses: true });
+        const mug = CAST.mug(g4);
+        const note = CAST.bubble(g4, { w: 470, h: 100, tail: 'left' });
+        const noteTxt = S.svg('text', { 'text-anchor': 'middle', y: 11, 'font-family': 'Archivo Variable', 'font-size': 33, 'font-weight': 650, fill: INK }, note);
+        noteTxt.innerHTML = '<tspan fill="#ff4f00">●</tspan> Call booked · Tue 10:00';
+        const bot4 = CAST.robot(g4);
+        S.track((t) => {
+          const rise = ramp(t, 16.3, 1.3, E.out);
+          S.put(sun4.g, { x: 1560, y: 540 - 210 * rise, r: t * 12 });
+          owner.set({
+            x: 800, y: 870, s: 1.12, arm: [[-10, -12], [-40 - 30 * env(t, 17.3, 19.5, 0.3), -60]],
+            mouth: t > 17.15 ? 'grin' : 'o', look: [0.7, -0.5], blink: blinkAt(t, [16.8, 18.9]), bob: 6 * S.wave(t, 1.4),
+          });
+          const [hx, hy] = owner.hand;
+          S.put(mug.g, { x: 800 + hx * 1.12 + 10, y: 870 + hy * 1.12 + 20, s: 1 });
+          mug.set(t);
+          S.put(note, { x: 1150, y: 540, s: Math.max(0.001, Math.min(S.spring(t, 16.95), 1.2)) });
+          bot4.set({ x: 1420, y: 700 + 10 * Math.sin(t * 2.6), t, ground: 170 - 10 * Math.sin(t * 2.6), eyes: 'happy', arm: [[30, -20], [-150 + 20 * Math.sin(t * 12), -30]], flame: 0.4, glow: 0.8 });
+        });
+        headline(3, 'Fig. 4 · 7:30 AM', 'Booked while<br />you <em>slept</em>.', 16.7, 99, { dark: false });
+
+        // the case in numbers, to close
+        K.endCard({
+          at: 18.25,
+          kicker: 'Case 03 · Speed-to-lead system · Management consulting firm',
+          was: '19 hrs',
+          now: 'under <em>60 s</em>',
+          label: 'First reply to a new lead',
+        });
+        K.wipes([
+          [4.9, 'The old way →'],
+          [9.4, '◀◀ Rewind · With Neurokov'],
+          [16.2, 'Next morning →'],
+        ]);
+        K.note('Illustrated story · Real numbers from case 03', (t) => t < 16.2);
+
+        // the camera: framed on the set, with a slow push through each act, and
+        // a jolt when the robot lands and when it catches the enquiry
+        K.camera(
+          [
+            [0, [960, 652, 1.24]],
+            [4.9, [960, 644, 1.17], E.sine],
+            [4.91, [960, 626, 1.22], E.linear],
+            [9.4, [960, 618, 1.16], E.sine],
+            [9.41, [960, 620, 1.15], E.linear],
+            [16.2, [960, 626, 1.2], E.sine],
+            [16.21, [930, 625, 1.3], E.linear],
+            [20, [940, 625, 1.22], E.sine],
+          ],
+          [
+            [11.12, 0.4, 1],
+            [10.28, 0.3, 0.6],
+          ],
+        );
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+---
+/**
+ * The four questions asked before the calendar (booking.ts): business name, niche,
+ * monthly revenue and a few lines about the business. Then Cal.com opens on the time
+ * picker with the answers attached to the booking. Each field's name is also the
+ * identifier of a hidden booking question on the Cal.com event (Event type → Advanced →
+ * Booking questions: business, niche and revenue as short text, about as long text, each
+ * switched to hidden), so the answers land on the booking itself and the site keeps none.
+ * They're also emailed to us the moment the form is sent, booked or not (data-notify, the
+ * Web3Forms key). `dialog` is the popup every booking button opens; `inline` sits on the
+ * book page. Without JavaScript the form still works: it sends the answers to the event's
+ * page on cal.com, which reads them from the address the same way.
+ */
+import { calUrl, ph, site, unconfirmed } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  mode: 'dialog' | 'inline';
+}
+
+const { mode } = Astro.props;
+const id = (name: string) => `booking-${mode}-${name}`;
+const revenues = ['Under $10k', '$10k–$50k', '$50k–$100k', '$100k–$500k', 'Over $500k', 'Prefer not to say'];
+const Wrap = mode === 'dialog' ? 'dialog' : 'div';
+const submitLabel = 'See available times';
+// No key yet, no email: the form carries a placeholder marker instead, which stops the build.
+const notifyKey = unconfirmed.has('web3forms') ? undefined : site.web3forms;
+---
+
+<Wrap
+  class:list={[mode === 'dialog' ? 'booking-dialog' : 'booking-inline']}
+  data-booking={mode}
+  aria-labelledby={mode === 'dialog' ? id('title') : undefined}
+>
+  <form
+    class="booking"
+    action={calUrl}
+    method="get"
+    data-notify={notifyKey}
+    data-ph={ph('web3forms')}
+    aria-labelledby={mode === 'inline' ? id('title') : undefined}
+  >
+    <div class="booking__head">
+      <span class="label label--signal">Step 1 of 2 · The basics</span>
+      {
+        mode === 'dialog' && (
+          <button class="guide__x" type="button" data-booking-close aria-label="Close">
+            <Icon name="x" size={16} />
+          </button>
+        )
+      }
+    </div>
+    <h2 class="h3 booking__title" id={id('title')} tabindex="-1">Tell us about your business.</h2>
+    <p class="booking__lead">
+      Four quick questions, then you pick a time. Your answers let us do our homework before the call.
+    </p>
+    <div class="booking__fields">
+      <div class="field field--wide">
+        <label for={id('business')}>Business name</label>
+        <input id={id('business')} name="business" type="text" required maxlength="120" autocomplete="organization" />
+      </div>
+      <div class="field">
+        <label for={id('niche')}>Niche</label>
+        <input id={id('niche')} name="niche" type="text" required maxlength="120" placeholder="e.g. dental clinics" />
+      </div>
+      <div class="field">
+        <label for={id('revenue')}>Monthly revenue</label>
+        <span class="field__select">
+          <select id={id('revenue')} name="revenue" required>
+            <option value="" disabled selected>Pick a range</option>
+            {revenues.map((r) => <option>{r}</option>)}
+          </select>
+        </span>
+      </div>
+      <div class="field field--wide">
+        <label for={id('about')}>About the business</label>
+        <textarea
+          id={id('about')}
+          name="about"
+          required
+          maxlength="1000"
+          rows={mode === 'dialog' ? 3 : 4}
+          placeholder="What you sell, who you sell to, and what eats your team’s week."></textarea>
+      </div>
+    </div>
+    <div class="booking__foot">
+      <button class="btn" type="submit">
+        <span class="btn__label"><span>{submitLabel}</span><span aria-hidden="true">{submitLabel}</span></span>
+        <span class="btn__dot" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+        </span>
+      </button>
+      <p class="cta__note booking__note">
+        <Icon name="shield-check" size={16} /> Your answers reach us by email when you press the button, and again with
+        your booking.
+      </p>
+    </div>
+  </form>
+</Wrap>

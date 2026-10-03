@@ -1,0 +1,23 @@
+---
+import { icons, type IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  strokeWidth?: number;
+}
+
+const { name, size = 20, class: cls, strokeWidth = 1.75 } = Astro.props;
+
+const svg = icons[name]
+  .replace(/<!--[\s\S]*?-->/, '')
+  .replace(/\sclass="[^"]*"/, '')
+  .replace(/width="24"/, `width="${size}"`)
+  .replace(/height="24"/, `height="${size}"`)
+  .replace(/stroke-width="2"/, `stroke-width="${strokeWidth}"`)
+  .replace('<svg', `<svg aria-hidden="true" focusable="false" class="icon${cls ? ` ${cls}` : ''}"`)
+  .trim();
+---
+
+<Fragment set:html={svg} />

@@ -1,0 +1,112 @@
+---
+/**
+ * A story clip: an illustrated film from design/clips (render.mjs --install
+ * puts the mp4 and its poster in src/assets/clips). The poster shows until the
+ * film plays over it. `mode` decides when it plays (clips.ts):
+ *   auto    while it's on screen; with reduced motion or save-data, on request
+ *   hover   while the pointer is over its card; touch screens keep the poster
+ *   manual  when its parent says so (the hero reel, the case index, the welcome guide)
+ * Previews start from the poster's frame (clips.json), so the still turns into
+ * motion without a jump; stories start from the beginning. Clips with controls
+ * also get a full-screen button.
+ */
+import type { ImageMetadata } from 'astro';
+import { Picture } from 'astro:assets';
+import facts from '../assets/clips/clips.json';
+import { clips } from '../data/clips';
+
+interface Props {
+  name: string;
+  mode?: 'auto' | 'hover' | 'manual';
+  sizes?: string;
+  eager?: boolean;
+  loop?: boolean;
+  /** A pause button and a progress line. On by default for auto clips. */
+  controls?: boolean;
+  /** Decoration beside text that already says it (a card, a list row): screen readers skip it. */
+  decorative?: boolean;
+  class?: string;
+}
+
+const {
+  name,
+  mode = 'auto',
+  sizes = '(max-width: 900px) 100vw, 60vw',
+  eager = false,
+  loop = true,
+  controls = mode === 'auto',
+  decorative = false,
+  class: cls,
+} = Astro.props;
+
+const films = import.meta.glob<string>('/src/assets/clips/*.mp4', { eager: true, query: '?url', import: 'default' });
+const stills = import.meta.glob<{ default: ImageMetadata }>('/src/assets/clips/*.jpg', { eager: true });
+const film = Object.entries(films).find(([path]) => path.endsWith(`/${name}.mp4`))?.[1];
+const still = Object.entries(stills).find(([path]) => path.endsWith(`/${name}.jpg`))?.[1].default;
+const info = clips[name];
+const at = (facts as Record<string, { poster: number }>)[name]?.poster ?? 0;
+if (!film || !still || !info) {
+  throw new Error(`Clip "${name}" is missing: run design/clips/render.mjs ${name} --install and describe it in src/data/clips.ts`);
+}
+---
+
+<div class:list={['media', 'clip', cls]} data-clip={mode} aria-hidden={decorative ? 'true' : undefined}>
+  <Picture
+    src={still}
+    alt=""
+    formats={['avif', 'webp']}
+    widths={[480, 768, 1080, 1440, 1920]}
+    sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+  />
+  <video class="media__video" src={film} data-at={at} muted playsinline loop={loop} preload="none" aria-hidden="true"></video>
+  {!decorative && <p class="sr-only">{info.text}</p>}
+  {
+    controls && (
+      <button class="clip__toggle" type="button" data-clip-toggle aria-pressed="false">
+        <span class="sr-only" data-clip-label>
+          Pause the story
+        </span>
+        <svg class="i-pause" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor" />
+        </svg>
+        <svg class="i-play" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <path d="M5 3l8 5-8 5z" fill="currentColor" />
+        </svg>
+      </button>
+    )
+  }
+  {
+    controls && (
+      <button class="clip__full" type="button" data-clip-full aria-label="Watch full screen">
+        <svg class="i-expand" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" stroke-width="1.8" />
+        </svg>
+        <svg class="i-shrink" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4" fill="none" stroke="currentColor" stroke-width="1.8" />
+        </svg>
+      </button>
+    )
+  }
+  {
+    controls && (
+      <span class="clip__bar" aria-hidden="true">
+        <span data-clip-bar />
+      </span>
+    )
+  }
+  <slot />
+</div>
+
+<style>
+  .clip {
+    --ratio: 16 / 9;
+  }
+
+  .clip :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>

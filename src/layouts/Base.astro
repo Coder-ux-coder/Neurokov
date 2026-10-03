@@ -1,0 +1,142 @@
+---
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import plexLatin from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url';
+import '../styles/global.css';
+import BookingForm from '../components/BookingForm.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import Intro from '../components/Intro.astro';
+import Nav from '../components/Nav.astro';
+import { ph, site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path under /public for the social card. */
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Play the boot intro (first visit of a session only). */
+  intro?: boolean;
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  image = '/og.png',
+  noindex = false,
+  jsonLd,
+  intro = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImage = new URL(image, Astro.site ?? site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.name,
+  url: site.url,
+  logo: new URL('/favicon.svg', site.url).href,
+  description: site.description,
+  areaServed: 'Worldwide',
+  email: site.email,
+  founder: { '@type': 'Person', name: site.founder.name, jobTitle: site.founder.role },
+};
+const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [])];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#f2efe8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {/* On every page, not just the first: a page whose fonts arrive after its first paint reflows as
+        they swap in. Chrome notes an unused preload when a font came from its own memory instead. */}
+    <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={plexLatin} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {ph('domain') && <meta name="nk-placeholder" content="Canonical domain not confirmed" data-ph={ph('domain')} />}
+
+    {/* Every < escaped, so no text in the data can ever close this script tag early. */}
+    <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />
+
+    <!-- Runs before first paint: theme (light unless the visitor chose dark) and whether the boot intro plays. -->
+    <script is:inline define:vars={{ intro }}>
+      (function () {
+        var r = document.documentElement;
+        r.classList.add('js');
+        // Content waits hidden for the site's script to reveal it. If that script never ran by the
+        // time the page has loaded (it failed to download, or the browser is too old for it), show
+        // the page as it reads without JavaScript instead of leaving it blank.
+        addEventListener('load', function () {
+          if (!r.hasAttribute('data-ready')) r.classList.remove('js', 'intro-play');
+        });
+        try {
+          if (localStorage.getItem('nk-theme') === 'dark') r.dataset.theme = 'dark';
+        } catch (e) {}
+        if (r.dataset.theme === 'dark') {
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', '#0f0f0e');
+        }
+        var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (calm) r.classList.add('calm');
+        if (intro && !calm) {
+          var seen = false;
+          try {
+            seen = sessionStorage.getItem('nk-intro') === '1';
+          } catch (e) {}
+          if (!seen) r.classList.add('intro-play');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {intro && <Intro />}
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <BookingForm mode="dialog" />
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
+      <Icon name="sun" class="icon-sun" size={18} />
+      <Icon name="moon" class="icon-moon" size={18} />
+    </button>
+    <div class="ruler" data-ruler aria-hidden="true">
+      <span class="ruler__track"><span class="ruler__fill"></span></span>
+      <span class="ruler__read" data-ruler-read>000</span>
+    </div>
+    <div class="cursor" data-pointer-tag aria-hidden="true">
+      <span class="cursor__read" data-pointer-read></span>
+    </div>
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

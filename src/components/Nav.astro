@@ -1,0 +1,64 @@
+---
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+const path = Astro.url.pathname;
+const links = [
+  { href: '/services/', label: 'Services' },
+  { href: '/case-studies/', label: 'Case Studies' },
+  { href: '/process/', label: 'Process' },
+  { href: '/about/', label: 'About' },
+];
+const mobileLinks = [...links, { href: '/faq/', label: 'FAQ' }];
+const isCurrent = (href: string) => (path.startsWith(href) ? 'page' : undefined);
+const n = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<header class="nav" data-nav>
+  <div class="container nav__inner">
+    <a class="nav__brand" href="/" aria-label="Neurokov home"><Logo /></a>
+    <nav aria-label="Main">
+      <ul class="nav__links">
+        {
+          links.map((l, i) => (
+            <li>
+              <a href={l.href} aria-current={isCurrent(l.href)}>
+                {l.label}
+                <sup aria-hidden="true">{n(i)}</sup>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="nav__end">
+      <Button size="sm" />
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="mobile-menu" data-burger>
+        <span class="sr-only">Menu</span>
+        <Icon name="menu" class="icon-open" />
+        <Icon name="x" class="icon-close" />
+      </button>
+      {/* Without JavaScript the button can't open the menu: this link to the footer's page list stands in. */}
+      <a class="nav__burger nav__burger--link" href="#site-links">
+        <span class="sr-only">Menu</span>
+        <Icon name="menu" />
+      </a>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+  <ul>
+    {
+      mobileLinks.map((l, i) => (
+        <li>
+          <a href={l.href} aria-current={isCurrent(l.href)}>
+            {l.label}
+            <sup aria-hidden="true">{n(i)}</sup>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <Button size="lg" />
+</div>

@@ -1,0 +1,170 @@
+---
+/**
+ * A working model of the speed-to-lead system from the case study: leads come
+ * in from four channels, pass through the system's three steps and come out as
+ * actions. machine.ts runs simulated leads through it (the legend says so).
+ * Two drawings of the same system: wide for desktop, tall for phones.
+ */
+const inputs = [
+  { label: 'Web form', sub: 'Channel 01' },
+  { label: 'Email', sub: 'Channel 02' },
+  { label: 'LinkedIn', sub: 'Channel 03' },
+  { label: 'Cold email reply', sub: 'Channel 04' },
+];
+const inputTip = 'Every form fill, email and LinkedIn inquiry lands in one place.';
+
+const gates = [
+  { label: 'Enrich', tip: 'Each lead is deduplicated and enriched automatically.' },
+  { label: 'Qualify', tip: 'Every lead is checked against your ideal-client criteria.' },
+  { label: 'Reply', tip: 'A personal reply goes out within 60 seconds, day or night.' },
+];
+
+const outputs = [
+  { key: 'booked', label: 'Call booked', sub: 'Booking link sent', tip: 'Good-fit leads get a booking link for the right person.' },
+  { key: 'crm', label: 'CRM updated', sub: 'Stage moved', tip: 'Deals move stages on their own as calls are booked.' },
+  { key: 'team', label: 'Team pinged', sub: 'Slack, with context', tip: 'Your team gets a Slack message with the full context.' },
+  { key: 'nurture', label: 'Nurture', sub: 'Not a fit yet', tip: 'Everyone else goes into a nurture sequence worth reading.' },
+];
+const coreTip = 'One system, built around your tools, your data and your rules.';
+
+// ---- Wide drawing: 1200 x 470 ----
+const W = { boxW: 224, boxH: 60, inX: 24, outX: 952, ys: [85, 185, 285, 385], mid: 235, busIn: 332, busOut: 868 };
+const core = { x: 420, y: 120, w: 360, h: 230 };
+const gatesW = [492, 600, 708];
+const r = 8;
+const wideIn = (cy: number) =>
+  cy < W.mid
+    ? `M${W.inX + W.boxW} ${cy}H${W.busIn - r}Q${W.busIn} ${cy} ${W.busIn} ${cy + r}V${W.mid - r}Q${W.busIn} ${W.mid} ${W.busIn + r} ${W.mid}H${core.x}`
+    : `M${W.inX + W.boxW} ${cy}H${W.busIn - r}Q${W.busIn} ${cy} ${W.busIn} ${cy - r}V${W.mid + r}Q${W.busIn} ${W.mid} ${W.busIn + r} ${W.mid}H${core.x}`;
+const wideOut = (cy: number) =>
+  cy < W.mid
+    ? `M${core.x + core.w} ${W.mid}H${W.busOut - r}Q${W.busOut} ${W.mid} ${W.busOut} ${W.mid - r}V${cy + r}Q${W.busOut} ${cy} ${W.busOut + r} ${cy}H${W.outX}`
+    : `M${core.x + core.w} ${W.mid}H${W.busOut - r}Q${W.busOut} ${W.mid} ${W.busOut} ${W.mid + r}V${cy - r}Q${W.busOut} ${cy} ${W.busOut + r} ${cy}H${W.outX}`;
+
+// ---- Tall drawing: 400 x 690 ----
+const T = { boxW: 176, boxH: 56, xs: [16, 208], inYs: [44, 112], outYs: [572, 640], bus: 200 };
+const tcore = { x: 32, y: 196, w: 336, h: 300 };
+const gatesT = [276, 346, 416];
+const tallBoxes = (ys: number[]) => ys.flatMap((cy) => T.xs.map((x) => ({ x, cy })));
+const tIn = tallBoxes(T.inYs);
+const tOut = tallBoxes(T.outYs);
+const tallIn = ({ x, cy }: { x: number; cy: number }) => {
+  const left = x < T.bus;
+  const edge = left ? x + T.boxW : x;
+  const turn = left ? T.bus - 4 : T.bus + 4;
+  return `M${edge} ${cy}H${turn}Q${T.bus} ${cy} ${T.bus} ${cy + 4}V${tcore.y}`;
+};
+const tallOut = ({ x, cy }: { x: number; cy: number }) => {
+  const left = x < T.bus;
+  const edge = left ? x + T.boxW : x;
+  const turn = left ? T.bus - 4 : T.bus + 4;
+  return `M${T.bus} ${tcore.y + tcore.h}V${cy - 4}Q${T.bus} ${cy} ${turn} ${cy}H${edge}`;
+};
+const at = (v: number, from: number, len: number) => ((v - from) / len).toFixed(4);
+const n2 = (i: number) => String(i + 1).padStart(2, '0');
+const aria =
+  'Diagram of a speed-to-lead system. Leads from a web form, email, LinkedIn and cold email replies are enriched, qualified automatically and answered within 60 seconds. Good fits get a booked call, a CRM update and a Slack alert for the team; everyone else goes into a nurture sequence.';
+---
+
+<div class="machine" data-machine>
+  <span class="machine__stamp label" aria-hidden="true">Fig. 03 · Working model</span>
+
+  <svg class="machine__svg machine__svg--wide" viewBox="0 0 1200 470" role="img" aria-label={aria}>
+    <g>
+      {inputs.map((_, i) => <path class="wire" data-in={i} d={wideIn(W.ys[i])} />)}
+      <path class="wire wire--core" data-core d={`M${core.x} ${W.mid}H${core.x + core.w}`} />
+      {outputs.map((o, i) => <path class="wire" data-out={o.key} d={wideOut(W.ys[i])} />)}
+    </g>
+    {
+      inputs.map((n, i) => (
+        <g class="node" data-tip={inputTip}>
+          <rect class="box" x={W.inX} y={W.ys[i] - W.boxH / 2} width={W.boxW} height={W.boxH} rx="3" />
+          <text x={W.inX + 18} y={W.ys[i] - 3}>{n.label}</text>
+          <text class="t-dim" x={W.inX + 18} y={W.ys[i] + 15}>{n.sub}</text>
+        </g>
+      ))
+    }
+    <g class="node" data-tip={coreTip}>
+      <rect class="box box--core" x={core.x} y={core.y} width={core.w} height={core.h} rx="4" />
+      <text class="t-core" x={core.x + 24} y={core.y + 32}>Neurokov system</text>
+      <text class="t-core-dim" x={core.x + core.w - 24} y={core.y + 32} text-anchor="end">Speed to lead</text>
+      <text class="t-core-dim" x={core.x + 24} y={core.y + core.h - 26}>First reply</text>
+      <text class="t-big" x={core.x + core.w - 24} y={core.y + core.h - 22} text-anchor="end">&lt;60 S</text>
+    </g>
+    {
+      gates.map((g, i) => (
+        <g class="node" data-tip={g.tip}>
+          <rect class="gate" data-gate data-at={at(gatesW[i], core.x, core.w)} x={gatesW[i] - 48} y={W.mid - 36} width="96" height="72" rx="3" />
+          <text class="t-gate t-gate--n" x={gatesW[i]} y={W.mid - 12} text-anchor="middle">{n2(i)}</text>
+          <text class="t-gate" x={gatesW[i]} y={W.mid + 14} text-anchor="middle">{g.label}</text>
+        </g>
+      ))
+    }
+    {
+      outputs.map((o, i) => (
+        <g class="node" data-tip={o.tip} data-out-box={o.key}>
+          <rect class="box" x={W.outX} y={W.ys[i] - W.boxH / 2} width={W.boxW} height={W.boxH} rx="3" />
+          <text x={W.outX + 18} y={W.ys[i] - 3}>{o.label}</text>
+          <text class="t-dim" x={W.outX + 18} y={W.ys[i] + 15}>{o.sub}</text>
+          <text class="t-count" x={W.outX + W.boxW - 18} y={W.ys[i] + 6} text-anchor="end" data-out-count={o.key}>000</text>
+        </g>
+      ))
+    }
+    <g data-packets></g>
+  </svg>
+
+  <svg class="machine__svg machine__svg--tall" viewBox="0 0 400 690" role="img" aria-label={aria}>
+    <g>
+      {tIn.map((b, i) => <path class="wire" data-in={i} d={tallIn(b)} />)}
+      <path class="wire wire--core" data-core d={`M${T.bus} ${tcore.y}V${tcore.y + tcore.h}`} />
+      {outputs.map((o, i) => <path class="wire" data-out={o.key} d={tallOut(tOut[i])} />)}
+    </g>
+    {
+      inputs.map((n, i) => (
+        <g class="node" data-tip={inputTip}>
+          <rect class="box" x={tIn[i].x} y={tIn[i].cy - T.boxH / 2} width={T.boxW} height={T.boxH} rx="3" />
+          <text x={tIn[i].x + 14} y={tIn[i].cy - 3}>{n.label}</text>
+          <text class="t-dim" x={tIn[i].x + 14} y={tIn[i].cy + 14}>{n.sub}</text>
+        </g>
+      ))
+    }
+    <g class="node" data-tip={coreTip}>
+      <rect class="box box--core" x={tcore.x} y={tcore.y} width={tcore.w} height={tcore.h} rx="4" />
+      <text class="t-core" x={tcore.x + 20} y={tcore.y + 30}>Neurokov system</text>
+      <text class="t-core-dim" x={tcore.x + tcore.w - 20} y={tcore.y + 30} text-anchor="end">Speed to lead</text>
+      <text class="t-core-dim" x={tcore.x + 20} y={tcore.y + tcore.h - 24}>First reply</text>
+      <text class="t-big" x={tcore.x + tcore.w - 20} y={tcore.y + tcore.h - 20} text-anchor="end">&lt;60 S</text>
+    </g>
+    {
+      gates.map((g, i) => (
+        <g class="node" data-tip={g.tip}>
+          <rect class="gate" data-gate data-at={at(gatesT[i], tcore.y, tcore.h)} x={T.bus - 108} y={gatesT[i] - 26} width="216" height="52" rx="3" />
+          <text class="t-gate t-gate--n" x={T.bus - 90} y={gatesT[i] + 4}>{n2(i)}</text>
+          <text class="t-gate" x={T.bus} y={gatesT[i] + 4} text-anchor="middle">{g.label}</text>
+        </g>
+      ))
+    }
+    {
+      outputs.map((o, i) => (
+        <g class="node" data-tip={o.tip} data-out-box={o.key}>
+          <rect class="box" x={tOut[i].x} y={tOut[i].cy - T.boxH / 2} width={T.boxW} height={T.boxH} rx="3" />
+          <text x={tOut[i].x + 14} y={tOut[i].cy - 3}>{o.label}</text>
+          <text class="t-dim" x={tOut[i].x + 14} y={tOut[i].cy + 14}>{o.sub}</text>
+          <text class="t-count" x={tOut[i].x + T.boxW - 14} y={tOut[i].cy - 3} text-anchor="end" data-out-count={o.key}>000</text>
+        </g>
+      ))
+    }
+    <g data-packets></g>
+  </svg>
+
+  <div class="machine__legend">
+    <span class="machine__keys label">
+      <span><i></i> Lead</span>
+      <span><i class="is-out"></i> Action</span>
+    </span>
+    <span class="machine__tip" data-machine-tip>Hover any part to see what it does.</span>
+    <span class="label machine__tally">
+      Simulated · In <b data-tally="in">000</b> · Answered <b data-tally="answered">000</b> · Booked <b data-tally="booked">000</b>
+    </span>
+  </div>
+</div>

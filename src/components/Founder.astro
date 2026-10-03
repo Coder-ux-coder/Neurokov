@@ -1,0 +1,90 @@
+---
+/**
+ * The founder, filed like a personnel record. No photo (the user's call):
+ * credentials on the left, a third-person bio on the right, the way LeftClick
+ * writes its leadership bios. With `film` (its figure number on the page), his
+ * story film plays above the record.
+ */
+import { clips } from '../data/clips';
+import { site } from '../data/site';
+import { toolMark } from '../data/tools';
+import Clip from './Clip.astro';
+import Figure from './Figure.astro';
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  film?: string;
+}
+
+const { film } = Astro.props;
+
+// Mohid's own account (2026-09-25): n8n and Claude Code every day, most of
+// his own work automated. Since 2026-10-01 the site says top 1% in automation and
+// active in automation communities: Neurokov sells automation.
+const creds: { text: string; mark?: string; icon?: IconName }[] = [
+  { text: 'n8n certified', mark: toolMark('n8n') },
+  { text: 'Claude and Claude Code expert', mark: toolMark('Claude') },
+  { text: 'Top 1% in automation', icon: 'target' },
+  { text: '150+ automations shipped', icon: 'workflow' },
+  { text: 'Active in automation communities', icon: 'users' },
+  { text: 'Co-founder, online psychology platform', icon: 'heart-pulse' },
+];
+---
+
+{
+  film && (
+    <div class="founder-film" data-reveal>
+      <Figure n={film} class="fig--film" caption={`${clips.founder.title}. Illustrated, in his own words.`}>
+        <div class="marks">
+          <Clip name="founder" sizes="(max-width: 1320px) 100vw, 1320px" />
+        </div>
+      </Figure>
+    </div>
+  )
+}
+<div class="founder" data-reveal>
+  <span class="founder__file" aria-hidden="true">File 001 · Founder</span>
+  <div class="founder__id">
+    <span class="label label--signal">Founder</span>
+    <h3 class="founder__name">{site.founder.name}</h3>
+    <p class="founder__role">{site.founder.role}, {site.name}</p>
+    <ul class="founder__creds">
+      {
+        creds.map((c) => (
+          <li>
+            <span class="founder__cred-icon">
+              {c.mark ? (
+                <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                  <path d={c.mark} />
+                </svg>
+              ) : (
+                <Icon name={c.icon!} size={17} />
+              )}
+            </span>
+            {c.text}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <div class="founder__bio">
+    <p>
+      Mohid has spent six years building automation systems for businesses. He’s shipped more than 150 of them and
+      handed over 50,000 hours back to the teams that run on them.
+    </p>
+    <p>
+      He lives in n8n and Claude Code, and he automated most of his own work before he automated anyone else’s. He’s in
+      the top 1% in automation, and he shares what works in the automation communities he’s part of.
+    </p>
+    <p>
+      He co-founded an online psychology platform, automated it end to end and scaled it by over 100% in a single
+      month. {site.name} builds the same systems for agencies, consulting firms, IT companies and healthcare businesses.
+    </p>
+    <dl class="founder__stats">
+      <div><dt>Building since</dt><dd>2020</dd></div>
+      <div><dt>Automations shipped</dt><dd>150+</dd></div>
+      <div><dt>Hours handed back</dt><dd>50K+</dd></div>
+    </dl>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+---
+/** A case study as a plate: its story clip, which plays while the pointer is over the card, then the number that matters. */
+import { cases, type CaseStudy } from '../data/cases';
+import Clip from './Clip.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  study: CaseStudy;
+  delay?: number;
+  sizes?: string;
+  /** 2 where the cards sit straight under the page's h1, 3 under a section heading. */
+  level?: 2 | 3;
+}
+
+const {
+  study,
+  delay = 0,
+  sizes = '(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 640px',
+  level = 3,
+} = Astro.props;
+const Title = `h${level}` as const;
+const n = String(cases.indexOf(study) + 1).padStart(2, '0');
+const [headline] = study.stats;
+---
+
+<a
+  class="case-card"
+  href={`/case-studies/${study.slug}/`}
+  data-reveal
+  style={`--d: ${delay}ms`}
+  data-cursor="Read case"
+  data-ph={study.placeholder ? `case:${study.slug}` : undefined}
+>
+  <div class="marks">
+    <Clip name={study.clip} mode="hover" sizes={sizes} decorative>
+      <span class="case-card__arrow" aria-hidden="true"><Icon name="arrow-up-right" size={20} /></span>
+    </Clip>
+  </div>
+  <div class="case-card__head">
+    <span class="label">Case {n} · {study.service}</span>
+    <span class="label">{study.client.split(',')[0]}</span>
+  </div>
+  <Title class="case-card__title">{study.title}</Title>
+  <p class="case-card__stat"><b>{headline.value}</b> <span>{headline.label}</span></p>
+</a>

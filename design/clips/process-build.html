@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 12s" />
+    <meta name="poster" content="10.2" />
+    <title>Step 03, build and launch</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // Process, step 03: build and launch. The machine is built block by block;
+      // a test run with real data spits out one bad result, NK-01 fixes it, the
+      // second run is clean, and NK-01 presses GO LIVE: from then on, every item
+      // comes out done. A 12-second loop for the process page.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([[0, 12.1]]);
+        const { blinkAt, headline } = K;
+        const g = K.act(0);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g);
+        K.paper(g, { floor: 870 });
+
+        const BY = 740, MX = 1000, OUT = 1190, START = 400, BX = 660;
+
+        // the GO LIVE button on its post, behind the belt
+        S.svg('rect', { x: BX - 10, y: 640, width: 20, height: 230, fill: INK }, g);
+        S.svg('rect', { x: BX - 62, y: 600, width: 124, height: 56, rx: 12, fill: PAPER, stroke: INK, 'stroke-width': 6 }, g);
+        const bl = S.svg('text', { x: BX, y: 636, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 19, 'letter-spacing': 2, fill: INK }, g);
+        bl.textContent = 'GO LIVE';
+        const dome = S.svg('path', { d: `M -34 0 A 34 30 0 0 1 34 0 Z`, fill: ORANGE, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+
+        // the belt: stopped, test speed, stopped for the fix, test again, then live
+        const SPEEDS = [
+          [0, 0],
+          [2.2, 420],
+          [4.25, 0],
+          [5.5, 420],
+          [8.45, 0],
+          [8.7, 640],
+        ];
+        const beltAt = (t) => {
+          let s = 0;
+          for (let i = 0; i < SPEEDS.length; i++) {
+            const [a, v] = SPEEDS[i];
+            const b = i + 1 < SPEEDS.length ? SPEEDS[i + 1][0] : Infinity;
+            if (t <= a) break;
+            s += v * (Math.min(t, b) - a);
+          }
+          return s;
+        };
+        // (it runs on out of the frame, so the results ride away rather than vanish)
+        const belt = CAST.belt(g, { x0: 260, x1: 2120, speed: 1, legs: 82 });
+        S.put(belt.g, { y: BY });
+
+        // the items: your real data, riding the belt
+        const SPAWN = [2.2, 2.62, 5.5, 5.85, 6.2, 6.55, ...Array.from({ length: 13 }, (_, i) => 8.7 + i * 0.26)];
+        const BAD = 0; // the first item of the first run comes out wrong
+        const items = SPAWN.map((at, i) => {
+          const it = S.g(g);
+          if (i % 2) CAST.envelope(it, { w: 64, h: 42, seal: i % 4 === 1 ? ORANGE : GRAY });
+          else {
+            S.svg('rect', { x: -26, y: -32, width: 52, height: 64, rx: 6, fill: PAPER, stroke: INK, 'stroke-width': 4 }, it);
+            for (let j = 0; j < 3; j++) S.svg('rect', { x: -16, y: -18 + j * 14, width: j === 2 ? 20 : 32, height: 6, rx: 3, fill: INK, opacity: 0.7 }, it);
+          }
+          const mark = S.g(it);
+          if (i === BAD) {
+            S.svg('circle', { cx: 30, cy: -40, r: 17, fill: PAPER, stroke: INK, 'stroke-width': 4 }, mark);
+            S.svg('path', { d: 'M 23 -47 L 37 -33 M 37 -47 L 23 -33', stroke: ORANGE, 'stroke-width': 5, 'stroke-linecap': 'round' }, mark);
+          } else {
+            const ck = CAST.check(mark, { r: 15 });
+            S.put(ck.g, { x: 30, y: -40 });
+            ck.set(1);
+          }
+          return { it, mark, at };
+        });
+
+        // the machine, three blocks stacked in front of the belt
+        const b1 = S.g(g);
+        S.svg('rect', { x: -190 + 10, y: -120 + 12, width: 380, height: 180, rx: 18, fill: INK }, b1);
+        S.svg('rect', { x: -190, y: -120, width: 380, height: 180, rx: 18, fill: PAPER, stroke: INK, 'stroke-width': 6 }, b1);
+        for (const x of [-190, 160]) S.svg('rect', { x, y: -40, width: 30, height: 64, rx: 8, fill: INK }, b1);
+        S.svg('rect', { x: -120, y: -96, width: 240, height: 20, rx: 10, fill: SHADE, stroke: INK, 'stroke-width': 3 }, b1);
+        const meter = S.svg('rect', { x: -120, y: -96, height: 20, rx: 10, fill: ORANGE, stroke: INK, 'stroke-width': 3 }, b1);
+        const b2 = S.g(g);
+        S.svg('rect', { x: -150 + 10, y: -50 + 12, width: 300, height: 100, rx: 16, fill: INK }, b2);
+        S.svg('rect', { x: -150, y: -50, width: 300, height: 100, rx: 16, fill: PAPER, stroke: INK, 'stroke-width': 6 }, b2);
+        const gears = [-70, 70].map((x) => {
+          const gg = S.g(b2);
+          S.svg('circle', { r: 30, fill: 'none', stroke: INK, 'stroke-width': 14, 'stroke-dasharray': '9 6.7' }, gg);
+          S.svg('circle', { r: 24, fill: ORANGE, stroke: INK, 'stroke-width': 4 }, gg);
+          S.svg('circle', { r: 7, fill: INK }, gg);
+          return gg;
+        });
+        const b3 = S.g(g);
+        S.svg('rect', { x: -110 + 8, y: -40 + 10, width: 220, height: 80, rx: 14, fill: INK }, b3);
+        S.svg('rect', { x: -110, y: -40, width: 220, height: 80, rx: 14, fill: PAPER, stroke: INK, 'stroke-width': 6 }, b3);
+        const lamps = [-60, 0, 60].map((x) => ({
+          glow: S.svg('circle', { cx: x, cy: 0, r: 30, fill: ORANGE, opacity: 0 }, b3),
+          lamp: S.svg('circle', { cx: x, cy: 0, r: 17, fill: GRAY, stroke: INK, 'stroke-width': 4 }, b3),
+        }));
+        // [block, resting y, drop time, drop]: each sits on the one below, and drops in
+        // from above the frame
+        const blocks = [
+          [b1, 740, 0.5, 840],
+          [b2, 570, 1.1, 660],
+          [b3, 480, 1.7, 560],
+        ];
+        const snaps = blocks.map(() => CAST.burst(g, { color: ORANGE, r0: 70, r1: 140, width: 7 }));
+
+        // smoke from the bad result, sparks from the fix, confetti at launch
+        const smoke = [0, 1, 2].map(() => S.svg('circle', { fill: GRAY, stroke: INK, 'stroke-width': 3 }, g));
+        const sparks = CAST.burst(g, { n: 7, color: ORANGE, r0: 14, r1: 60, width: 6 });
+        const party = [0, 1, 2, 3].map((i) => CAST.sparkle(g, { r: 18, fill: i % 2 ? '#ffd166' : ORANGE }));
+
+        // NK-01 and its wrench
+        const bot = CAST.robot(g);
+        const wrench = S.g(g);
+        S.svg('rect', { x: 0, y: -7, width: 64, height: 14, rx: 7, fill: GRAY, stroke: INK, 'stroke-width': 4 }, wrench);
+        S.svg('path', { d: 'M 60 -20 A 20 20 0 1 1 60 20 L 70 8 L 84 8 L 84 -8 L 70 -8 Z', fill: GRAY, stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, wrench);
+
+        const HOME = [470, 470];
+        const PRESS = [BX - 74, 480];
+        const PATH = [
+          [0, HOME],
+          [4.3, HOME],
+          [4.7, [1330, 520], E.out],
+          [5.35, [1330, 520]],
+          [5.75, HOME],
+          [7.9, HOME],
+          [8.25, PRESS],
+          [8.8, PRESS],
+          // (no higher than HOME, so its antenna stays clear of the headline)
+          [9.2, [BX - 150, 470]],
+        ];
+        S.track((t) => {
+          const s = beltAt(t);
+          belt.set(s);
+          const live = t > 8.45;
+          gears.forEach((gg, i) => S.put(gg, { x: [-70, 70][i], r: (i ? -1 : 1) * s * 0.9 }));
+          meter.setAttribute('width', (240 * (live ? 1 : 0.15 + 0.65 * ramp(t, 2.2, 6, E.linear))).toFixed(1));
+
+          // the blocks drop in and snap
+          blocks.forEach(([b, y, at, drop], i) => {
+            const k = S.spring(t, at, { freq: 2.4, damp: 0.5 });
+            const shake = i === 0 ? 4 * hit(t, 4.25, 0.5) * Math.sin(t * 60) : 0;
+            S.put(b, { x: MX + shake, y: y - drop * (1 - Math.min(1, k)), o: t > at ? 1 : 0 });
+            snaps[i].set(ramp(t, at + 0.2, 0.4, E.linear));
+            S.put(snaps[i].g, { x: MX, y });
+          });
+          lamps.forEach(({ glow, lamp }, i) => {
+            const on = t > 8.5 + i * 0.12;
+            lamp.setAttribute('fill', on ? ORANGE : GRAY);
+            glow.setAttribute('opacity', on ? (0.25 + 0.15 * Math.sin(t * 6 + i)).toFixed(2) : 0);
+          });
+
+          // the items ride the belt; a mark pops as each comes out
+          items.forEach((m, i) => {
+            if (t < m.at) return S.put(m.it, { o: 0 });
+            const x = START + (s - beltAt(m.at));
+            const out = x > OUT + 30;
+            const lifted = i === BAD ? ramp(t, 4.3, 0.3, E.out) : 0;
+            const gone = x > 1990 || (i === BAD && t > 5.35);
+            const k = out ? Math.min(1.15, S.spring(x, OUT + 30, { freq: 0.012, damp: 0.4 })) : 0;
+            S.put(m.it, { x, y: BY - 22 - 40 * lifted, s: i === BAD ? K.pop(t, -1, 5.35, 0.15) : 1, o: gone ? 0 : 1 });
+            S.put(m.mark, { x: 30, y: -40, ox: 30, oy: -40, s: Math.max(0.001, k), o: out ? 1 : 0 });
+          });
+          smoke.forEach((c, i) => {
+            const p = ramp(t, 4.2 + i * 0.12, 0.9, E.out);
+            c.setAttribute('r', (14 + 16 * p).toFixed(1));
+            S.put(c, { x: OUT - 30 + 30 * i, y: 630 - 150 * p, o: p > 0 && p < 1 ? 0.9 * (1 - p) : 0 });
+          });
+          const fixing = t > 4.7 && t < 5.35;
+          sparks.set(fixing ? ((t - 4.7) % 0.3) / 0.3 : 0);
+
+          // NK-01: directs the build, fixes the bad result, presses GO LIVE
+          const [x, y0] = S.kf(t, PATH);
+          const press = env(t, 8.3, 8.6, 0.08, 0.15);
+          const y = y0 + 6 * Math.sin(t * 3) + 22 * press;
+          const flying = (t > 4.3 && t < 4.7) || (t > 5.35 && t < 5.75) || (t > 7.9 && t < 8.25) || (t > 8.8 && t < 9.2);
+          const happy = t > 8.6;
+          const flip = fixing || (t > 4.3 && t < 5.5) ? -1 : 1;
+          bot.set({
+            x, y, t, flip, ground: 870 - y,
+            tilt: flying ? 10 : 0, flame: flying ? 0.8 : 0.25,
+            glow: 0.5 + 0.5 * S.wave(t, 0.7),
+            arm: t > 8.25 && t < 8.75 ? [[20, -20], [0, 0]]
+              : happy ? [[25, -25], [150, -20 + 22 * Math.sin(t * 9)]]
+              : fixing ? [[20, -20], [70 + 30 * Math.sin(t * 30), -10]]
+              : t < 2.3 ? [[20, -20], [150, -30 + 20 * Math.sin(t * 6)]] : [[20, -20], [-20, 20]],
+            eyes: happy ? 'happy' : t > 4.25 && t < 4.7 ? 'wide' : 'normal',
+            look: fixing ? [0.6, 0.6] : t > 2.2 && t < 8 ? [1, 0.3] : [0.5, 0],
+            blink: blinkAt(t, [1.4, 3.3, 6.8, 10.8]),
+          });
+          const [hx, hy] = bot.hand;
+          const wk = Math.max(K.pop(t, -1, 2.3), K.pop(t, 4.7, 5.35));
+          S.put(wrench, { x: x + hx * flip, y: y + hy, sx: flip * wk, sy: wk, r: flip * (fixing ? 30 * Math.sin(t * 30) : -60), o: t < 2.3 || fixing ? 1 : 0 });
+          S.put(sparks.g, { x: x + (hx + 70) * flip, y: y + hy });
+          S.put(dome, { x: BX, y: 600, sy: 1 - 0.45 * press });
+          party.forEach((sp, i) => {
+            const at = 8.6 + i * 0.15;
+            const p = Math.min(1, S.spring(t, at, { freq: 2.4, damp: 0.5 }));
+            S.put(sp, { x: [MX - 190, MX + 180, MX - 120, MX + 240][i], y: [420, 400, 330, 320][i], s: Math.max(0.001, p), r: 30 * t, o: t > at ? 1 : 0 });
+          });
+        });
+
+        headline(0, 'Step 03 · Works from day one', 'Built, tested,<br /><em>switched on</em>.', 0.3, 99, { dark: false });
+        K.note('Illustrated story · How a project works', () => false);
+        // (framed so the machine's widest block, dropping in, passes clear of the
+        // headline's last letters)
+        K.camera([
+          [0, [950, 520, 1]],
+          [12, [970, 520, 1.04], E.linear],
+        ]);
+      });
+    </script>
+  </body>
+</html>

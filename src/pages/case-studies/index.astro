@@ -1,0 +1,55 @@
+---
+import CaseCard from '../../components/CaseCard.astro';
+import Cta from '../../components/Cta.astro';
+import Guarantee from '../../components/Guarantee.astro';
+import Marquee from '../../components/Marquee.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import Steps from '../../components/Steps.astro';
+import { cases } from '../../data/cases';
+import { site } from '../../data/site';
+import Base from '../../layouts/Base.astro';
+
+const anyPlaceholder = cases.some((c) => c.placeholder);
+---
+
+<Base
+  title={`Case Studies | ${site.name}`}
+  description="A business grown 100%+ in a month, 46 qualified calls in 30 days, leads answered in under 60 seconds. What we built and what it changed."
+>
+  <PageHero
+    label="Case studies"
+    meta={`${String(cases.length).padStart(2, '0')} studies`}
+    title="Real builds. Real numbers."
+    promise="Every build we take on is held to it."
+    lead="What we built for each business, why we built it and what changed once it went live. Every system here was scoped, built and launched by us."
+    ph={anyPlaceholder ? 'cases' : undefined}
+  />
+
+  <section class="section" style="padding-top: 0">
+    <div class="container">
+      <div class="cases cases--2">
+        {cases.map((c, i) => <CaseCard study={c} delay={(i % 2) * 120} level={2} />)}
+      </div>
+    </div>
+  </section>
+
+  <Marquee />
+
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead
+        label="The process"
+        title="How we’d build yours."
+        lead="Four steps, one fixed price and a system that works from day one."
+      />
+      <Steps />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container"><Guarantee /></div>
+  </section>
+
+  <Cta title="Want results like these?" />
+</Base>

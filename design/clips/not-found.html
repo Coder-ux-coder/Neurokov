@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 8s" />
+    <meta name="poster" content="6.2" />
+    <title>404, the broken link</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // The 404 page: a link, snapped in the middle, fizzing at both ends.
+      // Signals run up to the gap and die there, until NK-01 flies in, grabs
+      // both ends and becomes the link, and they run on through it to home.
+      // An 8-second loop.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([[0, 8.1]]);
+        const { blinkAt } = K;
+        const g = K.act(0);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g);
+        K.paper(g, { floor: 870 });
+        const big = S.svg('text', { x: 960, y: 560, 'text-anchor': 'middle', 'font-family': 'Archivo Variable', 'font-weight': 800, 'font-stretch': '125%', 'font-size': 460, 'letter-spacing': -20, fill: SHADE }, g);
+        big.textContent = '404';
+
+        // home: the signpost the link leads to
+        const home = CAST.sign(g, { h: 150, size: 170 });
+        S.put(home.g, { x: 1760, y: 870 });
+        const halo = S.svg('rect', { x: 1760 - 110, y: 870 - 150 - 195, width: 220, height: 220, rx: 34, fill: ORANGE, opacity: 0 }, g);
+        g.insertBefore(halo, home.g);
+
+        // the link, snapped between L and R
+        const CY = 640, L = 820, R = 1100;
+        const seg = (x1, x2) => {
+          S.svg('line', { x1, y1: CY, x2, y2: CY, stroke: INK, 'stroke-width': 26, 'stroke-linecap': 'round' }, g);
+          S.svg('line', { x1, y1: CY, x2, y2: CY, stroke: GRAY, 'stroke-width': 14, 'stroke-linecap': 'round' }, g);
+        };
+        seg(-120, L);
+        seg(R, 1680);
+        for (const [x, s] of [[L, 1], [R, -1]])
+          S.svg('path', { d: `M ${x} ${CY} l ${14 * s} -16 M ${x} ${CY} l ${18 * s} 2 M ${x} ${CY} l ${12 * s} 16`, stroke: INK, 'stroke-width': 4, 'stroke-linecap': 'round', fill: 'none' }, g);
+        const fizz = [L, R].map(() => CAST.burst(g, { n: 6, color: ORANGE, r0: 10, r1: 44, width: 5 }));
+
+        // the signals running along it
+        const PERIOD = 0.55, SPEED = 560;
+        const pulses = Array.from({ length: 8 }, () => S.svg('circle', { r: 11, fill: ORANGE, stroke: INK, 'stroke-width': 3.5 }, g));
+
+        // NK-01, with a question on its mind
+        const bot = CAST.robot(g);
+        const what = S.g(g);
+        S.svg('circle', { r: 30, fill: PAPER, stroke: INK, 'stroke-width': 5 }, what);
+        const q = S.svg('text', { x: 0, y: 14, 'text-anchor': 'middle', 'font-family': 'Archivo Variable', 'font-weight': 800, 'font-size': 40, fill: ORANGE }, what);
+        q.textContent = '?';
+
+        const HOLD = 3.4; // NK-01 has both ends from here
+        S.track((t) => {
+          const joined = t > HOLD;
+          fizz.forEach((f, i) => {
+            const u = ((t + i * 0.3) % 0.6) / 0.6;
+            f.set(joined ? 0 : u);
+            S.put(f.g, { x: [L, R][i], y: CY });
+          });
+          // pulses: born off the left edge; die at the gap until the link is joined
+          let lit = 0;
+          pulses.forEach((p, j) => {
+            const k = Math.floor(t / PERIOD) - j;
+            const born = k * PERIOD;
+            const x = -120 + SPEED * (t - born);
+            const blocked = born + (L - -120) / SPEED < HOLD; // it reached the gap before NK-01 held it
+            const end = blocked ? L : 1680;
+            const inBot = x > L - 10 && x < R + 10;
+            S.put(p, { x: Math.min(x, end), y: CY, o: k >= 0 && x < end && !inBot ? 1 : 0 });
+            if (!blocked && x >= 1680 && x < 1680 + SPEED * 0.3) lit = Math.max(lit, 1 - (x - 1680) / (SPEED * 0.3));
+            if (!blocked && inBot) lit = Math.max(lit, 0.001);
+          });
+          halo.setAttribute('opacity', (0.35 * lit).toFixed(3));
+
+          // NK-01: in, puzzled, then the bridge
+          const fly = ramp(t, 0.9, 1.1, E.out);
+          const dive = ramp(t, 2.9, 0.5, E.back);
+          const x = 2200 + (960 - 2200) * fly;
+          const y = 470 + (632 - 470) * dive + (joined ? 0 : 6 * Math.sin(t * 3));
+          const grab = ramp(t, 3.0, 0.4, E.back);
+          const flow = joined ? S.wave(t, PERIOD, 0.1) : 0;
+          bot.set({
+            x, y, t, flip: -1, ground: 870 - y,
+            tilt: fly < 1 ? -14 * (1 - fly) : 0, flame: fly < 1 ? 0.8 : joined ? 0 : 0.3,
+            glow: joined ? 0.6 + 0.4 * flow : 0.5 + 0.5 * S.wave(t, 0.7),
+            arm: [
+              [20 + (-90 - 20) * grab, -20 + 20 * grab],
+              [-20 + (90 + 20) * grab, 20 - 20 * grab],
+            ],
+            eyes: t > 4.1 ? 'happy' : t > 2.0 && t < 3.0 ? 'wide' : 'normal',
+            look: t > 2.0 && t < 2.9 ? [0.2 * Math.sin(t * 4), 1] : [0.3, 0],
+            squash: 0.25 * hit(t, 3.35, 0.3) + 0.06 * flow,
+            blink: blinkAt(t, [1.6, 5.4, 7.1]),
+          });
+          const wk = Math.min(1.12, S.spring(t, 2.15, { freq: 2.6, damp: 0.42 }));
+          S.put(what, { x: x + 90, y: y - 150, s: Math.max(0.001, wk) * (1 - ramp(t, 2.85, 0.15)), r: 8 * Math.sin(t * 5), o: t > 2.15 && t < 3.0 ? 1 : 0 });
+        });
+
+        K.hudAct(S.html('<div class="mono kicker" style="left:120px;top:96px">Error 404 · Route not found</div>'), 0);
+        K.note('Illustrated story · A broken link, not a broken system', () => false);
+        K.camera([
+          [0, [1000, 590, 1.08]],
+          [8, [1000, 590, 1.12], E.linear],
+        ]);
+      });
+    </script>
+  </body>
+</html>

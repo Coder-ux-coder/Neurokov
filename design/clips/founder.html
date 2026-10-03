@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 20s" />
+    <meta name="poster" content="9.9" />
+    <title>Meet Mohid</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // Mohid Zeeshan, Neurokov's founder, in his own words (2026-09-25): he
+      // lives in n8n and Claude Code, has automated most of his own work, is in
+      // the top 1% in automation, and is active in automation communities,
+      // sharing what works. Act 1: one command and his week runs itself.
+      // Act 2: the top of the pyramid. Act 3: what he shares. The close: his
+      // real credentials. An illustrated figure, not a likeness.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 6.4],
+          [6.4, 10.9],
+          [10.9, 14.9],
+          [14.9, 20.1],
+        ]);
+        const { blinkAt, headline, talk } = K;
+        const MOHID = { shirt: ORANGE, hair: 'short', hairColor: INK };
+        const mix = (a, b, k) => a + (b - a) * k;
+        const mixPose = (a, b, k) => a.map((p, i) => p.map((v, j) => mix(v, b[i][j], k)));
+        const HIPS = [[-40, 95], [40, -95]]; // hands on hips
+        const text = (parent, str, attrs) => {
+          const el = S.svg('text', { 'font-family': 'IBM Plex Mono', 'font-weight': 600, ...attrs }, parent);
+          el.textContent = str;
+          return el;
+        };
+
+        // ---------- Act 1: one command, and his week runs itself ----------
+        const g1 = K.act(0);
+        K.room(g1, { floor: 870 });
+        CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, color: PAPER, o: 0.05 });
+
+        // the big screen: an n8n canvas
+        const CX0 = 1120, CY0 = 180, CW = 720, CH = 500;
+        const glow = S.svg('rect', { x: CX0 - 40, y: CY0 - 40, width: CW + 80, height: CH + 80, rx: 56, fill: '#fbe7c6', opacity: 0.08 }, g1);
+        S.svg('rect', { x: 1455, y: 690, width: 50, height: 172, fill: INK }, g1);
+        S.svg('rect', { x: 1360, y: 850, width: 240, height: 20, rx: 10, fill: INK }, g1);
+        S.svg('rect', { x: CX0 - 20, y: CY0 - 20, width: CW + 40, height: CH + 40, rx: 28, fill: INK, stroke: '#4a4f5c', 'stroke-width': 4 }, g1);
+        const canvas = S.g(g1);
+        S.svg('rect', { x: CX0, y: CY0, width: CW, height: CH, rx: 10, fill: PAPER }, canvas);
+        CAST.dots(canvas, { x0: CX0 + 12, y0: CY0 + 60, w: CW - 24, h: CH - 72, gap: 34, o: 0.14 });
+        S.svg('rect', { x: CX0, y: CY0, width: CW, height: 48, rx: 10, fill: SHADE }, canvas);
+        S.svg('rect', { x: CX0, y: CY0 + 38, width: CW, height: 10, fill: SHADE }, canvas);
+        S.svg('line', { x1: CX0, y1: CY0 + 48, x2: CX0 + CW, y2: CY0 + 48, stroke: INK, 'stroke-width': 3 }, canvas);
+        text(canvas, 'n8n · MY WEEK', { x: CX0 + 24, y: CY0 + 32, 'font-size': 20, 'letter-spacing': 2, fill: INK });
+        [ORANGE, GRAY, GRAY].forEach((c, i) => S.svg('circle', { cx: CX0 + CW - 30 - i * 26, cy: CY0 + 24, r: 8, fill: c, stroke: INK, 'stroke-width': 3 }, canvas));
+
+        const wiresG = S.g(canvas);
+        const nodesG = S.g(canvas);
+        const N = 48; // half a node
+        const node = (x, y, label, fill = PAPER, beside = false) => {
+          const g = S.g(nodesG);
+          S.svg('rect', { x: -N + 6, y: -N + 8, width: 2 * N, height: 2 * N, rx: 22, fill: INK }, g);
+          S.svg('rect', { x: -N, y: -N, width: 2 * N, height: 2 * N, rx: 22, fill, stroke: INK, 'stroke-width': 5 }, g);
+          for (const cx of [-N, N]) S.svg('circle', { cx, cy: 0, r: 8, fill: PAPER, stroke: INK, 'stroke-width': 4 }, g);
+          const icon = S.g(g);
+          if (beside) text(g, label, { x: N + 22, y: 7, 'font-size': 19, 'letter-spacing': 2, fill: INK });
+          else text(g, label, { x: 0, y: N + 36, 'text-anchor': 'middle', 'font-size': 19, 'letter-spacing': 2, fill: INK });
+          return { g, icon, x, y };
+        };
+        const inbox = node(1210, 430, 'INBOX');
+        S.put(CAST.envelope(inbox.icon, { w: 58, h: 40 }).g, { y: 2 });
+        const claude = node(1400, 430, 'CLAUDE', ORANGE);
+        CAST.sparkle(claude.icon, { r: 28, fill: PAPER });
+        const outs = [
+          node(1600, 300, 'CALENDAR', PAPER, true),
+          node(1600, 430, 'INVOICES', PAPER, true),
+          node(1600, 560, 'REPORTS', PAPER, true),
+        ];
+        // a small calendar: orange band, two rings, a grid of days
+        S.svg('rect', { x: -30, y: -24, width: 60, height: 52, rx: 8, fill: PAPER, stroke: INK, 'stroke-width': 4 }, outs[0].icon);
+        S.svg('path', { d: 'M -30 -10 L 30 -10 L 30 -16 Q 30 -24 22 -24 L -22 -24 Q -30 -24 -30 -16 Z', fill: ORANGE, stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, outs[0].icon);
+        for (const x of [-14, 14]) S.svg('line', { x1: x, y1: -31, x2: x, y2: -19, stroke: INK, 'stroke-width': 5, 'stroke-linecap': 'round' }, outs[0].icon);
+        for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) S.svg('rect', { x: -21 + c * 16, y: -3 + r * 13, width: 10, height: 8, rx: 2, fill: r === 1 && c === 2 ? ORANGE : GRAY }, outs[0].icon);
+        CAST.receipt(outs[1].icon, { w: 42, h: 56, label: '' });
+        CAST.doc(outs[2].icon, { w: 44, h: 56, lines: 3 });
+        const wire = (a, b) => {
+          const x1 = a.x + N, x2 = b.x - N, mx = (x1 + x2) / 2;
+          const d = `M ${x1} ${a.y} C ${mx} ${a.y} ${mx} ${b.y} ${x2} ${b.y}`;
+          S.svg('path', { d, fill: 'none', stroke: GRAY, 'stroke-width': 5, 'stroke-linecap': 'round' }, wiresG);
+          const live = S.svg('path', { d, fill: 'none', stroke: INK, 'stroke-width': 5, 'stroke-linecap': 'round' }, wiresG);
+          return live;
+        };
+        const main = wire(inbox, claude);
+        const branches = outs.map((o) => wire(claude, o));
+        const pulseOf = () => S.svg('circle', { r: 10, fill: ORANGE, stroke: INK, 'stroke-width': 4 }, wiresG);
+        const mainPulses = [pulseOf(), pulseOf()];
+        const branchPulses = branches.map(() => [pulseOf(), pulseOf()]);
+        const checks = outs.map((o) => {
+          const c = CAST.check(nodesG, { r: 21 });
+          return { c, o };
+        });
+
+        // Claude Code, in a terminal floating in front of the screen
+        const term = S.g(g1);
+        const TX = 860, TY = 590, TW = 430, TH = 190;
+        S.svg('rect', { x: TX + 8, y: TY + 10, width: TW, height: TH, rx: 18, fill: '#0b0b0a' }, term);
+        S.svg('rect', { x: TX, y: TY, width: TW, height: TH, rx: 18, fill: '#191918', stroke: PAPER, 'stroke-width': 4 }, term);
+        S.svg('line', { x1: TX, y1: TY + 46, x2: TX + TW, y2: TY + 46, stroke: '#4a4a46', 'stroke-width': 3 }, term);
+        [ORANGE, GRAY, GRAY].forEach((c, i) => S.svg('circle', { cx: TX + 26 + i * 24, cy: TY + 23, r: 7, fill: c }, term));
+        text(term, 'CLAUDE CODE', { x: TX + TW - 22, y: TY + 30, 'text-anchor': 'end', 'font-size': 17, 'letter-spacing': 3, fill: '#9a948a' });
+        const prompt = text(term, '›', { x: TX + 26, y: TY + 96, 'font-size': 30, fill: ORANGE });
+        const line1 = text(term, '', { x: TX + 56, y: TY + 96, 'font-size': 27, 'font-weight': 500, fill: PAPER });
+        const caret = S.svg('rect', { y: TY + 74, width: 14, height: 28, fill: ORANGE }, term);
+        const tick2 = text(term, '✓', { x: TX + 26, y: TY + 146, 'font-size': 27, fill: ORANGE });
+        const line2 = text(term, 'live, runs on its own', { x: TX + 56, y: TY + 146, 'font-size': 27, 'font-weight': 500, fill: PAPER });
+        const CMD = 'automate my week';
+
+        const mohid1 = CAST.person(g1, MOHID);
+        const bot1 = CAST.robot(g1);
+        S.track((t) => {
+          // the terminal comes up, and the command types itself as he says it
+          const tk = Math.min(1.08, S.spring(t, 0.2, { freq: 2.6, damp: 0.5 }));
+          S.put(term, { x: TX + TW / 2, y: TY + TH, ox: TX + TW / 2, oy: TY + TH, s: Math.max(0.001, tk), o: t > 0.2 ? 1 : 0 });
+          const n = Math.round(CMD.length * ramp(t, 0.6, 0.85, E.linear));
+          line1.textContent = CMD.slice(0, n);
+          caret.setAttribute('x', (TX + 58 + n * 16.2).toFixed(1));
+          caret.setAttribute('opacity', t < 3.1 && (t < 1.45 || Math.floor(t * 3) % 2 === 0) ? 1 : 0);
+          const l2 = ramp(t, 3.1, 0.3);
+          tick2.setAttribute('opacity', l2.toFixed(3));
+          line2.setAttribute('opacity', l2.toFixed(3));
+          prompt.setAttribute('opacity', t > 0.35 ? 1 : 0);
+
+          // the workflow builds itself on the canvas
+          [inbox, claude, ...outs].forEach((nd, i) => {
+            const at = [1.6, 1.9, 2.25, 2.45, 2.65][i];
+            const k = Math.min(1.12, S.spring(t, at, { freq: 2.6, damp: 0.45 }));
+            S.put(nd.g, { x: nd.x, y: nd.y, s: Math.max(0.001, k), o: t > at ? 1 : 0 });
+          });
+          S.draw(main, ramp(t, 1.8, 0.35, E.inOut));
+          branches.forEach((b, i) => S.draw(b, ramp(t, 2.3 + i * 0.2, 0.4, E.inOut)));
+          // work flows through it, round and round
+          const along = (path, u) => path.getPointAtLength(u * path.getTotalLength());
+          mainPulses.forEach((p, j) => {
+            const u = ((t - 3.0) / 0.9 + j * 0.5) % 1;
+            const pt = along(main, Math.max(0, u));
+            S.put(p, { x: pt.x, y: pt.y, o: t > 3.0 + j * 0.45 ? 1 : 0 });
+          });
+          branchPulses.forEach((pair, i) =>
+            pair.forEach((p, j) => {
+              const u = ((t - 3.45) / 0.9 + j * 0.5 + i * 0.13) % 1;
+              const pt = along(branches[i], Math.max(0, u));
+              S.put(p, { x: pt.x, y: pt.y, o: t > 3.45 + j * 0.45 ? 1 : 0 });
+            }),
+          );
+          checks.forEach(({ c, o }, i) => {
+            const at = 3.7 + i * 0.3;
+            const k = Math.min(1.15, S.spring(t, at, { freq: 2.8, damp: 0.4 }));
+            S.put(c.g, { x: o.x + 44, y: o.y - 46, s: Math.max(0.001, k), o: t > at ? 1 : 0 });
+            c.set(ramp(t, at + 0.1, 0.3));
+          });
+          glow.setAttribute('opacity', (0.07 + 0.05 * ramp(t, 3.0, 0.6) + 0.02 * Math.sin(t * 4)).toFixed(3));
+
+          // Mohid: says the command, conducts the build, then turns to us
+          const say = ramp(t, 0.45, 0.3) * (1 - ramp(t, 1.45, 0.3));
+          const conduct = env(t, 1.55, 3.0, 0.3);
+          const proud = ramp(t, 3.35, 0.45);
+          let arm = [[6, -8], [-6, 8]];
+          arm = mixPose(arm, [[6, -8], [96, -14]], say);
+          arm = mixPose(arm, [[-8, -6], [128 + 18 * Math.sin(t * 5), -24]], conduct);
+          arm = mixPose(arm, HIPS, proud);
+          mohid1.set({
+            x: 620, y: 870, s: 0.92, arm,
+            lean: 3 * say + 2 * conduct - 1 * proud,
+            headTilt: -4 * conduct + 3 * proud,
+            headTurn: 0.6 * (1 - proud),
+            look: proud > 0.5 ? [0, 0] : [1, -0.4 - 0.4 * conduct],
+            mouth: t < 1.5 ? talk(t, 0.5, 1.45) : proud > 0.5 ? 'grin' : 'smile',
+            blink: blinkAt(t, [2.1, 4.7]),
+          });
+
+          // NK-01 swoops in to see it run
+          const fly = ramp(t, 3.3, 0.9, E.out);
+          bot1.set({
+            x: mix(2200, 1745, fly), y: 780 - 70 * Math.sin(Math.PI * fly) + 8 * Math.sin(t * 3), s: 0.8, t,
+            flip: -1, tilt: -16 * (1 - fly), flame: fly < 1 ? 0.8 : 0.35, ground: 870 - 780,
+            arm: t > 4.4 ? [[20, -20], [160, -10 + 26 * Math.sin(t * 11)]] : [[20, -20], [-20, 20]],
+            eyes: t > 4.2 ? 'happy' : 'normal', look: [-0.6, -0.3],
+            glow: 0.5 + 0.5 * S.wave(t, 0.7), blink: blinkAt(t, [5.2]),
+          });
+        });
+        headline(0, 'Fig. 1 · Mohid Zeeshan, founder', 'He automated<br /><em>his own work</em> first.', 0.35, 6.0);
+
+        // ---------- Act 2: the top of the pyramid ----------
+        const g2 = K.act(1);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g2);
+        K.paper(g2, { floor: 870 });
+        const PX = 1400;
+        const TIERS = [
+          { y: 765, w: 1000, fill: SHADE, label: 'USES AUTOMATIONS' },
+          { y: 660, w: 760, fill: '#dcd3c3', label: 'BUILDS WORKFLOWS' },
+          { y: 555, w: 520, fill: GRAY, label: 'SHIPS SYSTEMS' },
+          { y: 450, w: 280, fill: ORANGE, label: 'TOP 1%' },
+        ];
+        const tierEls = TIERS.map((T, i) => {
+          const g = S.g(g2);
+          S.svg('rect', { x: PX - T.w / 2 + 7, y: T.y + 9, width: T.w, height: 105, fill: INK }, g);
+          const box = S.svg('rect', { x: PX - T.w / 2, y: T.y, width: T.w, height: 105, fill: T.fill, stroke: INK, 'stroke-width': 5 }, g);
+          text(g, T.label, { x: PX, y: T.y + 64, 'text-anchor': 'middle', 'font-size': i === 3 ? 34 : 24, 'font-weight': i === 3 ? 700 : 600, 'letter-spacing': 3, fill: INK });
+          return { g, box, T };
+        });
+        // The crowd thins as the steps rise, read row by row: a crowd two deep
+        // at the foot, three beside the second step, two beside the third, and
+        // nobody level with the top but him. The left ledges are his way up.
+        const pawn = (x, y, s = 1, fill = PAPER) => {
+          const g = S.g(g2);
+          S.svg('path', { d: 'M -17 0 C -17 -24 -12 -34 0 -34 C 12 -34 17 -24 17 0 Z', fill, stroke: INK, 'stroke-width': 4 }, g);
+          S.svg('circle', { cx: 0, cy: -44, r: 12, fill, stroke: INK, 'stroke-width': 4 }, g);
+          return { g, x, y, s };
+        };
+        const row = (xs, y, s, fill) => xs.map((x) => pawn(x, y, s, fill));
+        const span = (x0, n, dx = 38) => Array.from({ length: n }, (_, i) => x0 + i * dx);
+        const crowd = [
+          // the back row first, so the front row stands over it
+          ...row(span(367, 8), 858, 0.86, SHADE),
+          ...row(span(1956, 6), 858, 0.86, SHADE),
+          ...row(span(386, 7), 870),
+          ...row(span(1937, 6), 870),
+          ...row([1812, 1850, 1886], 765),
+          ...row([1700, 1745], 660),
+        ];
+        // (only the rays that point up or out: the ones pointing down would land on his step's label)
+        const topBurst = CAST.burst(g2, { n: 10, color: ORANGE, r0: 70, r1: 150, width: 7, keep: (a) => a <= 90 || a >= 270 });
+        const sparks = [0, 1, 2].map(() => CAST.sparkle(g2, { r: 20 }));
+        const mohid2 = CAST.person(g2, MOHID);
+        const HOPS = [
+          [7.3, [870, 870], [960, 765]],
+          [7.72, [960, 765], [1080, 660]],
+          [8.14, [1080, 660], [1200, 555]],
+          [8.58, [1200, 555], [1400, 450]],
+        ];
+        const HOP = 0.36;
+        S.track((t) => {
+          let x, y, air = 0, arm, leg = [[4, 0], [-4, 0]], bob = 0;
+          if (t < HOPS[0][0]) {
+            // walks in
+            const u = ramp(t, 6.45, 0.85, E.linear);
+            x = mix(700, 870, u);
+            y = 870;
+            const ph = (t - 6.45) * 11;
+            const a = u < 1 ? 22 * Math.sin(ph) : 0;
+            bob = -150 * (1 - Math.cos((a * Math.PI) / 180));
+            leg = [[a, -20 * Math.max(0, Math.sin(ph))], [-a, -20 * Math.max(0, -Math.sin(ph))]];
+            arm = [[-a * 0.9, -12], [a * 0.9, 12]];
+          } else {
+            const i = Math.min(HOPS.length - 1, HOPS.filter(([at]) => t >= at).length - 1);
+            const [at, p0, p1] = HOPS[i];
+            const u = ramp(t, at, HOP, E.linear);
+            air = Math.sin(Math.PI * u);
+            x = mix(p0[0], p1[0], E.inOut(u));
+            y = mix(p0[1], p1[1], u) - 70 * air - (i === 3 ? 40 * air : 0);
+            leg = [[34 * air, -64 * air], [-8 * air, -40 * air]];
+            // (the back arm swings out less than the front one: at full stretch its hand
+            // reached the headline's last letter)
+            arm = [[-40 - 30 * air, -10], [40 + 60 * air, 10]];
+            // a crouch as each hop lands
+            bob = -16 * hit(t, at + HOP, 0.22);
+          }
+          const top = ramp(t, 9.0, 0.35);
+          arm = mixPose(arm, [[-158, 12], [158, -12]], env(t, 9.0, 9.9, 0.25));
+          arm = mixPose(arm, HIPS, ramp(t, 9.9, 0.4));
+          mohid2.set({
+            x, y, s: 0.6, arm, leg, bob,
+            lean: t < 8.94 ? 6 : 0, headTilt: t > 9.9 ? 4 : 0,
+            look: t < 8.94 ? [1, -0.6] : [0, 0],
+            mouth: t > 9.0 ? 'grin' : 'smile', blink: blinkAt(t, [7.0, 10.4]),
+          });
+          topBurst.set(ramp(t, 9.0, 0.5, E.linear));
+          S.put(topBurst.g, { x: 1400, y: 360 });
+          sparks.forEach((sp, i) => {
+            const at = 9.15 + i * 0.12;
+            const k = Math.min(1.2, S.spring(t, at, { freq: 2.4, damp: 0.4 }));
+            const [sx, sy] = [[1270, 340], [1530, 300], [1560, 420]][i];
+            S.put(sp, { x: sx, y: sy + 6 * Math.sin(t * 3 + i), s: Math.max(0.001, k), r: 20 * Math.sin(t * 2 + i), o: t > at ? 1 : 0 });
+          });
+          // the top step lights up as he lands on it
+          tierEls[3].box.setAttribute('fill', t > 8.94 && Math.floor((t - 8.94) * 4) % 2 === 0 && t < 9.9 ? '#ff7a3d' : ORANGE);
+          // as he lands, the crowd turns to him, the nearest first
+          crowd.forEach((c, i) => {
+            const at = 9.0 + Math.abs(c.x - 1400) * 0.00025;
+            const lean = t > at ? -8 * Math.sin(Math.min(1, (t - at) * 3) * 1.57) * (c.x < 1400 ? -1 : 1) : 0;
+            S.put(c.g, { x: c.x, y: c.y, r: lean, sx: c.s, sy: c.s * (1 + 0.03 * Math.sin(t * 5 + i * 1.7)), o: 1 });
+          });
+        });
+        // (broken after "in", and a touch smaller, so its end stays clear of him as he climbs)
+        headline(1, 'Fig. 2 · Where he stands', 'Top 1% in<br /><em>automation</em>.', 6.8, 10.6, { dark: false, size: 88 });
+
+        // ---------- Act 3: what he shares ----------
+        const g3 = K.act(2);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g3);
+        K.paper(g3, { floor: 870 });
+        const CH_ = [
+          { x: 1330, y: 300, name: '# builders' },
+          { x: 1660, y: 500, name: '# automation' },
+          { x: 1560, y: 770, name: '# claude-code' },
+          { x: 430, y: 580, name: '# n8n' },
+          { x: 560, y: 800, name: '# founders' },
+        ];
+        const WW = 290, WH = 176;
+        const heart = (parent) => S.svg('path', { d: 'M 0 9 C -16 -3 -9 -19 0 -9 C 9 -19 16 -3 0 9 Z', fill: ORANGE, stroke: INK, 'stroke-width': 3 }, parent);
+        const rooms = CH_.map((c) => {
+          const g = S.g(g3);
+          S.svg('rect', { x: -WW / 2 + 7, y: -WH / 2 + 9, width: WW, height: WH, rx: 16, fill: INK }, g);
+          S.svg('rect', { x: -WW / 2, y: -WH / 2, width: WW, height: WH, rx: 16, fill: PAPER, stroke: INK, 'stroke-width': 5 }, g);
+          S.svg('path', { d: `M ${-WW / 2 + 2} ${-WH / 2 + 40} L ${WW / 2 - 2} ${-WH / 2 + 40}`, stroke: INK, 'stroke-width': 3 }, g);
+          text(g, c.name, { x: -WW / 2 + 18, y: -WH / 2 + 28, 'font-size': 18, 'letter-spacing': 1, fill: INK });
+          const ask = S.g(g);
+          S.put(CAST.chat(ask, { w: 200, lines: 1, dot: GRAY }), { x: -30, y: -12 });
+          const q = CAST.badge(ask, { r: 15, fill: PAPER, size: 18 });
+          q.set('?');
+          S.put(q.g, { x: 82, y: -12 });
+          const post = S.g(g);
+          S.put(CAST.card(post, { w: 190, h: 64, lines: 1 }), { x: 0, y: 0 });
+          const ok = CAST.check(g, { r: 15 });
+          const hearts = [0, 1, 2].map(() => heart(g));
+          return { g, c, ask, q, post, ok, hearts };
+        });
+        const mohid3 = CAST.person(g3, MOHID);
+        const phone = CAST.phone(g3, { w: 74, h: 136 });
+        S.svg('rect', { x: -22, y: -34, width: 44, height: 12, rx: 6, fill: ORANGE }, phone.ui);
+        for (let i = 0; i < 3; i++) S.svg('rect', { x: -22, y: -12 + i * 16, width: i === 2 ? 26 : 44, height: 7, rx: 3.5, fill: GRAY }, phone.ui);
+        const flyers = rooms.map(() => CAST.card(g3, { w: 190, h: 64, lines: 1 }));
+        const sendBurst = CAST.burst(g3, { n: 8, color: ORANGE, r0: 40, r1: 90, width: 6 });
+        S.track((t) => {
+          const hold = [[-6, -10], [22, 118]];
+          const tap = env(t, 11.75, 12.1, 0.12);
+          const cheer = ramp(t, 13.3, 0.4);
+          let arm = mixPose(hold, [[48, 68], [22, 118]], tap);
+          arm = mixPose(arm, [[-6, -10], [22, 118]], cheer);
+          mohid3.set({
+            x: 1000, y: 870, s: 0.82, arm, lean: -2,
+            headTilt: 6 * (1 - cheer), look: cheer > 0.5 ? [0, 0] : [0.7, 0.8],
+            mouth: cheer > 0.5 ? 'grin' : 'smile', blink: blinkAt(t, [11.6, 13.9]),
+          });
+          const hx = 1000 + mohid3.hand[0] * 0.82, hy = 870 + mohid3.hand[1] * 0.82;
+          S.put(phone.g, { x: hx + 4, y: hy - 52, r: -8, s: 1, o: 1 });
+          sendBurst.set(ramp(t, 12.1, 0.45, E.linear));
+          S.put(sendBurst.g, { x: hx + 4, y: hy - 60 });
+
+          rooms.forEach((r, i) => {
+            const at = 11.05 + i * 0.12;
+            const k = Math.max(0.001, Math.min(1.1, S.spring(t, at, { freq: 2.5, damp: 0.45 })));
+            const ry = r.c.y + 5 * Math.sin(t * 2 + i);
+            S.put(r.g, { x: r.c.x, y: ry, s: k, o: t > at ? 1 : 0 });
+            // his post flies from the phone to every room: level by the time it comes in,
+            // so it never crosses the room's name, and it lands as the room's post, at the
+            // post's own place and size (the flyer is the post, so nothing pops)
+            const f0 = 12.15 + i * 0.07, f = ramp(t, f0, 0.7, E.inOut);
+            const fx = mix(hx + 4, r.c.x, f), fy = mix(hy - 60, ry + 34 * k, E.out(f));
+            S.put(flyers[i], { x: fx, y: fy, s: mix(0.45, k, f) * K.pop(t, f0), r: 10 * Math.sin(Math.PI * f), o: t > f0 && f < 1 ? 1 : 0 });
+            const land = f0 + 0.7;
+            S.put(r.post, { x: 0, y: 34, s: 1 + 0.05 * Math.sin(Math.PI * ramp(t, land, 0.3, E.linear)), o: t >= land ? 1 : 0 });
+            // (the question makes room first)
+            S.put(r.ask, { x: 0, y: -8 * ramp(t, land - 0.4, 0.3, E.inOut), s: 1, o: 1 });
+            // the question gets its answer
+            r.q.g.style.visibility = t > land + 0.25 ? 'hidden' : '';
+            const ok = Math.min(1.15, S.spring(t, land + 0.25, { freq: 2.8, damp: 0.4 }));
+            S.put(r.ok.g, { x: 82, y: -20, s: Math.max(0.001, ok), o: t > land + 0.25 ? 1 : 0 });
+            r.ok.set(ramp(t, land + 0.3, 0.3));
+            r.hearts.forEach((h, j) => {
+              const period = 1.4;
+              const u = t < land + 0.35 ? -1 : ((t - land - 0.35 + j * 0.45) % period) / period;
+              // (a short rise, so no heart drifts into the room above)
+              S.put(h, { x: WW / 2 - 30 - 18 * j, y: -WH / 2 - 10 - 65 * Math.max(0, u), s: 1.1, o: u < 0 ? 0 : Math.sin(Math.PI * u) });
+            });
+          });
+        });
+        headline(2, 'Fig. 3 · In the community', 'He shares<br /><em>what works</em>.', 11.2, 14.6, { dark: false });
+
+        // ---------- The close ----------
+        K.endCard({
+          at: 14.9,
+          kicker: 'Mohid Zeeshan · Founder, Neurokov',
+          big: 'Your systems, built<br />by <em>the top 1%</em>.',
+          label: 'n8n certified · Claude expert · 150+ automations shipped · Building since 2020',
+          cta: 'Book a free audit →',
+          size: 104,
+        });
+        K.wipes([
+          [6.4, 'Where he stands →'],
+          [10.9, 'What he shares →'],
+        ]);
+        K.note('Illustrated story · Mohid Zeeshan, founder', (t) => t < 6.4);
+        K.camera([
+          // high enough that the screen's title bar is never against the top edge
+          [0, [760, 590, 1.22]],
+          [1.5, [800, 600, 1.18], E.sine],
+          [3.0, [925, 540, 1.0], E.inOut],
+          [6.4, [930, 540, 1.02], E.linear],
+          [6.41, [1230, 600, 1.06], E.linear],
+          [9.0, [1250, 590, 1.1], E.sine],
+          [10.9, [1255, 590, 1.12], E.linear],
+          [10.91, [960, 560, 1.0], E.linear],
+          [14.9, [966, 560, 1.03], E.linear],
+        ], [[9.0, 0.35, 0.6]]);
+      });
+    </script>
+  </body>
+</html>

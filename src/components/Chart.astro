@@ -1,0 +1,31 @@
+---
+/** A before/after pair drawn as bars. Values come straight from the case study. */
+import type { Figure } from '../data/cases';
+
+interface Props {
+  figure: Figure;
+  n: string;
+}
+
+const { figure, n } = Astro.props;
+const num = n.padStart(2, '0'); // Fig. 02, as Figure numbers them
+---
+
+<figure class="chart" data-reveal>
+  <figcaption class="chart__head">
+    <span class="chart__title">{figure.title}</span>
+    <span class="label">Fig. {num}</span>
+  </figcaption>
+  {
+    [figure.before, figure.after].map((b, i) => (
+      <div class:list={['bar', i === 1 && 'bar--after']}>
+        <span class="bar__label">{b.label}</span>
+        <span class="bar__track">
+          <span class="bar__fill" style={`--v: ${b.v}`} />
+          <span class="bar__value">{b.value}</span>
+        </span>
+      </div>
+    ))
+  }
+  {figure.note && <p class="chart__note">{figure.note}</p>}
+</figure>

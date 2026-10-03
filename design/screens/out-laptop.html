@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="size" content="1280x800@2" />
+    <link rel="stylesheet" href="app.css" />
+    <style>
+      .screen {
+        --w: 1280px;
+        --h: 800px;
+        grid-template-columns: 224px 1fr;
+      }
+
+      .ws {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 6px 14px;
+      }
+
+      .ws__logo {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #f59e0b, #ea580c);
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      .ws b {
+        display: block;
+        font-size: 13px;
+      }
+
+      .ws small {
+        color: var(--dim);
+        font-size: 11px;
+      }
+
+      .ws > i {
+        margin-left: auto;
+        color: var(--dim);
+      }
+
+      i svg {
+        display: block;
+        width: 16px;
+        height: 16px;
+      }
+
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 32px;
+        margin: 0 2px 12px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #15151c;
+        color: var(--dim);
+        font-size: 12.5px;
+      }
+
+      .search kbd {
+        margin-left: auto;
+        font: inherit;
+        font-size: 11px;
+        color: var(--dim);
+      }
+
+      .side-label {
+        margin: 16px 10px 6px;
+        font-size: 11px;
+        color: var(--dim);
+        font-weight: 500;
+      }
+
+      .nav-item.sub {
+        height: 30px;
+        font-size: 12.5px;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin: 0 4px 0 4px;
+        flex: none;
+      }
+
+      .health {
+        margin-top: auto;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #14141b;
+      }
+
+      .health .row {
+        font-size: 12px;
+        gap: 8px;
+      }
+
+      .health .bar {
+        height: 5px;
+        margin: 10px 0 8px;
+        border-radius: 99px;
+        background: rgb(255 255 255 / 0.07);
+        overflow: hidden;
+      }
+
+      .health .bar span {
+        display: block;
+        width: 94%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--brand), var(--green));
+      }
+
+      .me {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 6px 2px;
+        font-size: 12.5px;
+      }
+
+      .me small {
+        display: block;
+        color: var(--dim);
+        font-size: 11px;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        padding: 18px 26px 0;
+        min-width: 0;
+      }
+
+      .crumbs {
+        font-size: 12px;
+        color: var(--dim);
+      }
+
+      .head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 4px;
+      }
+
+      h1 {
+        font-size: 21px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .head .actions {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 22px;
+        margin-top: 14px;
+        border-bottom: 1px solid var(--line);
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+
+      .tabs span {
+        padding: 0 0 10px;
+      }
+
+      .tabs .on {
+        color: var(--text);
+        box-shadow: inset 0 -2px 0 var(--brand);
+      }
+
+      .tabs em {
+        font-style: normal;
+        color: var(--dim);
+        margin-left: 4px;
+      }
+
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .kpi .label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .kpi .label i svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .kpi .value small {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 500;
+        margin-left: 2px;
+      }
+
+      .kpi .delta.flat {
+        color: var(--muted);
+      }
+
+      .charts {
+        display: grid;
+        grid-template-columns: 1.75fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px 0;
+      }
+
+      .legend {
+        margin-left: auto;
+        display: flex;
+        gap: 14px;
+        font-size: 11.5px;
+        color: var(--muted);
+      }
+
+      .legend span::before {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 3px;
+        margin-right: 6px;
+        border-radius: 2px;
+        background: var(--brand);
+        vertical-align: middle;
+      }
+
+      .legend span.prev::before {
+        background: rgb(255 255 255 / 0.3);
+      }
+
+      .chart {
+        display: block;
+        width: 100%;
+        height: 176px;
+        padding: 0;
+      }
+
+      .chart-wrap {
+        padding: 10px 16px 12px 6px;
+      }
+
+      text.axis {
+        fill: var(--dim);
+        font-size: 10.5px;
+        font-family: inherit;
+      }
+
+      .steps {
+        padding: 12px 16px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 22px 1fr auto;
+        gap: 4px 10px;
+        align-items: center;
+        font-size: 12.5px;
+      }
+
+      .step .n {
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: var(--panel-2);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .step .meter {
+        grid-column: 2 / 4;
+        height: 5px;
+        border-radius: 99px;
+        background: rgb(255 255 255 / 0.06);
+      }
+
+      .step .meter span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--brand);
+      }
+
+      .step b {
+        font-weight: 600;
+      }
+
+      .step .muted {
+        font-size: 11.5px;
+      }
+
+      .table {
+        margin-top: 12px;
+        flex: 1;
+        overflow: hidden;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: 0;
+      }
+
+      .table .card-head {
+        padding-bottom: 10px;
+      }
+
+      td .who {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      td .who small {
+        display: block;
+        color: var(--dim);
+        font-size: 11px;
+      }
+
+      td.quote {
+        color: var(--muted);
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      td.time {
+        color: var(--dim);
+        text-align: right;
+      }
+
+      th:last-child {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen">
+      <aside class="sidebar">
+        <div class="ws">
+          <span class="ws__logo">T</span>
+          <div><b>Tallwood Growth</b><small>Outbound</small></div>
+          <i data-i="chevrons-up-down"></i>
+        </div>
+        <div class="search"><i data-i="search"></i>Search<kbd>Ctrl K</kbd></div>
+        <a class="nav-item"><i data-i="house"></i>Home</a>
+        <a class="nav-item on"><i data-i="send"></i>Campaigns</a>
+        <a class="nav-item"><i data-i="users"></i>Leads</a>
+        <a class="nav-item"><i data-i="inbox"></i>Replies<span class="count">12</span></a>
+        <a class="nav-item"><i data-i="calendar-check"></i>Meetings</a>
+        <a class="nav-item"><i data-i="chart-column"></i>Analytics</a>
+        <a class="nav-item"><i data-i="mail"></i>Sending accounts</a>
+
+        <div class="side-label">Campaigns</div>
+        <a class="nav-item sub on" style="background: rgb(255 255 255 / 0.04)"
+          ><span class="dot" style="background: var(--green)"></span>Agency founders, US + UK</a
+        >
+        <a class="nav-item sub"><span class="dot" style="background: var(--green)"></span>Consulting partners</a>
+        <a class="nav-item sub"><span class="dot" style="background: var(--green)"></span>Recruitment firms</a>
+        <a class="nav-item sub"><span class="dot" style="background: var(--amber)"></span>Re-engage, Q2 no-shows</a>
+
+        <div class="health">
+          <div class="row"><i data-i="flame" style="color: var(--amber)"></i><b>Deliverability</b><span class="muted" style="margin-left: auto">94%</span></div>
+          <div class="bar"><span></span></div>
+          <div class="muted" style="font-size: 11.5px">36 inboxes, 12 domains</div>
+        </div>
+        <div class="me">
+          <span class="avatar" style="background: #52606d">MR</span>
+          <div>Maya Reyes<small>Owner</small></div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="crumbs">Campaigns / Agency founders, US + UK</div>
+        <div class="head">
+          <h1>Agency founders, US + UK</h1>
+          <span class="pill p-green">Active</span>
+          <div class="actions">
+            <span class="btn"><i data-i="calendar"></i>Last 30 days<i data-i="chevron-down"></i></span>
+            <span class="btn"><i data-i="pause"></i>Pause</span>
+            <span class="btn primary"><i data-i="pencil"></i>Edit sequence</span>
+          </div>
+        </div>
+        <div class="tabs">
+          <span class="on">Analytics</span><span>Leads<em>6,012</em></span><span>Sequence<em>4 steps</em></span
+          ><span>Schedule</span><span>Options</span>
+        </div>
+
+        <div class="kpis">
+          <div class="panel kpi">
+            <div class="label"><i data-i="send"></i>Emails sent</div>
+            <div class="value">11,864</div>
+            <div class="delta">+2,140 this week</div>
+          </div>
+          <div class="panel kpi">
+            <div class="label"><i data-i="message-square"></i>Reply rate</div>
+            <div class="value">5.8<small>%</small></div>
+            <div class="delta">+1.2 pts vs August</div>
+          </div>
+          <div class="panel kpi">
+            <div class="label"><i data-i="sparkles"></i>Positive replies</div>
+            <div class="value">173</div>
+            <div class="delta">+38 this week</div>
+          </div>
+          <div class="panel kpi">
+            <div class="label"><i data-i="calendar-check"></i>Meetings booked</div>
+            <div class="value">46</div>
+            <div class="delta">+11 this week</div>
+          </div>
+          <div class="panel kpi">
+            <div class="label"><i data-i="shield-check"></i>Bounce rate</div>
+            <div class="value">0.9<small>%</small></div>
+            <div class="delta flat">Under 2% target</div>
+          </div>
+        </div>
+
+        <div class="charts">
+          <div class="panel">
+            <div class="card-head">
+              <span class="section-title">Positive replies per day</span>
+              <div class="legend"><span>September</span><span class="prev">August</span></div>
+            </div>
+            <div class="chart-wrap">
+              <svg
+                class="chart"
+                data-line="1,2,2,3,2,4,3,5,4,4,6,5,7,6,6,8,7,9,8,10,9,11,10,12,11,13,12,14,13,16"
+                data-line2="1,1,2,1,2,2,1,3,2,2,3,2,3,3,2,4,3,3,4,3,4,4,3,5,4,4,5,4,5,5"
+                data-y="0,5,10,15"
+                data-max="17"
+                data-x="Aug 25,Sep 1,Sep 8,Sep 15,Sep 23"
+                data-area
+                data-dot
+              ></svg>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="card-head">
+              <span class="section-title">Sequence</span>
+              <span class="muted" style="margin-left: auto; font-size: 11.5px">Reply rate by step</span>
+            </div>
+            <div class="steps">
+              <div class="step">
+                <span class="n">1</span><b>Researched opener</b><span>3.1%</span>
+                <span class="meter"><span style="width: 100%"></span></span>
+              </div>
+              <div class="step">
+                <span class="n">2</span><b>Case study bump</b><span>1.7%</span>
+                <span class="meter"><span style="width: 55%"></span></span>
+              </div>
+              <div class="step">
+                <span class="n">3</span><b>LinkedIn profile visit</b><span class="muted">Auto</span>
+                <span class="meter"><span style="width: 0"></span></span>
+              </div>
+              <div class="step">
+                <span class="n">4</span><b>Last note</b><span>0.9%</span>
+                <span class="meter"><span style="width: 29%"></span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel table">
+          <div class="card-head">
+            <span class="section-title">Latest replies</span>
+            <span class="pill p-brand no-dot" style="margin-left: 4px">Auto-sorted</span>
+            <span class="muted" style="margin-left: auto; font-size: 12px">View all</span>
+          </div>
+          <table>
+            <tr>
+              <th>Lead</th>
+              <th>Company</th>
+              <th>Step</th>
+              <th>Reply</th>
+              <th>Status</th>
+              <th>Received</th>
+            </tr>
+            <tr>
+              <td>
+                <div class="who"><span class="avatar" style="background: #2f7d6d">DO</span><div>Daniel Okafor<small>Founder</small></div></div>
+              </td>
+              <td>Kestrel &amp; Row</td>
+              <td class="muted">Step 1</td>
+              <td class="quote">“Timing is actually good. Does Thursday work?”</td>
+              <td><span class="pill p-brand">Meeting booked</span></td>
+              <td class="time">4 min ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="who"><span class="avatar" style="background: #9a5a4d">PR</span><div>Priya Raman<small>Managing Partner</small></div></div>
+              </td>
+              <td>Fieldwork Partners</td>
+              <td class="muted">Step 2</td>
+              <td class="quote">“Send me a couple of times next week.”</td>
+              <td><span class="pill p-green">Interested</span></td>
+              <td class="time">12 min ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="who"><span class="avatar" style="background: #3d5f9e">TB</span><div>Tom Becker<small>CEO</small></div></div>
+              </td>
+              <td>Oakline Advisory</td>
+              <td class="muted">Step 1</td>
+              <td class="quote">“Who else in consulting have you done this for?”</td>
+              <td><span class="pill p-blue">Asked for info</span></td>
+              <td class="time">26 min ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="who"><span class="avatar" style="background: #a0612b">SM</span><div>Sofia Marín<small>Founder</small></div></div>
+              </td>
+              <td>Helio Studio</td>
+              <td class="muted">Step 3</td>
+              <td class="quote">“Grabbed a slot on Tuesday. Talk then.”</td>
+              <td><span class="pill p-brand">Meeting booked</span></td>
+              <td class="time">41 min ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="who"><span class="avatar" style="background: #56606e">JW</span><div>James Whitaker<small>Director</small></div></div>
+              </td>
+              <td>Ledgerline</td>
+              <td class="muted">Step 2</td>
+              <td class="quote">“Not this quarter. Try me again in January.”</td>
+              <td><span class="pill p-gray">Not now</span></td>
+              <td class="time">1 hr ago</td>
+            </tr>
+          </table>
+        </div>
+      </main>
+    </div>
+    <script src="icons.js"></script>
+    <script src="app.js"></script>
+    <script src="anim.js"></script>
+    <script>
+      // The campaign keeps sending; a positive reply comes in, sorted to the top.
+      ANIM.setup(() => {
+        const A = ANIM;
+        const [sent, , positive] = A.$$('.kpi');
+        const ticks = [0.9, 1.9, 2.6, 3.7, 4.5, 5.8, 6.6, 7.3];
+        A.counter(A.$('.value', sent), ticks.map((t, i) => [t, 11864 + i + 1]), null);
+        A.counter(A.$('.value', positive), [[3.7, 174]], positive);
+        A.ring(A.$('svg[data-dot]'));
+        const rows = A.$$('.table tr');
+        A.insertRow(
+          A.html(`
+            <table><tr>
+              <td><div class="who"><span class="avatar" style="background: #0e7490">LO</span><div>Lena Ortiz<small>Founder</small></div></div></td>
+              <td>Brightfold</td>
+              <td class="muted">Step 1</td>
+              <td class="quote">“Today at 1 works. Sending an invite.”</td>
+              <td><span class="pill p-brand">Meeting booked</span></td>
+              <td class="time">Just now</td>
+            </tr></table>`).querySelector('tr'),
+          rows[1],
+          3.4,
+        );
+      });
+    </script>
+  </body>
+</html>

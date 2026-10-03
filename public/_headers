@@ -1,0 +1,6 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-r1GAi/yJWlXTuYk0Y4pDpnGGEJ9bQlmkCSqYl/YcwO8=' 'sha256-rgKITdqXZaa2vWdPYKD/tSo9FeTdViijSRlP/O0Q/Qk=' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://app.cal.com https://cal.com; font-src 'self'; media-src 'self'; connect-src 'self' https://app.cal.com https://api.web3forms.com; frame-src https://app.cal.com https://cal.com; object-src 'none'; base-uri 'self'; form-action 'self' https://cal.com https://app.cal.com; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

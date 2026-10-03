@@ -1,0 +1,185 @@
+---
+import BookingForm from '../components/BookingForm.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import SectionHead from '../components/SectionHead.astro';
+import { calUrl, ph, site, unconfirmed } from '../data/site';
+import Base from '../layouts/Base.astro';
+
+const expect = [
+  'Where your team’s hours and leads are leaking',
+  'The two or three automations with the biggest payoff',
+  'A straight answer on what it would cost',
+  'No pitch deck, no pressure, and a clear “not a fit” if we aren’t',
+];
+
+const next: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'eye',
+    title: 'Before the call',
+    text: 'We look at your business before we meet: your website, what you sell and how leads reach you. The 30 minutes go on your problems, not the basics.',
+  },
+  {
+    icon: 'calendar-check',
+    title: 'On the call',
+    text: 'We map how work and leads move through your business, find where hours and deals leak, and show you the two or three systems with the biggest payoff.',
+  },
+  {
+    icon: 'file-signature',
+    title: 'After the call',
+    text: 'If there’s a fit, you get a written scope with one fixed price. If there isn’t, we’ll say so, and the plan is still yours to keep.',
+  },
+];
+
+const forYou = [
+  'You run a service business and your team is buried in admin',
+  'Leads wait hours for a reply, or slip through entirely',
+  'You’re the bottleneck, and you know it',
+  'You want a system that works, not another tool to manage',
+];
+
+const notForYou = [
+  'You need a website, an app or someone to run your ads',
+  'You want to “try some automation” without a problem to solve',
+  'You’re shopping for the cheapest quote, not a system that works',
+];
+
+const calReady = !unconfirmed.has('cal');
+---
+
+<Base
+  title={`Book a Free Systems Audit | ${site.name}`}
+  description="Book a 100% free, 30-minute systems audit. We’ll map where your team’s hours go and show you exactly what we’d automate first."
+>
+  <section class="page-hero" data-hold>
+    <div class="gridlines" aria-hidden="true"></div>
+    <div class="container">
+      <div class="runhead" data-reveal>
+        <span class="label label--signal"><span data-decode>Free systems audit</span></span>
+        <span class="runhead__line draw" aria-hidden="true"></span>
+        <span class="label runhead__meta">30 minutes · 100% free</span>
+      </div>
+      <div class="book">
+        <div class="book__copy">
+          <h1 class="h1" data-reveal data-split>Find out what to automate first.</h1>
+          <p class="lead" data-reveal style="--d: 200ms">
+            A 100% free, 30-minute systems audit. Tell us about your business, pick a time, and we’ll come prepared.
+          </p>
+          <div data-reveal style="--d: 280ms">
+            <span class="label">On the call</span>
+            <ul class="checks book__list">
+              {
+                expect.map((e) => (
+                  <li>
+                    <Icon name="check" size={18} />
+                    {e}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <p class="cta__note" data-reveal style="--d: 340ms">
+            <Icon name="shield-check" size={18} /> If what we build doesn’t work, you don’t pay.
+          </p>
+        </div>
+        <div class="book__cal marks" data-reveal style="--d: 160ms">
+          <div class="book__bar label" aria-hidden="true">
+            <span>Fig. 01 · Book your audit</span>
+            <span class:list={[{ 'is-off': !calReady }]}>{calReady ? 'Live' : 'Not connected'}</span>
+          </div>
+          <BookingForm mode="inline" />
+          {/* Step 2, once the form is sent (booking.ts): Cal.com's calendar, with the answers attached. */}
+          <div
+            class="booking-cal"
+            data-booking-cal
+            role="group"
+            aria-labelledby="booking-cal-title"
+            tabindex="-1"
+            hidden
+          >
+            <p class="label label--signal booking-cal__head" id="booking-cal-title">Step 2 of 2 · Pick a time</p>
+            <div data-cal-inline data-ph={ph('cal')} style="width: 100%; min-height: 640px"></div>
+          </div>
+          {/* Stands in for the calendar when Cal.com can't load (booking.ts). */}
+          <div class="book__fallback" data-cal-fallback>
+            <span class="card__icon" style="margin: 0">
+              <Icon name="calendar-check" />
+            </span>
+            <p>The calendar couldn’t load here.</p>
+            <p>
+              <a class="text-link" href={calUrl}>Pick a time on Cal.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead label="What happens next" title="What happens after you book." />
+      <ol class="timeline timeline--3" data-reveal="none">
+        {
+          next.map((n, i) => (
+            <li class="timeline__step" style={`--i: ${i}`}>
+              <div class="timeline__meta">
+                <span class="step__n">
+                  <b>0{i + 1}</b>
+                </span>
+                <span class="card__icon">
+                  <Icon name={n.icon} />
+                </span>
+              </div>
+              <h3 class="h3">{n.title}</h3>
+              <p>{n.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="Fit check"
+        title="Is this call for you?"
+        lead="We’d rather tell you now than waste your 30 minutes."
+      />
+      <div class="grid-2 compare">
+        <article class="card card--us" data-reveal>
+          <span class="label">Yes</span>
+          <h3 class="h3">It’s for you if</h3>
+          <ul>
+            {
+              forYou.map((f) => (
+                <li>
+                  <Icon name="check" size={18} />
+                  <span>{f}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </article>
+        <article class="card" data-reveal style="--d: 90ms">
+          <span class="label">No</span>
+          <h3 class="h3">It’s probably not if</h3>
+          <ul>
+            {
+              notForYou.map((f) => (
+                <li>
+                  <Icon name="x" size={18} />
+                  <span>{f}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </article>
+      </div>
+      <div class="center-cta" data-reveal>
+        <Button size="lg" label="Claim your free audit" />
+      </div>
+    </div>
+  </section>
+</Base>

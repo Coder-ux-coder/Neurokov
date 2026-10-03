@@ -1,0 +1,47 @@
+---
+import { cta } from '../data/site';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  lead?: string;
+  label?: string;
+}
+
+const {
+  title = 'Ready to scale without hiring?',
+  lead = 'Book a 100% free, 30-minute systems audit. We’ll map where your hours go, find the bottlenecks and show you exactly what we’d automate first.',
+  label = cta.final,
+} = Astro.props;
+
+const ticker = ['Free systems audit', 'Works from day one', 'It works or you don’t pay'];
+---
+
+<section class="cta">
+  <div class="cta__ticker" aria-hidden="true">
+    <div class="cta__track">
+      {
+        [0, 1].map(() => (
+          <span>
+            {ticker.map((t) => (
+              <>
+                {t}
+                <em>/</em>
+              </>
+            ))}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+  <div class="container cta__inner">
+    <span class="label label--signal" data-reveal><span data-decode>Free systems audit</span></span>
+    <h2 class="cta__title" data-reveal data-split>{title}</h2>
+    <p class="lead" data-reveal style="--d: 140ms">{lead}</p>
+    <div data-reveal style="--d: 220ms"><Button size="lg" label={label} /></div>
+    <p class="cta__note" data-reveal style="--d: 280ms">
+      <Icon name="shield-check" size={18} /> If what we build doesn’t work, you don’t pay.
+    </p>
+  </div>
+</section>

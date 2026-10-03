@@ -1,0 +1,53 @@
+---
+/**
+ * The boot sequence on the first visit of a session: a system check types
+ * itself out, a giant counter runs to 100, the N mark builds, and the shutter
+ * opens onto the page. Every line is a confirmed fact. Only rendered when
+ * <Base intro> is set; the head script decides whether it plays (intro.ts).
+ */
+const lines: [string, string][] = [
+  ['System check', ''],
+  ['Loading 150+ automations', 'OK'],
+  ['Handing back 50,000+ hours', 'OK'],
+  ['n8n certified', 'OK'],
+  ['First reply to a new lead', '<60S'],
+];
+---
+
+<div class="intro" data-intro aria-hidden="true" hidden>
+  <div class="intro__half intro__half--top"></div>
+  <div class="intro__half intro__half--bottom"></div>
+  <div class="intro__stage">
+    <div class="gridlines"></div>
+    <div class="intro__head">
+      <span>Neurokov</span>
+      <span class="intro__head-mid">Operations lab</span>
+      <span>Est. 2020</span>
+    </div>
+    <div class="intro__body">
+      <svg class="intro__mark" viewBox="0 0 32 32" width="64" height="64">
+        <rect class="intro__stem" x="5" y="5" width="5" height="22"></rect>
+        <rect class="intro__stem" x="22" y="5" width="5" height="22"></rect>
+        <path class="intro__diag" d="M5 5h5l17 22h-5z"></path>
+      </svg>
+      <ol class="intro__log">
+        {
+          lines.map(([label, status]) => (
+            <li data-intro-line>
+              <span class="intro__label">{label}</span>
+              {status && <span class="intro__status">{status}</span>}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <div class="intro__foot">
+      <div class="intro__meter">
+        <p class="intro__promise">It works, or you don’t pay<span>.</span></p>
+        <span class="intro__bar"><span data-intro-bar></span></span>
+        <p class="intro__skip"><span>Press any key to skip</span><span>Tap to skip</span></p>
+      </div>
+      <span class="intro__count"><span data-intro-count>000</span><span class="intro__unit">%</span></span>
+    </div>
+  </div>
+</div>

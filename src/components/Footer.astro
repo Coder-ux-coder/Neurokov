@@ -1,0 +1,57 @@
+---
+import { ph, site } from '../data/site';
+import { services } from '../data/services';
+import Button from './Button.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" data-dark>
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__pitch">
+        <p>
+          <span>Work with us</span>
+          Start with a 100% free, 30-minute systems audit.
+        </p>
+        <Button label="Pick a time" />
+      </div>
+      <div class="footer__cols" id="site-links">
+        <div>
+          <h2>Services</h2>
+          <ul>
+            {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.name}</a></li>)}
+            <li><a href="/services/">All Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Company</h2>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/case-studies/">Case Studies</a></li>
+            <li><a href="/process/">Our Process</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Contact</h2>
+          <ul>
+            <li><a class="footer__email" href={`mailto:${site.email}`}>{site.email}</a></li>
+            <li><a href="/book/">Book a free audit</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a class="footer__word" href="/" aria-label="Neurokov home" data-fit>
+      <span aria-hidden="true">Neurokov<span>.</span></span>
+    </a>
+    <div class="footer__bottom">
+      <p data-ph={ph('legal-name')}>© {year} {site.legalName}. All rights reserved.</p>
+      <nav class="footer__legal" aria-label="Legal">
+        <a href="/privacy/">Privacy Policy</a>
+        <a href="/terms/">Terms of Service</a>
+      </nav>
+      <p>It works, or you don’t pay.</p>
+    </div>
+  </div>
+</footer>

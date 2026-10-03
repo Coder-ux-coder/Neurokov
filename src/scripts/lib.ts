@@ -1,0 +1,105 @@
+/** Small helpers shared by the site's scripts. */
+
+export const root = document.documentElement;
+export type Theme = 'dark' | 'light';
+export const currentTheme = (): Theme => (root.dataset.theme === 'dark' ? 'dark' : 'light');
+export const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** A mouse or trackpad, as opposed to a touch screen. */
+export const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+export const store = {
+  get(key: string) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set(key: string, value: string) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* private mode or blocked storage: the setting just won't persist */
+    }
+  },
+};
+
+/** Living photos play unless motion is reduced or the visitor asked to save data. */
+export const liveOk = !calm && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+
+/** Plays a living photo's loop, fetching it first if need be; it fades in once it runs. */
+export function playLive(video: HTMLVideoElement) {
+  if (!video.dataset.bound) {
+    video.dataset.bound = '';
+    video.addEventListener('playing', () => video.classList.add('is-playing'));
+  }
+  video.play().catch(() => {
+    /* autoplay refused (a power saver, say): the still stays */
+  });
+}
+
+/** Plays a story clip's preview: the first time, from its poster's frame (Clip.astro), so the still turns into motion without a jump. */
+export function playPreview(video: HTMLVideoElement) {
+  if (!video.dataset.bound) video.currentTime = Number(video.dataset.at ?? 0);
+  playLive(video);
+}
+
+/** Runs fn once the boot intro has opened, or straight away when there is none. */
+export function afterIntro(fn: () => void) {
+  if (root.classList.contains('intro-play')) document.addEventListener('nk:intro-done', () => fn(), { once: true });
+  else fn();
+}
+
+/** Calls fn the first time el scrolls into view. */
+export function onceVisible(el: Element, fn: () => void, options: IntersectionObserverInit = { threshold: 0.25 }) {
+  if (!('IntersectionObserver' in window)) return fn();
+  const io = new IntersectionObserver((entries) => {
+    if (!entries.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    fn();
+  }, options);
+  io.observe(el);
+}
+
+/** Tells cb whenever el enters or leaves the viewport. */
+export function watchVisible(el: Element, cb: (visible: boolean) => void, options: IntersectionObserverInit = {}) {
+  if (!('IntersectionObserver' in window)) return cb(true);
+  new IntersectionObserver((entries) => cb(entries[entries.length - 1].isIntersecting), options).observe(el);
+}
+
+export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+export const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+export const pad = (n: number, len = 3) => String(Math.max(0, Math.round(n))).padStart(len, '0');
+
+/** One requestAnimationFrame loop that pauses itself while the page is hidden. */
+export function loop(step: (dt: number, now: number) => void) {
+  let raf = 0;
+  let last = 0;
+  let wanted = false;
+  const frame = (now: number) => {
+    const dt = Math.min(64, now - (last || now));
+    last = now;
+    step(dt, now);
+    raf = requestAnimationFrame(frame);
+  };
+  const run = () => {
+    if (raf || !wanted || document.hidden) return;
+    last = 0;
+    raf = requestAnimationFrame(frame);
+  };
+  const halt = () => {
+    cancelAnimationFrame(raf);
+    raf = 0;
+  };
+  document.addEventListener('visibilitychange', () => (document.hidden ? halt() : run()));
+  return {
+    start() {
+      wanted = true;
+      run();
+    },
+    stop() {
+      wanted = false;
+      halt();
+    },
+  };
+}

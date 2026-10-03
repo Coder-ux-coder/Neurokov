@@ -1,0 +1,60 @@
+---
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import PageHero from '../components/PageHero.astro';
+import { faqGroups } from '../data/faqs';
+import Base from '../layouts/Base.astro';
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqGroups.flatMap((g) =>
+    g.items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  ),
+};
+const count = faqGroups.reduce((n, g) => n + g.items.length, 0);
+const slug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+---
+
+<Base
+  title="FAQ | Neurokov"
+  description="Straight answers about working with Neurokov: pricing, our guarantee (it works or you don’t pay), the tools we use and how we keep your data safe."
+  jsonLd={faqLd}
+>
+  <PageHero
+    label="FAQ"
+    meta={`${count} answers`}
+    title="Questions, answered."
+    promise=""
+    lead="Straight answers to what people usually ask before a first call. Don’t see yours? Ask us on the call."
+  />
+
+  <section class="section" style="padding-top: 0">
+    <div class="container faq-layout">
+      <nav class="faq-layout__head toc" aria-label="Topics">
+        <span class="label">Topics</span>
+        <ol>
+          {
+            faqGroups.map((g) => (
+              <li>
+                <a href={`#${slug(g.title)}`}>{g.title}</a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+      <div>
+        {
+          faqGroups.map((g, i) => (
+            <div class="faq-group" id={slug(g.title)}>
+              <h2 data-reveal>{g.title}</h2>
+              <Faq items={g.items} group={`faq-${i}`} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Cta />
+</Base>

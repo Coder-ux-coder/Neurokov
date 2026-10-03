@@ -1,0 +1,39 @@
+---
+/**
+ * A split-flap readout. The server renders the final characters, so the value
+ * reads fine without JavaScript; flap.ts blanks the tiles and flips them in.
+ * Screen readers get the plain value.
+ */
+interface Props {
+  value: string;
+  /** Pad to this many tiles, so values of different lengths share one board. */
+  pad?: number;
+  class?: string;
+}
+
+const { value, pad = 0, class: cls } = Astro.props;
+const text = value.toUpperCase().padEnd(pad, ' ');
+const signal = (c: string) => /[^A-Z0-9 ]/.test(c);
+---
+
+<span class:list={['flap', cls]} data-flap={text}>
+  <span class="sr-only" data-flap-text>{value}</span>
+  {
+    [...text].map((c) => (
+      <span class:list={['fc', signal(c) && 'fc--signal']} aria-hidden="true">
+        <span class="fc__t">
+          <i>{c}</i>
+        </span>
+        <span class="fc__b">
+          <i>{c}</i>
+        </span>
+        <span class="fc__ft">
+          <i>{c}</i>
+        </span>
+        <span class="fc__fb">
+          <i>{c}</i>
+        </span>
+      </span>
+    ))
+  }
+</span>

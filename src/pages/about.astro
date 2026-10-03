@@ -1,0 +1,196 @@
+---
+import Button from '../components/Button.astro';
+import Clip from '../components/Clip.astro';
+import Cta from '../components/Cta.astro';
+import Figure from '../components/Figure.astro';
+import Founder from '../components/Founder.astro';
+import Guarantee from '../components/Guarantee.astro';
+import Icon from '../components/Icon.astro';
+import Marquee from '../components/Marquee.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Values from '../components/Values.astro';
+import { clips } from '../data/clips';
+import { industries } from '../data/industries';
+import { site } from '../data/site';
+import Base from '../layouts/Base.astro';
+
+const options = [
+  {
+    title: 'Hiring in-house',
+    points: [
+      'Months to find, hire and train the right person',
+      'A full salary before a single system ships',
+      'Good automation people are hard to find and harder to keep',
+      'One person holds all the know-how. If they leave, it leaves with them',
+    ],
+  },
+  {
+    title: 'Freelancers and DIY',
+    points: [
+      'Cheap, until something breaks at 9pm on a Friday',
+      'You end up as the project manager and the tester',
+      'Little or no documentation to fall back on',
+      'Gone when you need a change',
+    ],
+  },
+  {
+    title: site.name,
+    us: true,
+    points: [
+      'A team with 150+ automations shipped since 2020',
+      'Works from day one, tested on your real data',
+      'One fixed price. If it doesn’t work, you don’t pay',
+      'Documented, handed over and yours to keep',
+    ],
+  },
+];
+
+const wontDo = [
+  'Websites, apps or branding',
+  'Running your ads or social accounts',
+  'Billing by the hour',
+  'Black boxes only we understand',
+];
+---
+
+<Base
+  title={`About | ${site.name}`}
+  description="Neurokov is an automation agency for service businesses. n8n certified, 150+ automations shipped, and every build works or you don’t pay."
+>
+  <section class="page-hero" data-hold>
+    <div class="gridlines" aria-hidden="true"></div>
+    <div class="container">
+      <div class="runhead" data-reveal>
+        <span class="label label--signal"><span data-decode>About {site.name}</span></span>
+        <span class="runhead__line draw" aria-hidden="true"></span>
+        <span class="label runhead__meta">Est. 2020</span>
+      </div>
+      <div class="split">
+        <div class="split__copy">
+          <h1 class="h1" data-reveal data-split>We automate the work that slows good teams down.</h1>
+          <p class="lead" data-reveal style="--d: 220ms">
+            {site.name} is an automation agency for service businesses. n8n certified, 150+ automations shipped and one
+            simple guarantee: it works, or you don’t pay.
+          </p>
+          <div data-reveal style="--d: 320ms"><Button size="lg" label="See what we’d automate" /></div>
+        </div>
+        <div class="split__media" data-reveal style="--d: 160ms">
+          <Figure n="01" caption={`${clips.about.title}. Illustrated, with our real numbers.`}>
+            <div class="marks">
+              <Clip name="about" sizes="(max-width: 900px) 100vw, 620px" eager />
+            </div>
+          </Figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Marquee />
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="Who builds it"
+        title="Building automations since 2020."
+        lead="Long before every agency started selling automation."
+      />
+      <Founder film="02" />
+    </div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="container split split--top">
+      <div class="split__copy">
+        <SectionHead label="The problem" title="Good people, stuck doing busywork." />
+      </div>
+      <div class="prose prose--lead" data-reveal style="--d: 120ms">
+        <p>
+          Every service business we talk to tells a version of the same story. Smart, expensive people spending a third
+          of their week on work that doesn’t need a human: updating the CRM, chasing documents, building reports and
+          writing the same email again.
+        </p>
+        <p>
+          Nobody ever had the time to stop and build the thing that would save the time. So the busywork stays, and the
+          best people burn out doing it.
+        </p>
+        <p>Hiring more people doesn’t fix it. It just spreads the same busywork across a bigger payroll.</p>
+        <p>
+          That’s the part we fix. We build the systems, and your team gets back to the work they were hired for: serving
+          clients, closing deals and growing the business.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="The options"
+        title="Why the usual options fall short."
+        lead="When the busywork piles up, most teams hire, grab a freelancer or try to build it themselves. Here’s how that usually goes."
+      />
+      <div class="grid-3 compare">
+        {
+          options.map((o, i) => (
+            <article class:list={['card', o.us && 'card--us']} data-reveal style={`--d: ${i * 90}ms`}>
+              <span class="label">{o.us ? 'Recommended' : `Option ${String(i + 1).padStart(2, '0')}`}</span>
+              <h3 class="h3">{o.title}</h3>
+              <ul>
+                {o.points.map((p) => (
+                  <li>
+                    <Icon name={o.us ? 'check' : 'x'} size={18} />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" data-dark>
+    <div class="container">
+      <SectionHead label="How we work" title="How we work." />
+      <Values />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid-2">
+      <article class="card fit-card" data-reveal>
+        <span class="label label--signal">Fit</span>
+        <h2 class="h3">Who we build for.</h2>
+        <p>
+          Service businesses that sell expertise: agencies, consulting firms, IT companies and healthcare businesses. If
+          your people are brilliant at the work and buried in the admin around it, we built {site.name} for you.
+        </p>
+        <ul class="tags">
+          {industries.map((ind) => <li class="tag">{ind.title}</li>)}
+        </ul>
+      </article>
+      <article class="card fit-card" data-reveal style="--d: 90ms">
+        <span class="label label--signal">Out of scope</span>
+        <h2 class="h3">What we don’t do.</h2>
+        <p>We build automation. That’s it, and it’s why we can guarantee it. So you won’t get these from us:</p>
+        <ul class="checks checks--x">
+          {
+            wontDo.map((w) => (
+              <li>
+                <Icon name="x" size={18} />
+                {w}
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container"><Guarantee /></div>
+  </section>
+
+  <Cta />
+</Base>

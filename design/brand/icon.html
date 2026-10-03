@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 512px;
+        height: 512px;
+        overflow: hidden;
+        background: transparent;
+      }
+
+      svg {
+        display: block;
+        width: 512px;
+        height: 512px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- #full: square, for the apple-touch icon (iOS rounds it). Otherwise rounded, like favicon.svg. -->
+    <svg viewBox="0 0 32 32">
+      <rect id="bg" width="32" height="32" rx="6" fill="#121212" />
+      <g transform="translate(16 16) scale(0.84) translate(-16 -16)">
+        <path d="M5 5h5v22H5zM22 5h5v22h-5z" fill="#f2efe8" />
+        <path d="M5 5h5l17 22h-5z" fill="#ff4f00" />
+      </g>
+    </svg>
+    <script>
+      if (location.hash === '#full') document.getElementById('bg').setAttribute('rx', '0');
+    </script>
+  </body>
+</html>

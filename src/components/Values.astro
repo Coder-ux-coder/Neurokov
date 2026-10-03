@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+const values: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'history',
+    title: 'Building before it was a trend',
+    text: 'We’ve been building automations since 2020. Six years and 150+ systems later, we know what breaks, what scales and what’s worth building first.',
+  },
+  {
+    icon: 'badge-check',
+    title: 'n8n certified, Claude experts',
+    text: 'Your systems run on proven platforms you can open, inspect and own. No black boxes, and no mystery code only one person understands.',
+  },
+  {
+    icon: 'rocket',
+    title: 'Works from day one',
+    text: 'Every system is tested on your real data before it goes live. Launch day isn’t a trial run. It’s the first day the work gets done without you.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'It works, or you don’t pay',
+    text: 'One scope and one fixed price, agreed before we build. If the system doesn’t do what the scope says, you don’t pay. The risk sits with us.',
+  },
+];
+const total = String(values.length).padStart(2, '0');
+---
+
+<div class="grid-4 specs">
+  {
+    values.map((v, i) => (
+      <article class="spec" data-reveal style={`--d: ${i * 90}ms`}>
+        <div class="spec__top">
+          <span class="spec__n">
+            {String(i + 1).padStart(2, '0')} / {total}
+          </span>
+          <span class="card__icon">
+            <Icon name={v.icon} />
+          </span>
+        </div>
+        <h3 class="h3">{v.title}</h3>
+        <p>{v.text}</p>
+      </article>
+    ))
+  }
+</div>

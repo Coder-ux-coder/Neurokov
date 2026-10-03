@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 20s" />
+    <meta name="poster" content="13.4" />
+    <meta name="crf" content="28" />
+    <title>About Neurokov</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // About Neurokov. Act 1: 2020, a workbench at night; NK-01 boots up and
+      // builds its first automation. Act 2: the camera pulls back from that one
+      // machine to a whole wall of them while the counters run to the site's
+      // real figures (150+ automations, 50K+ hours handed back, since 2020).
+      // Act 3: the guarantee.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 5.0],
+          [5.0, 14.4],
+          [14.4, 20.1],
+        ]);
+        const { blinkAt, headline } = K;
+
+        // A small machine: a box with a turning gear and a lamp; set(t, on).
+        const machine = (parent, { w = 120, h = 86 } = {}) => {
+          const m = S.g(parent);
+          S.svg('rect', { x: -w / 2 + 6, y: -h / 2 + 8, width: w, height: h, rx: 14, fill: INK }, m);
+          S.svg('rect', { x: -w / 2, y: -h / 2, width: w, height: h, rx: 14, fill: PAPER, stroke: INK, 'stroke-width': 4.5 }, m);
+          const gear = S.g(m);
+          S.svg('circle', { r: 18, fill: 'none', stroke: INK, 'stroke-width': 9, 'stroke-dasharray': '6 4.5' }, gear);
+          S.svg('circle', { r: 13, fill: ORANGE, stroke: INK, 'stroke-width': 3 }, gear);
+          S.svg('circle', { r: 4, fill: INK }, gear);
+          const lamp = S.svg('circle', { cx: w / 2 - 22, cy: -h / 2 + 20, r: 8, fill: GRAY, stroke: INK, 'stroke-width': 3 }, m);
+          S.svg('rect', { x: 8, y: h / 2 - 22, width: w / 2 - 22, height: 7, rx: 3.5, fill: SHADE }, m);
+          return {
+            g: m,
+            set(t, on, phase = 0) {
+              S.put(gear, { x: -w / 2 + 34, y: 4, r: on ? t * 140 + phase : phase });
+              lamp.setAttribute('fill', on && (t * 2 + phase) % 1 < 0.7 ? ORANGE : GRAY);
+            },
+          };
+        };
+
+        // ---------- Act 1: 2020, the first one ----------
+        const g1 = K.act(0);
+        K.room(g1, { floor: 870 });
+        CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, color: PAPER, o: 0.05 });
+        const board = S.g(g1);
+        S.put(board, { x: 1520, y: 330 });
+        S.svg('rect', { x: -160, y: -85, width: 320, height: 170, rx: 16, fill: '#2a2926', stroke: PAPER, 'stroke-width': 5 }, board);
+        const est = S.svg('text', { x: 0, y: -34, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 24, 'letter-spacing': 6, fill: PAPER }, board);
+        est.textContent = 'EST.';
+        const yr = S.svg('text', { x: 0, y: 50, 'text-anchor': 'middle', 'font-family': 'Archivo Variable', 'font-weight': 800, 'font-stretch': '125%', 'font-size': 80, fill: ORANGE }, board);
+        yr.textContent = '2020';
+
+        // the workbench, under a lamp
+        const cone = S.svg('path', { d: 'M 760 560 L 560 700 L 1060 700 Z', fill: '#fbe7c6', opacity: 0.16 }, g1);
+        S.put(CAST.table(g1, { w: 620, h: 170 }), { x: 960, y: 870 });
+        const lampArm = S.g(g1);
+        S.svg('rect', { x: 640, y: 690, width: 90, height: 14, rx: 7, fill: INK }, lampArm);
+        S.svg('path', { d: 'M 685 692 L 660 600 L 740 548', fill: 'none', stroke: INK, 'stroke-width': 10, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, lampArm);
+        S.svg('path', { d: 'M 718 520 L 800 560 L 780 600 L 700 560 Z', fill: ORANGE, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, lampArm);
+
+        const first = machine(g1);
+        const tag = S.g(g1);
+        S.svg('rect', { x: -70, y: -20, width: 140, height: 40, rx: 8, fill: ORANGE, stroke: INK, 'stroke-width': 4 }, tag);
+        const tagT = S.svg('text', { x: 0, y: 8, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 20, 'letter-spacing': 2, fill: INK }, tag);
+        tagT.textContent = 'No. 001';
+        const boot = CAST.burst(g1, { color: ORANGE, r0: 30, r1: 80, width: 6 });
+        const bot1 = CAST.robot(g1);
+        S.track((t) => {
+          const on = t > 1.55;
+          const flicker = t > 1.2 && t < 1.55 ? (Math.sin(t * 60) > 0 ? 0.9 : 0.1) : on ? 0.5 + 0.5 * S.wave(t, 0.7) : 0;
+          const hop = hit(t, 1.6, 0.5);
+          const building = t > 2.7 && t < 3.9;
+          const cheer = t > 3.9;
+          bot1.set({
+            x: 900, y: 632 - 60 * Math.sin(Math.PI * ramp(t, 1.6, 0.45, E.linear)), t, ground: 700 - 632 + 60 * Math.sin(Math.PI * ramp(t, 1.6, 0.45, E.linear)),
+            squash: -0.3 * hop + 0.3 * hit(t, 2.05, 0.25), glow: flicker,
+            arm: cheer ? [[160, -10 + 20 * Math.sin(t * 10)], [160, 10 - 20 * Math.sin(t * 10)]]
+              : building ? [[20, -20], [80 + 20 * Math.sin(t * 16), -30]]
+              : t > 1.9 ? [[20, -20], [150, -20 + 22 * Math.sin(t * 9)]] : [[10, 0], [-10, 0]],
+            eyes: cheer ? 'happy' : t > 1.55 && t < 1.9 ? 'wide' : 'normal',
+            blink: t < 1.55 ? 1 : blinkAt(t, [2.5, 4.5]),
+            look: building ? [1, 0.4] : [0.3, 0],
+          });
+          boot.set(ramp(t, 1.5, 0.4, E.linear));
+          S.put(boot.g, { x: 900, y: 526 });
+          const k = S.spring(t, 2.9, { freq: 2.4, damp: 0.5 });
+          // (it drops in from above the frame, clear of the headline's last word)
+          S.put(first.g, { x: 1130, y: 700 - 47 - 620 * (1 - Math.min(1, k)), o: t > 2.9 ? 1 : 0 });
+          first.set(t, t > 3.5);
+          const tk = Math.min(1.12, S.spring(t, 3.75, { freq: 2.6, damp: 0.42 }));
+          S.put(tag, { x: 1130, y: 570, s: Math.max(0.001, tk), r: -4, o: t > 3.75 ? 1 : 0 });
+          cone.setAttribute('opacity', (0.14 + 0.03 * Math.sin(t * 3)).toFixed(3));
+        });
+        headline(0, 'Fig. 1 · Est. 2020', 'It started with<br /><em>one automation</em>.', 0.35, 4.7);
+
+        // ---------- Act 2: six years of them ----------
+        const g2 = K.act(1);
+        S.svg('rect', { x: -2000, y: -1200, width: 6000, height: 4000, fill: PAPER }, g2);
+        CAST.dots(g2, { x0: -2000, y0: -1200, w: 6000, h: 4000, o: 0.1 });
+        // (four rows: a fifth would sweep under the footnote as the camera pulls back)
+        const COLS = 12, ROWS = 4, GX = 135, GY = 440, SX = 150, SY = 118;
+        for (let r = 0; r < ROWS; r++) S.svg('line', { x1: GX - 80, y1: GY + r * SY + 50, x2: GX + (COLS - 1) * SX + 80, y2: GY + r * SY + 50, stroke: INK, 'stroke-width': 6, 'stroke-linecap': 'round' }, g2);
+        const START = [4, 2];
+        const sx0 = GX + START[0] * SX, sy0 = GY + START[1] * SY;
+        const tiles = [];
+        for (let r = 0; r < ROWS; r++)
+          for (let c = 0; c < COLS; c++) {
+            const m = machine(g2);
+            const x = GX + c * SX, y = GY + r * SY;
+            const d = Math.hypot(x - sx0, y - sy0);
+            tiles.push({ m, x, y, d, phase: (c * 37 + r * 71) % 360 });
+          }
+        const dMax = Math.max(...tiles.map((q) => q.d));
+        tiles.forEach((q) => (q.at = q.d === 0 ? 4.9 : 5.6 + 6.4 * Math.pow(q.d / dMax, 0.85)));
+        // little clocks pop over the running machines: hours handed back
+        const clocks = Array.from({ length: 16 }, () => CAST.clock(g2, { r: 20 }));
+        const bot2 = CAST.robot(g2);
+
+        // the scoreboard: a solid panel, so the machines never show through the numbers
+        const NUM = 'font-size:112px;font-weight:800;font-stretch:125%;letter-spacing:-0.04em;line-height:1;color:#ff4f00;font-variant-numeric:tabular-nums';
+        const panel = K.hudAct(
+          S.html(`<div style="position:absolute;left:96px;top:70px;padding:24px 34px 28px;background:#f2efe8;border:5px solid #121212;box-shadow:12px 12px 0 #121212">
+            <div class="mono kicker" style="position:static">Fig. 2 · 2020 → <b>Today</b></div>
+            <div style="display:flex;gap:64px;margin-top:16px">
+              <div style="min-width:330px"><div data-a style="${NUM}">1</div><div class="mono" style="position:static;margin-top:10px;font-size:21px">Automations shipped</div></div>
+              <div data-hcol style="min-width:340px"><div data-h style="${NUM}">0</div><div class="mono" style="position:static;margin-top:10px;font-size:21px">Hours handed back</div></div>
+            </div>
+          </div>`),
+          1,
+        );
+        // (the span stays "2020 → Today": a year ticking beside the rolling counters would
+        // pair a year with in-between numbers that are only the count, never real figures)
+        const aEl = panel.querySelector('[data-a]');
+        const hEl = panel.querySelector('[data-h]'), hCol = panel.querySelector('[data-hcol]');
+        S.track((t) => {
+          const p = ramp(t, 5.6, 7.2, E.inOut);
+          aEl.textContent = p >= 1 ? '150+' : String(Math.round(1 + 149 * p));
+          const h = 50 * ramp(t, 6.2, 6.6, E.inOut);
+          hEl.textContent = h >= 50 ? '50K+' : h < 1 ? String(Math.round(h * 1000)) : `${Math.round(h)}K`;
+          const pk = Math.min(1.06, S.spring(t, 5.15, { freq: 2.4, damp: 0.5 }));
+          panel.style.transform = `translate(${(-40 * (1 - Math.min(1, pk))).toFixed(1)}px, 0) scale(${Math.max(0.001, pk).toFixed(3)})`;
+          panel.style.transformOrigin = '0 0';
+          panel.style.opacity = t > 5.15 ? 1 : 0;
+          hCol.style.opacity = ramp(t, 6.0, 0.4).toFixed(3);
+
+          tiles.forEach((q) => {
+            const k = Math.min(1.12, S.spring(t, q.at, { freq: 2.6, damp: 0.45 }));
+            S.put(q.m.g, { x: q.x, y: q.y, s: Math.max(0.001, k), o: t > q.at ? 1 : 0 });
+            q.m.set(t, t > q.at + 0.3, q.phase);
+          });
+          clocks.forEach((c, i) => {
+            // (never over the top row: its clocks would rise into the scoreboard's edge)
+            const q = tiles[COLS + ((i * 23 + 7) % (tiles.length - COLS))];
+            const period = 1.3;
+            const u = (t + i * 0.37) % period;
+            const a0 = Math.max(q.at + 0.4, 6.5);
+            const k = t < a0 ? 0 : u / period;
+            S.put(c.g, { x: q.x + 30, y: q.y - 50 - 40 * k, s: 0.9, o: t > a0 ? Math.sin(Math.PI * k) * ramp(t, a0, 0.3, E.linear) : 0 });
+            c.set(t * 3 + i);
+          });
+          // NK-01 zips about the wall, building (low on it, so it never passes behind
+          // the scoreboard, whatever the camera does)
+          const by = 740 + 40 * Math.sin(t * 1.6);
+          bot2.set({
+            x: 960 + 760 * Math.sin(t * 0.8), y: by, s: 0.55, t,
+            flip: Math.cos(t * 0.8) >= 0 ? 1 : -1, tilt: 10, flame: 0.8, ground: 850 - by,
+            arm: [[20, -20], [120 + 20 * Math.sin(t * 12), -30]], eyes: t > 12.5 ? 'happy' : 'normal',
+            glow: 0.5 + 0.5 * S.wave(t, 0.7), blink: blinkAt(t, [7.2, 10.4]),
+          });
+        });
+
+        // ---------- Act 3: the promise ----------
+        K.endCard({
+          at: 14.4,
+          kicker: 'About Neurokov · Since 2020',
+          big: 'It works,<br /><em>or you don’t pay</em>.',
+          label: '150+ automations · 50K+ hours handed back · n8n certified',
+          cta: 'Book a free audit →',
+          size: 118,
+        });
+        K.wipes([[5.0, '2020 → Today']]);
+        K.note('Illustrated story · Our track record since 2020', (t) => t < 5.0);
+        K.camera([
+          [0, [960, 600, 1.06]],
+          [5.0, [990, 600, 1.14], E.sine],
+          [5.01, [sx0, sy0, 2.6], E.linear],
+          [5.6, [sx0, sy0, 2.5], E.linear],
+          [12.4, [960, 560, 0.98], E.inOut],
+          [14.4, [960, 560, 0.96], E.linear],
+        ]);
+      });
+    </script>
+  </body>
+</html>

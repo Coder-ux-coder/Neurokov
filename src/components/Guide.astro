@@ -1,0 +1,157 @@
+---
+/**
+ * The welcome guide (guide.ts). On a first visit to the homepage, NK-01, the
+ * robot from the story clips, pops up in the corner and offers a tour: the
+ * welcome clip in a dialog, then a spotlight that walks the page one part at a
+ * time. Afterwards NK-01 waits in the corner, to be asked again.
+ */
+import Button from './Button.astro';
+import Clip from './Clip.astro';
+import Icon from './Icon.astro';
+
+/** The tour's stops, in page order. A hint only shows with a mouse or trackpad. */
+const stops = [
+  {
+    target: '[data-slides]',
+    title: 'Our work, as stories',
+    text: 'Each film tells a real case, illustrated. The number under it is the result the client got.',
+  },
+  {
+    target: '[data-machine]',
+    title: 'One system, working',
+    text: 'A working model of the system we build most. Leads come in from every channel and get an answer in under 60 seconds, day or night.',
+  },
+  {
+    target: '[data-studies]',
+    title: 'The results',
+    text: 'Every case study, with the number that changed. Open one for the full story.',
+    hint: 'Point at a row to watch its story.',
+  },
+  {
+    target: '[data-tour="services"]',
+    title: 'What we automate',
+    text: 'The five systems that win back the most time in a service business. Each one works from day one.',
+  },
+  {
+    target: '.guarantee',
+    title: 'The guarantee',
+    text: 'Before we build, we write down exactly what your system will do. If it doesn’t do that, you don’t pay.',
+  },
+  {
+    target: '.cta__inner',
+    title: 'Where to start',
+    text: 'A 100% free, 30-minute audit. We map where your hours go and show you what we’d automate first.',
+  },
+];
+const total = String(stops.length).padStart(2, '0');
+---
+
+<div class="guide" data-guide data-stops={JSON.stringify(stops)}>
+  <aside class="guide__hello" data-guide-hello aria-label="Welcome guide" hidden>
+    <svg class="nk" viewBox="-120 -140 250 250" width="92" height="92" aria-hidden="true">
+      <ellipse class="nk__shadow" cx="0" cy="100" rx="58" ry="9"></ellipse>
+      <g class="nk__bot">
+        <path class="nk__arm" d="M-74 8L-85 48.6L-88.2 86.5"></path>
+        <circle class="nk__hand" cx="-88.2" cy="86.5" r="13"></circle>
+        <line class="nk__stalk" x1="0" y1="-66" x2="0" y2="-98"></line>
+        <circle class="nk__glow" cx="0" cy="-106" r="24"></circle>
+        <circle class="nk__bulb" cx="0" cy="-106" r="11"></circle>
+        <rect class="nk__body" x="-78" y="-68" width="156" height="136" rx="38"></rect>
+        <path class="nk__belly" d="M-56 40Q0 58 56 40"></path>
+        <rect class="nk__visor" x="-60" y="-46" width="120" height="62" rx="28"></rect>
+        <g class="nk__eyes">
+          <rect x="-34" y="-30" width="18" height="30" rx="9"></rect>
+          <rect x="16" y="-30" width="18" height="30" rx="9"></rect>
+        </g>
+        <text class="nk__tag" x="0" y="42" text-anchor="middle">NK-01</text>
+        <path class="nk__arm" d="M74 8L95 -28.4"></path>
+        <g class="nk__wave">
+          <path class="nk__arm" d="M95 -28.4L101.6 -65.8"></path>
+          <circle class="nk__hand" cx="101.6" cy="-65.8" r="13"></circle>
+        </g>
+      </g>
+    </svg>
+    <div class="guide__say">
+      <span class="label label--signal">NK-01 · Your guide</span>
+      <p class="guide__title" data-guide-title>Hi, I’m NK-01.</p>
+      <p class="guide__text">New here? Watch a 20-second film, then I’ll show you round the page.</p>
+      <div class="guide__actions">
+        <button class="btn btn--sm" type="button" data-guide-show>
+          <span class="btn__label"><span>Show me</span><span aria-hidden="true">Show me</span></span>
+          <span class="btn__dot" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          </span>
+        </button>
+        <button class="guide__later" type="button" data-guide-later>Not now</button>
+      </div>
+    </div>
+    <button class="guide__x" type="button" data-guide-later aria-label="Close the guide">
+      <Icon name="x" size={16} />
+    </button>
+  </aside>
+
+  <button class="guide__dock" type="button" data-guide-dock data-cursor="Tour" hidden>
+    <svg viewBox="-86 -128 172 190" width="30" height="33" aria-hidden="true">
+      <line class="nk__stalk" x1="0" y1="-66" x2="0" y2="-98"></line>
+      <circle class="nk__glow" cx="0" cy="-106" r="20"></circle>
+      <circle class="nk__bulb" cx="0" cy="-106" r="11"></circle>
+      <rect class="nk__body" x="-78" y="-68" width="156" height="126" rx="38"></rect>
+      <rect class="nk__visor" x="-60" y="-46" width="120" height="62" rx="28"></rect>
+      <g class="nk__eyes">
+        <rect x="-34" y="-30" width="18" height="30" rx="9"></rect>
+        <rect x="16" y="-30" width="18" height="30" rx="9"></rect>
+      </g>
+    </svg>
+    <span class="guide__docklabel">Take the tour</span>
+  </button>
+
+  <dialog class="guide__film" data-guide-film aria-labelledby="guide-film-title">
+    <div class="guide__box">
+      <div class="guide__filmhead">
+        <span class="label" id="guide-film-title"><b>Welcome</b>&nbsp;to Neurokov, in 20 seconds</span>
+        <button class="guide__x" type="button" data-guide-close aria-label="Close">
+          <Icon name="x" size={16} />
+        </button>
+      </div>
+      <Clip name="welcome" mode="manual" loop={false} controls sizes="(max-width: 960px) 100vw, 920px" />
+      <div class="guide__filmfoot">
+        <p>Want a quick walk round the page? Six stops, and you can leave any time.</p>
+        <div class="guide__actions">
+          <button class="btn btn--sm" type="button" data-guide-tour>
+            <span class="btn__label"><span>Take the tour</span><span aria-hidden="true">Take the tour</span></span>
+            <span class="btn__dot" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+              <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+            </span>
+          </button>
+          <Button size="sm" variant="ghost" />
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="tour" data-tour hidden>
+    <div class="tour__hole" data-tour-hole></div>
+    <div class="tour__tip" role="dialog" aria-labelledby="tour-title" aria-describedby="tour-text" data-tour-tip>
+      <div class="tour__head">
+        <span class="label"><b data-tour-n>01</b>&nbsp;/ {total}</span>
+        <button class="guide__x" type="button" data-tour-end aria-label="End the tour">
+          <Icon name="x" size={16} />
+        </button>
+      </div>
+      <p class="tour__title" id="tour-title" data-tour-title></p>
+      <p class="tour__text" id="tour-text" data-tour-text></p>
+      <div class="tour__nav">
+        <button class="guide__later" type="button" data-tour-back>Back</button>
+        <button class="btn btn--sm" type="button" data-tour-next>
+          <span class="btn__label"><span>Next</span><span aria-hidden="true">Next</span></span>
+          <span class="btn__dot" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

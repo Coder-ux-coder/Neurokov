@@ -1,0 +1,195 @@
+---
+import CaseCard from '../../components/CaseCard.astro';
+import Circuit from '../../components/Circuit.astro';
+import Clip from '../../components/Clip.astro';
+import Cta from '../../components/Cta.astro';
+import Faq from '../../components/Faq.astro';
+import Figure from '../../components/Figure.astro';
+import Guarantee from '../../components/Guarantee.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ServiceRows from '../../components/ServiceRows.astro';
+import { cases } from '../../data/cases';
+import { clips } from '../../data/clips';
+import { services, type Service } from '../../data/services';
+import { toolMark } from '../../data/tools';
+import Base from '../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const related = cases.filter((c) => c.serviceSlug === service.slug);
+const index = services.indexOf(service);
+const code = `S/${String(index + 1).padStart(2, '0')}`;
+const total = related.length ? 5 : 4;
+const at = (n: number) => `${String(n).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+const film = clips[service.slug];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: service.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Base title={service.metaTitle} description={service.metaDescription} jsonLd={faqLd}>
+  <PageHero
+    back={{ href: '/services/', label: 'All services' }}
+    label={`Service ${code}`}
+    meta={service.name}
+    title={service.title}
+    lead={service.sub}
+    cta="Scope it for my business"
+    promise="Built to work from day one."
+  />
+
+  <section class="section section--tight" style="padding-top: 0">
+    <div class="container">
+      <div data-reveal>
+        <Figure
+          n="1"
+          class="fig--film"
+          caption={`${film.title}. Illustrated${film.source ? `, with real numbers from ${film.source}` : ''}. Yours is shaped around how your business works.`}
+        >
+          <div class="marks">
+            <Clip name={service.slug} sizes="(max-width: 1320px) 100vw, 1320px" eager />
+          </div>
+        </Figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container split split--top">
+      <div class="split__copy">
+        <div class="section-head__rule" data-reveal>
+          <span class="label label--signal"><span data-decode>The problem</span></span>
+          <span class="label">{at(1)}</span>
+        </div>
+        <h2 class="h2" data-reveal data-split>Sound familiar?</h2>
+        <ul class="checks checks--x lead" data-reveal style="--d: 120ms">
+          {
+            service.signs.map((s) => (
+              <li>
+                <Icon name="x" size={20} />
+                {s}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="prose prose--lead" data-reveal style="--d: 160ms">
+        {service.intro.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead
+        label="Scope"
+        index={at(2)}
+        title="What’s included."
+        lead="Built, tested and handed over, all inside one fixed price."
+      />
+      <div class="grid-3 specs">
+        {
+          service.included.map((item, i) => (
+            <article class="spec" data-reveal style={`--d: ${(i % 3) * 90}ms`}>
+              <span class="spec__n">
+                {String(i + 1).padStart(2, '0')} / {String(service.included.length).padStart(2, '0')}
+              </span>
+              <h3 class="h3">{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split split--top">
+      <div class="split__copy">
+        <SectionHead
+          label="In practice"
+          index={at(3)}
+          title={service.flow.title + '.'}
+          lead="Here’s a system we build often. Yours will be shaped around how your business actually works."
+        />
+        <p class="muted" data-reveal>{service.flow.caption}</p>
+        <div class="tools" data-reveal>
+          <span class="label">Tools we often use</span>
+          <ul class="tags">
+            {
+              service.tools.map((t) => {
+                const mark = toolMark(t);
+                return (
+                  <li class="tag">
+                    {mark && (
+                      <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+                        <path d={mark} />
+                      </svg>
+                    )}
+                    {t}
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="split__media" data-reveal style="--d: 120ms">
+        <Circuit steps={service.flow.steps} title={service.flow.title} />
+      </div>
+    </div>
+  </section>
+
+  {
+    related.length > 0 && (
+      <section class="section section--deep">
+        <div class="container">
+          <SectionHead label="Proof" index={at(4)} title="See it in action." />
+          <div class="cases cases--2">
+            {related.map((c, i) => (
+              <CaseCard study={c} delay={i * 100} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--tight">
+    <div class="container"><Guarantee /></div>
+  </section>
+
+  <section class="section">
+    <div class="container faq-layout">
+      <div class="faq-layout__head">
+        <SectionHead label="Questions" index={at(total)} title="Common questions." />
+      </div>
+      <Faq items={service.faqs} group={service.slug} />
+    </div>
+  </section>
+
+  <section class="section section--deep section--tight">
+    <div class="container">
+      <SectionHead label="More systems" title="Other ways we can help." />
+      <ServiceRows except={service.slug} foot={false} />
+    </div>
+  </section>
+
+  <Cta />
+</Base>

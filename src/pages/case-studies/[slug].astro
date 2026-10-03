@@ -1,0 +1,193 @@
+---
+/**
+ * A case study, laid out like a short research paper: abstract, the story as
+ * an illustrated film, the numbers, before/after figures, then numbered
+ * sections with contents.
+ */
+import Button from '../../components/Button.astro';
+import CaseCard from '../../components/CaseCard.astro';
+import Chart from '../../components/Chart.astro';
+import Clip from '../../components/Clip.astro';
+import Cta from '../../components/Cta.astro';
+import Figure from '../../components/Figure.astro';
+import Icon from '../../components/Icon.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { cases, type CaseStudy } from '../../data/cases';
+import { clips } from '../../data/clips';
+import { serviceBySlug } from '../../data/services';
+import { site } from '../../data/site';
+import { toolMark } from '../../data/tools';
+import Base from '../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  return cases.map((study) => ({ params: { slug: study.slug }, props: { study } }));
+}
+
+interface Props {
+  study: CaseStudy;
+}
+
+const { study } = Astro.props;
+const ph = study.placeholder ? `case:${study.slug}` : undefined;
+const service = serviceBySlug(study.serviceSlug);
+const more = cases.filter((c) => c.slug !== study.slug);
+const n = String(cases.indexOf(study) + 1).padStart(2, '0');
+
+const sections = [
+  { id: 'outcomes', title: 'Outcomes' },
+  { id: 'challenge', title: 'The challenge' },
+  { id: 'built', title: 'What we built' },
+  { id: 'how', title: 'How it works' },
+  ...(study.stack ? [{ id: 'stack', title: 'The stack' }] : []),
+  ...(service ? [{ id: 'service', title: 'The service' }] : []),
+];
+---
+
+<Base title={`${study.title}: ${study.client} | ${site.name}`} description={study.summary}>
+  <section class="page-hero page-hero--paper" data-hold>
+    <div class="gridlines" aria-hidden="true"></div>
+    <div class="container page-hero__inner">
+      <a class="back-link" href="/case-studies/" data-reveal><Icon name="arrow-left" size={16} /> All case studies</a>
+      <div class="runhead" data-reveal>
+        <span class="label label--signal"><span data-decode>{`Case study ${n}`}</span></span>
+        <span class="runhead__line draw" aria-hidden="true"></span>
+        <span class="label runhead__meta">{study.service}</span>
+      </div>
+      <h1 class="h1" data-reveal data-split>{study.title}</h1>
+      <dl class="paper-meta" data-reveal style="--d: 160ms" data-ph={ph}>
+        <div><dt>Client</dt><dd>{study.client}</dd></div>
+        <div><dt>Service</dt><dd>{study.service}</dd></div>
+        <div><dt>Headline</dt><dd>{study.stats[0].value} {study.stats[0].label}</dd></div>
+      </dl>
+      <div class="abstract" data-reveal style="--d: 240ms" data-ph={ph}>
+        <span class="label">Abstract</span>
+        <p>{study.summary}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0">
+    <div class="container">
+      <div data-reveal>
+        <Figure n="1" class="fig--film" caption={`${clips[study.clip].title}. Illustrated, with this case’s real numbers.`}>
+          <div class="marks">
+            <Clip name={study.clip} sizes="(max-width: 1320px) 100vw, 1320px" eager />
+          </div>
+        </Figure>
+      </div>
+      <div class="stat-cards" data-ph={ph}>
+        {
+          study.stats.map((s, i) => (
+            <div class="card" data-reveal style={`--d: ${i * 90}ms`}>
+              <span class="label">Result {String(i + 1).padStart(2, '0')}</span>
+              <span class="stat__value">{s.value}</span>
+              <span class="stat__label">{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    study.figures && (
+      <section class="section section--tight" style="padding-top: 0">
+        <div class:list={['container', study.figures.length > 1 ? 'grid-2' : 'charts--one']}>
+          {study.figures.map((f, i) => (
+            <Chart figure={f} n={String(i + 2)} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="container paper">
+      <nav class="toc" aria-label="On this page" data-toc>
+        <span class="label">Contents</span>
+        <ol>
+          {
+            sections.map((s) => (
+              <li>
+                <a href={`#${s.id}`}>{s.title}</a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+      <div class="case-sections" data-ph={ph}>
+        <section class="case-body" id="outcomes" data-reveal>
+          <h2>Outcomes</h2>
+          <ul class="checks lead">
+            {
+              study.outcomes.map((o) => (
+                <li>
+                  <Icon name="check" size={20} />
+                  {o}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+        <section class="case-body" id="challenge" data-reveal>
+          <h2>The challenge</h2>
+          <p class="lead">{study.challenge}</p>
+        </section>
+        <section class="case-body" id="built" data-reveal>
+          <h2>What we built</h2>
+          <ol class="numbered lead">
+            {study.built.map((b) => <li>{b}</li>)}
+          </ol>
+        </section>
+        <section class="case-body" id="how" data-reveal>
+          <h2>How it works</h2>
+          <p class="lead">{study.how}</p>
+        </section>
+        {
+          study.stack && (
+            <section class="case-body" id="stack" data-reveal>
+              <h2>The stack</h2>
+              <ul class="tags">
+                {study.stack.map((t) => {
+                  const mark = toolMark(t);
+                  return (
+                    <li class="tag">
+                      {mark && (
+                        <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+                          <path d={mark} />
+                        </svg>
+                      )}
+                      {t}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )
+        }
+        {
+          service && (
+            <section class="case-body" id="service" data-reveal>
+              <h2>The service</h2>
+              <div class="case-body__service">
+                <p class="lead">{service.card}</p>
+                <Button href={`/services/${service.slug}/`} label={`About ${service.name}`} variant="ghost" />
+              </div>
+            </section>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead label="More work" title="More of our work." />
+      <div class="cases">
+        {more.map((c, i) => <CaseCard study={c} delay={i * 100} sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 420px" />)}
+      </div>
+    </div>
+  </section>
+
+  <Cta title="Want a system like this?" label="Get a system like this" />
+</Base>

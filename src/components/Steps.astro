@@ -1,0 +1,21 @@
+---
+/** The four steps on a timeline whose rule draws across as it scrolls in. */
+import { steps } from '../data/process';
+---
+
+<ol class="timeline" data-reveal="none">
+  {
+    steps.map((s, i) => (
+      <li class="timeline__step" style={`--i: ${i}`}>
+        <div class="timeline__meta">
+          <span class="step__n">
+            Step <b>0{i + 1}</b>
+          </span>
+          <span class="tag">{s.tag}</span>
+        </div>
+        <h3 class="h3">{s.title}</h3>
+        <p>{s.text}</p>
+      </li>
+    ))
+  }
+</ol>

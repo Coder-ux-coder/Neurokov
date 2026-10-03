@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../node_modules/@fontsource-variable/archivo/wdth.css" />
+    <link rel="stylesheet" href="../../node_modules/@fontsource/ibm-plex-mono/500.css" />
+    <link rel="stylesheet" href="../../node_modules/@fontsource/ibm-plex-mono/600.css" />
+    <style>
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #f2efe8;
+        color: #121212;
+        font-family: 'Archivo Variable', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* The share card is the site's hero on a sheet of drawing paper. */
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        padding: 52px 60px;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        gap: 26px;
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0 60px;
+        border-inline: 1px solid rgb(18 18 18 / 0.08);
+        background: repeating-linear-gradient(
+          to right,
+          transparent 0 calc(100% / 6 - 1px),
+          rgb(18 18 18 / 0.08) calc(100% / 6 - 1px) calc(100% / 6)
+        );
+      }
+
+      .mono {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .runhead {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .runhead .signal::before {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 12px;
+        background: #ff4f00;
+      }
+
+      .runhead .line {
+        flex: 1;
+        height: 1px;
+        background: rgb(18 18 18 / 0.3);
+      }
+
+      .runhead .meta {
+        color: #4b4842;
+      }
+
+      h1 {
+        position: relative;
+        /* (the headline runs to three lines: sized to keep the foot in) */
+        font-size: 72px;
+        font-weight: 800;
+        font-stretch: 125%;
+        line-height: 0.9;
+        letter-spacing: -0.03em;
+        text-transform: uppercase;
+      }
+
+      h1 em {
+        color: #ff4f00;
+        font-style: normal;
+      }
+
+      .foot {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 520px;
+        gap: 40px;
+        align-items: end;
+      }
+
+      .copy {
+        display: grid;
+        gap: 20px;
+        padding-bottom: 4px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo svg {
+        width: 44px;
+        height: 44px;
+      }
+
+      .logo span {
+        font-size: 28px;
+        font-weight: 800;
+        font-stretch: 125%;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+      }
+
+      .promise {
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+      }
+
+      .facts {
+        display: flex;
+        gap: 10px;
+      }
+
+      .facts span {
+        padding: 8px 11px;
+        border: 1px solid rgb(18 18 18 / 0.3);
+        font-size: 13px;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+      }
+
+      .facts span:first-child {
+        border-color: #ff4f00;
+        background: #ff4f00;
+        color: #121212;
+        font-weight: 600;
+      }
+
+      .fig {
+        display: grid;
+        gap: 10px;
+      }
+
+      .frame {
+        position: relative;
+        height: 236px;
+        overflow: hidden;
+        background: #141413;
+      }
+
+      .frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 48%;
+      }
+
+      .stat {
+        position: absolute;
+        left: 16px;
+        bottom: 14px;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        padding: 8px 12px;
+        background: #121212;
+        color: #f2efe8;
+      }
+
+      .stat b {
+        color: #ff4f00;
+        font-family: 'Archivo Variable', sans-serif;
+        font-size: 30px;
+        font-weight: 800;
+        font-stretch: 125%;
+        letter-spacing: 0;
+      }
+
+      .cap {
+        display: flex;
+        justify-content: space-between;
+        color: #4b4842;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="grid"></div>
+      <div class="runhead mono">
+        <span class="signal">Automation agency</span>
+        <span class="line"></span>
+        <span class="meta">Est. 2020 · 150+ systems shipped</span>
+      </div>
+      <h1>Scale with automation,<br />not headcount<em>.</em></h1>
+      <div class="foot">
+        <div class="copy">
+          <div class="logo">
+            <svg viewBox="0 0 32 32">
+              <path d="M5 5h5v22H5zM22 5h5v22h-5z" fill="#121212" />
+              <path d="M5 5h5l17 22h-5z" fill="#ff4f00" />
+            </svg>
+            <span>Neurokov</span>
+          </div>
+          <p class="promise">Free systems audit.<br />It works, or you don’t pay.</p>
+          <div class="facts mono"><span>Works from day one</span><span>n8n certified</span><span>Claude experts</span></div>
+        </div>
+        <div class="fig">
+          <div class="frame">
+            <img src="../../src/assets/images/home-feature.jpg" alt="" />
+            <span class="stat mono"><b>&lt;60 S</b> First reply to a new lead</span>
+          </div>
+          <div class="cap mono"><span>Fig. 02 · Automation overview</span><span>Case 03 · Speed to lead</span></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

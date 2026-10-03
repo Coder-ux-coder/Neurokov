@@ -1,0 +1,73 @@
+---
+import { site } from '../data/site';
+import Legal from '../layouts/Legal.astro';
+---
+
+<Legal
+  title="Privacy Policy"
+  description="How Neurokov collects, uses and protects personal information."
+  updated="October 3, 2026"
+>
+  <p>
+    This policy explains what personal information {site.legalName} (“we”, “us”) collects through{' '}
+    {site.url.replace('https://', '')}, why we collect it and what we do with it. We keep it short because we collect very
+    little.
+  </p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li>
+      <strong>Booking form answers.</strong> When you send our booking form, we get your answers by email: your
+      business name, niche, monthly revenue range and what you tell us about the business. We get them even if you don’t
+      go on to pick a time.
+    </li>
+    <li>
+      <strong>Booking details.</strong> When you book a call, our scheduling provider (Cal.com) collects your name,
+      email address and the time you pick, and keeps your booking form answers with the booking.
+    </li>
+    <li><strong>Emails you send us.</strong> If you write to us, we keep the message and your contact details.</li>
+    <li>
+      <strong>Basic technical data.</strong> Like most websites, our hosting provider logs standard request data such as
+      IP address, browser type and pages visited, for security and to keep the site running.
+    </li>
+  </ul>
+  <p>
+    The booking form is the only form on this website. When you send it, a form-to-email service (Web3Forms) passes your
+    answers to our inbox, and if you book, they go to Cal.com with your booking. This site itself doesn’t store them. We
+    don’t use advertising or tracking cookies.
+  </p>
+
+  <h2>How we use it</h2>
+  <ul>
+    <li>To prepare for the call you booked, hold it and follow up about it</li>
+    <li>To follow up on a booking form you sent without picking a time</li>
+    <li>To reply to your messages and, if we work together, to deliver the project</li>
+    <li>To keep the website secure and working properly</li>
+  </ul>
+  <p>We never sell your information, and we don’t share it except with the service providers listed below.</p>
+
+  <h2>Who processes it for us</h2>
+  <ul>
+    <li>Cal.com, for scheduling calls</li>
+    <li>Web3Forms, for emailing us booking form answers</li>
+    <li>Our website hosting provider, for serving this site</li>
+    <li>Google Workspace, for email and video calls</li>
+  </ul>
+  <p>Each of these providers handles data under its own privacy terms and security standards.</p>
+
+  <h2>How long we keep it</h2>
+  <p>
+    We keep booking and email records for as long as we need them to talk to you or work with you, and for as long as
+    the law requires us to keep business records. After that, we delete them.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>
+    You can ask us at any time for a copy of the personal information we hold about you, to correct it or to delete it.
+    Depending on where you live, you may have further rights under laws like the GDPR or CCPA. Email us and we’ll
+    respond within 30 days.
+  </p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy or your data: <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+</Legal>

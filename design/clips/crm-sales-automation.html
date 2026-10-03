@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 20s" />
+    <meta name="poster" content="16.2" />
+    <title>CRM and sales automation</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script src="board.js"></script>
+    <script>
+      // CRM and sales automation, as a board game (services.ts: "Speed to
+      // lead"). Act 1: a leaky funnel; most leads drop out of its cracks and roll
+      // away. Act 2: NK-01 hops through the five steps. The number is case 03's:
+      // the first reply went from 19 hours to under 60 seconds.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 4.6],
+          [4.6, 17.0],
+          [17.0, 20.1],
+        ]);
+        const { blinkAt, headline } = K;
+
+        // ---------- Act 1: leads slipping through the cracks ----------
+        const g1 = K.act(0);
+        K.room(g1, { floor: 870, wall: '#ece6dc', ground: '#ddd5c7' });
+        CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, o: 0.08 });
+
+        const FX = 1410, RIM = 340; // (the rim keeps clear of the headline's last word)
+        const DARK = '#3a3530';
+        // a lead: a round token with a face
+        const LEADS = [PAPER, '#ffd166', '#8aa37b', '#5b7fa6', '#ffb38a'];
+        const token = (parent, fill) => {
+          const g = S.g(parent);
+          S.svg('circle', { r: 24, fill, stroke: INK, 'stroke-width': 4 }, g);
+          for (const x of [-8, 8]) S.svg('ellipse', { cx: x, cy: -3, rx: 3.5, ry: 5, fill: INK }, g);
+          S.svg('path', { d: 'M -7 8 Q 0 13 7 8', fill: 'none', stroke: INK, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+          return g;
+        };
+
+        // the table and tray under the spout, where the few that make it land
+        S.put(CAST.table(g1, { w: 200, h: 120 }), { x: FX, y: 870 });
+        const tray = CAST.tray(g1, { w: 150 });
+        S.put(tray.g, { x: FX, y: 750 });
+
+        // the funnel: its mouth, the leads going in, then its body over them
+        S.svg('ellipse', { cx: FX, cy: RIM, rx: 220, ry: 30, fill: DARK, stroke: INK, 'stroke-width': 6 }, g1);
+        const inside = S.g(g1);
+        S.svg('path', { d: `M ${FX - 220} ${RIM} A 220 30 0 0 0 ${FX + 220} ${RIM} L ${FX + 40} 600 L ${FX + 30} 650 L ${FX - 30} 650 L ${FX - 40} 600 Z`, fill: ORANGE, stroke: INK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g1);
+        S.svg('path', { d: `M ${FX - 40} 600 L ${FX + 40} 600`, stroke: INK, 'stroke-width': 4, opacity: 0.4 }, g1);
+        const label = S.svg('text', { x: FX, y: 432, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 26, 'letter-spacing': 3, fill: INK }, g1);
+        label.textContent = 'NEW LEADS';
+        // the cracks
+        const HOLES = [
+          [FX - 118, 470, -1],
+          [FX - 70, 548, -1],
+          [FX + 128, 452, 1],
+        ];
+        HOLES.forEach(([x, y]) => S.svg('path', { d: `M ${x - 24} ${y - 6} L ${x - 10} ${y - 20} L ${x - 2} ${y - 8} L ${x + 12} ${y - 22} L ${x + 24} ${y + 2} L ${x + 8} ${y + 18} L ${x - 4} ${y + 8} L ${x - 18} ${y + 16} Z`, fill: DARK, stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g1));
+        const outside = S.g(g1);
+
+        // ten leads drop in; two come out of the spout, the rest leak out and roll away
+        const G = 1600, FLOOR = 870 - 24;
+        const fly = (u, x0, y0, vx, vy) => {
+          const a = G / 2;
+          const u1 = (-vy + Math.sqrt(vy * vy - 4 * a * (y0 - FLOOR))) / (2 * a);
+          if (u < u1) return [x0 + vx * u, y0 + vy * u + a * u * u];
+          const vy1 = -0.4 * (vy + G * u1);
+          const u2 = (-2 * vy1) / G;
+          const w = u - u1;
+          const x = x0 + vx * u1 + vx * w;
+          return [x, w < u2 ? FLOOR + vy1 * w + a * w * w : FLOOR];
+        };
+        const EXIT = [0, 'spout', 2, 1, 0, 2, 'spout', 1, 0, 2];
+        EXIT.forEach((exit, i) => {
+          const fill = LEADS[i % LEADS.length];
+          const caught = exit === 'spout';
+          const tin = token(inside, fill);
+          const tout = token(caught ? tray.pile : outside, fill); // the caught ones drop into the tray
+          const at = 0.2 + i * 0.36;
+          const x0 = FX - 60 + ((i * 53) % 120);
+          const te = at + 0.8; // out of the funnel
+          const [hx, hy, side] = caught ? [FX, 650, 0] : HOLES[exit];
+          const vx = caught ? 0 : side * (230 + ((i * 37) % 80));
+          S.track((t) => {
+            // falling in over the rim, then sinking out of sight (all the way under
+            // the funnel's front lip before it goes)
+            const p = ramp(t, at, 0.5, E.in);
+            const sink = ramp(t, at + 0.5, 0.2, E.linear);
+            S.put(tin, { x: x0 + (FX + ((i * 29) % 60) - 30 - x0) * p, y: -80 + (RIM - 10 + 80) * p + 100 * sink, o: t > at && sink < 1 ? 1 : 0 });
+            if (t < te) return S.put(tout, { o: 0 });
+            const u = t - te;
+            if (caught) {
+              // tray coordinates: from the spout (y 650) down into the tray (y 750)
+              const y = Math.min(i === 6 ? -34 : -26, hy - 750 + 0.5 * G * u * u);
+              return S.put(tout, { x: i === 6 ? 24 : -20, y, r: i === 6 ? 20 : -10, s: K.pop(t, te), o: 1 });
+            }
+            const [x, y] = fly(u, hx, hy, vx, -260);
+            S.put(tout, { x, y, r: ((x - hx) / 24) * 57.3, s: Math.min(1, 0.4 + u * 4), o: 1 });
+          });
+        });
+
+        // the rep, watching them go
+        const rep = CAST.person(g1, { shirt: '#8aa37b', hair: 'bob', hairColor: '#6b4a2e' });
+        const sweats = [0, 1, 2].map(() => CAST.sweat(g1));
+        const mix = (a, b, k) => a.map((p, i) => p.map((v, j) => v + (b[i][j] - v) * k));
+        S.track((t) => {
+          // reaches for the funnel, then turns to chase the ones rolling away
+          const back = t >= 2.3;
+          const reach = back ? ramp(t, 2.3, 0.3, E.back) : ramp(t, 1.0, 0.3);
+          const wave = back ? 10 * Math.sin(t * 14) : 0;
+          rep.set({
+            x: 1010, y: 870, flip: back ? -1 : 1, lean: (back ? 14 : 8) * reach, headTilt: back ? 6 : -4,
+            arm: mix([[8, -10], [-6, 14]], [[62 + wave, 8], [74 - wave, -4]], reach),
+            mouth: t < 1.0 ? 'smile' : t < 2.3 ? 'o' : 'frown',
+            look: back ? [1, 0.7] : [1, -0.5],
+            blink: blinkAt(t, [0.8, 2.25, 3.9]),
+          });
+          [2.9, 3.3, 3.7].forEach((a, i) => {
+            S.put(sweats[i].g, { x: 1010 + (i % 2 ? 46 : -44), y: 870 - 342 });
+            sweats[i].set(ramp(t, a, 0.6, E.linear));
+          });
+        });
+        headline(0, 'Fig. 1 · Sound familiar?', 'Leads slipping<br />through <em>the cracks</em>.', 0.35, 4.25, { dark: false });
+
+        // ---------- Act 2: speed to lead, square by square ----------
+        const g2 = K.act(1);
+        S.svg('rect', { x: -1400, y: -900, width: 6400, height: 2800, fill: PAPER }, g2);
+        CAST.dots(g2, { x0: -1400, y0: -900, w: 6400, h: 1770, o: 0.1 });
+        CAST.ground(g2, { x0: -1400, x1: 5000 }).setAttribute('transform', 'translate(0 870)');
+
+        const form = (p) => {
+          const f = S.g(p);
+          S.svg('rect', { x: -104, y: -92, width: 208, height: 184, rx: 14, fill: INK }, f);
+          S.svg('rect', { x: -112, y: -100, width: 208, height: 184, rx: 14, fill: PAPER, stroke: INK, 'stroke-width': 4 }, f);
+          const typed = [-62, -8].map((y, i) => {
+            S.svg('rect', { x: -94, y: y - 20, width: 54, height: 7, rx: 3.5, fill: GRAY }, f);
+            S.svg('rect', { x: -94, y: y - 8, width: 172, height: 30, rx: 7, fill: PAPER, stroke: INK, 'stroke-width': 3 }, f);
+            return [S.svg('rect', { x: -84, y: y + 3, height: 8, rx: 4, fill: INK }, f), [110, 80][i]];
+          });
+          const btn = S.g(f);
+          const face = S.svg('rect', { x: -60, y: -16, width: 120, height: 32, rx: 8, fill: PAPER, stroke: INK, 'stroke-width': 3.5 }, btn);
+          const bt = S.svg('text', { x: 0, y: 6, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 16, 'letter-spacing': 2, fill: INK }, btn);
+          bt.textContent = 'SUBMIT';
+          const plane = CAST.plane(p);
+          return {
+            set(u) {
+              typed.forEach(([bar, w], i) => {
+                const k = ramp(u, 0.1 + i * 0.3, 0.3, E.linear);
+                bar.setAttribute('width', Math.max(0.01, w * k).toFixed(1));
+                bar.style.visibility = k > 0 ? '' : 'hidden';
+              });
+              face.setAttribute('fill', u > 0.78 ? ORANGE : PAPER);
+              S.put(btn, { x: -8, y: 56, s: 1 - 0.1 * hit(u, 0.75, 0.25) });
+              const q = ramp(u, 0.85, 0.55, E.in);
+              S.put(plane, { x: 60 + 90 * q, y: -70 - 40 * q, r: -24, s: 0.5 * K.pop(u, 0.85, 1.4), o: u > 0.85 && q < 1 ? 1 : 0 });
+            },
+          };
+        };
+        const qualify = (p) => {
+          const gauge = CAST.gauge(p, { r: 104 });
+          S.put(gauge.g, { x: 0, y: 70 });
+          const tag = CAST.tag(p, { text: 'QUALIFIED', size: 16, fill: ORANGE });
+          const sp = CAST.sparkle(p, { r: 16 });
+          return {
+            set(u) {
+              const v = 0.12 + 0.72 * Math.min(1.06, S.spring(u, 0.15, { freq: 1.6, damp: 0.38 }));
+              gauge.set(v, Math.min(v, 0.86));
+              const k = Math.min(1.15, S.spring(u, 0.95, { freq: 2.8, damp: 0.4 }));
+              S.put(tag, { x: 0, y: -84, s: Math.max(0.001, k), o: u > 0.95 ? 1 : 0 });
+              S.put(sp, { x: 116, y: -84, s: Math.max(0.001, Math.min(1, (u - 1.0) * 4)), r: 20 * u, o: u > 1.0 ? 1 : 0 });
+            },
+          };
+        };
+        const reply = (p) => {
+          const sw = S.g(p);
+          S.put(sw, { x: -84, y: 16 });
+          S.svg('rect', { x: -10, y: -74, width: 20, height: 18, rx: 4, fill: INK }, sw);
+          S.svg('circle', { r: 54, fill: PAPER, stroke: INK, 'stroke-width': 5 }, sw);
+          const wedge = S.svg('path', { fill: ORANGE, stroke: INK, 'stroke-width': 2.5 }, sw);
+          const hand = S.svg('line', { x1: 0, y1: 0, x2: 0, y2: -42, stroke: INK, 'stroke-width': 5, 'stroke-linecap': 'round' }, sw);
+          S.svg('circle', { r: 6, fill: INK }, sw);
+          S.put(CAST.bubble(p, { w: 168, h: 108, tail: 'left' }), { x: 70, y: -14 });
+          const bars = [
+            [0, -44, 120],
+            [0, -20, 100],
+            [0, 4, 60],
+          ].map(([x, y, w]) => [S.svg('rect', { x: 70 - 62 + x, y: y - 4, height: 9, rx: 4.5, fill: INK, opacity: 0.8 }, p), w]);
+          return {
+            set(u) {
+              const a = 0.9 * ramp(u, 0.1, 1.0, E.linear); // stops short of a full minute
+              const R = 44, ang = 2 * Math.PI * a;
+              wedge.setAttribute('d', a > 0.001 ? `M 0 0 L 0 ${-R} A ${R} ${R} 0 ${a > 0.5 ? 1 : 0} 1 ${(R * Math.sin(ang)).toFixed(2)} ${(-R * Math.cos(ang)).toFixed(2)} Z` : '');
+              S.put(hand, { r: 360 * a });
+              bars.forEach(([b, w], i) => {
+                const k = S.clamp(ramp(u, 0.2, 0.9, E.linear) * 3 - i);
+                b.setAttribute('width', Math.max(0.01, w * k).toFixed(1));
+                b.style.visibility = k <= 0 ? 'hidden' : '';
+              });
+            },
+          };
+        };
+        const booked = (p) => {
+          const cal = CAST.calendar(p, { w: 230, h: 180, cols: 5, rows: 2 });
+          S.put(cal.g, { x: -10, y: 10 });
+          const target = cal.cells[6];
+          const tag = CAST.tag(p, { text: 'CALL', size: 15, fill: ORANGE });
+          const ck = CAST.check(p, { r: 22 });
+          return {
+            set(u) {
+              target.cell.setAttribute('fill', u > 0.45 ? ORANGE : SHADE);
+              const k = Math.min(1.15, S.spring(u, 0.2, { freq: 2.6, damp: 0.42 }));
+              const drop = ramp(u, 0.2, 0.25, E.in);
+              S.put(tag, { x: -10 + target.cx, y: 10 + target.cy - 70 + 44 * drop, s: Math.max(0.001, k) * (1 - 0.15 * hit(u, 0.45, 0.2)) * K.pop(u, -1, 0.62, 0.15), o: u > 0.2 && u < 0.62 ? 1 : 0 });
+              const c = Math.min(1.15, S.spring(u, 0.6, { freq: 2.6, damp: 0.4 }));
+              S.put(ck.g, { x: -10 + target.cx + 22, y: 10 + target.cy - 18, s: Math.max(0.001, c), o: u > 0.6 ? 1 : 0 });
+              ck.set(ramp(u, 0.7, 0.3, E.out));
+            },
+          };
+        };
+        const updated = (p) => {
+          const tb = S.g(p);
+          S.put(tb, { x: -10, y: -40 });
+          S.svg('rect', { x: -109, y: -52, width: 230, height: 112, rx: 12, fill: INK }, tb);
+          S.svg('rect', { x: -115, y: -60, width: 230, height: 112, rx: 12, fill: PAPER, stroke: INK, 'stroke-width': 4 }, tb);
+          const pills = [-38, -8, 22].map((y, i) => {
+            S.svg('rect', { x: -99, y: y - 4, width: 86 - 16 * i, height: 8, rx: 4, fill: INK, opacity: 0.8 }, tb);
+            return S.svg('rect', { x: 38, y: y - 8, width: 58, height: 16, rx: 8, fill: GRAY, stroke: INK, 'stroke-width': 2.5 }, tb);
+          });
+          const ck = CAST.check(tb, { r: 13 });
+          const chat = CAST.chat(p, { w: 210, side: -1, dot: '#5b7fa6', lines: 1 });
+          return {
+            set(u) {
+              pills[0].setAttribute('fill', u > 0.35 ? ORANGE : GRAY);
+              S.put(pills[0], { s: 1 + 0.2 * hit(u, 0.35, 0.3) });
+              const c = Math.min(1.15, S.spring(u, 0.5, { freq: 2.6, damp: 0.4 }));
+              S.put(ck.g, { x: 102, y: -38, s: Math.max(0.001, c), o: u > 0.5 ? 1 : 0 });
+              ck.set(ramp(u, 0.6, 0.3, E.out));
+              const k = Math.min(1.1, S.spring(u, 0.8, { freq: 2.8, damp: 0.45 }));
+              S.put(chat, { x: 4, y: 72 + 20 * (1 - Math.min(1, k)), s: Math.max(0.001, k), o: u > 0.8 ? 1 : 0 });
+            },
+          };
+        };
+
+        const board = BOARD(K, g2, {
+          steps: ['Form submitted', 'Lead checked and qualified', 'Personal reply in 60 seconds', 'Call booked on your calendar', 'CRM updated, team notified'],
+          cards: [form, qualify, reply, booked, updated],
+          land: 6.3,
+          per: 1.95,
+          blink: [7.4, 9.9, 13.3],
+        });
+        headline(1, 'Fig. 2 · With Neurokov', 'Every lead answered<br />in <em>about a minute</em>.', 4.95, 6.05, { dark: false });
+        headline(1, 'Fig. 3 · The whole system', 'Form fill to<br /><em>booked call</em>.', board.last + 1.1, 99, { dark: false });
+
+        // ---------- Act 3: the number ----------
+        K.endCard({
+          at: 17.0,
+          kicker: 'CRM &amp; sales automation · Real numbers from case 03',
+          was: '19 hrs',
+          now: 'under <em>60 s</em>',
+          label: 'First reply to a new lead · 31% higher close rate',
+          cta: 'Book a free audit →',
+          size: 118,
+        });
+        K.wipes([[4.6, 'With Neurokov →']]);
+        K.note('Illustrated story · Real numbers from case 03', () => false);
+        K.camera(
+          [
+            [0, [960, 600, 1.08]],
+            [4.6, [960, 600, 1.14], E.sine],
+            [4.61, board.keys[0][1], E.linear],
+            ...board.keys,
+            [20, [board.mid, 600, board.wide * 1.03], E.linear],
+          ],
+          [[board.lands[0], 0.3, 0.6]],
+        );
+      });
+    </script>
+  </body>
+</html>

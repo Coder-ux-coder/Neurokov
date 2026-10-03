@@ -1,0 +1,146 @@
+---
+import Board from '../../components/Board.astro';
+import Cta from '../../components/Cta.astro';
+import Guarantee from '../../components/Guarantee.astro';
+import Icon from '../../components/Icon.astro';
+import Marquee from '../../components/Marquee.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ServiceRows from '../../components/ServiceRows.astro';
+import type { IconName } from '../../components/icons';
+import { industries } from '../../data/industries';
+import { services } from '../../data/services';
+import { site } from '../../data/site';
+import Base from '../../layouts/Base.astro';
+
+const promises: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'rocket',
+    title: 'Works from day one',
+    text: 'Tested on your real data before launch, so it’s doing the job the day it goes live. No ramp-up period.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'It works, or you don’t pay',
+    text: 'We agree in writing what the system will do. If what we deliver doesn’t do that, you don’t pay.',
+  },
+  {
+    icon: 'receipt',
+    title: 'One fixed price',
+    text: 'Agreed before any work starts. No hourly billing, no scope creep and no surprise invoices.',
+  },
+  {
+    icon: 'key-round',
+    title: 'Yours to keep',
+    text: 'Every workflow, prompt and account is yours, documented and handed over. If we part ways, it all keeps running.',
+  },
+  {
+    icon: 'bell-ring',
+    title: 'Error alerts built in',
+    text: 'If anything looks off, we hear about it straight away, usually before your team would notice.',
+  },
+  {
+    icon: 'graduation-cap',
+    title: 'A team that can use it',
+    text: 'A walkthrough and a plain-English handbook, so everyone who touches the system knows exactly what it does.',
+  },
+];
+const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${String(of).padStart(2, '0')}`;
+---
+
+<Base
+  title={`Services | ${site.name}`}
+  description="Workflow automation, lead generation, custom automation agents, CRM and marketing automation for service businesses. Fixed price, works from day one, or you don’t pay."
+>
+  <PageHero
+    label="Services"
+    meta={`${String(services.length).padStart(2, '0')} systems`}
+    title="Automation for every part of a service business."
+    lead="Sales, marketing, delivery, admin. If your team does it the same way every week, we can automate it."
+    cta="Find what to automate first"
+    promise="And the audit is 100% free."
+  />
+
+  <Marquee />
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="The systems"
+        index="01 / 03"
+        title="Five ways we give your team its week back."
+        lead="Each one starts with a free audit and ends with a system your team owns, understands and actually uses."
+      />
+      <ServiceRows />
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top: 0">
+    <div class="container"><Board /></div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead
+        label="Every build"
+        index="02 / 03"
+        title="What every build comes with."
+        lead="Whichever system you start with, you get the same six things. They’re why our systems keep working long after we hand them over."
+      />
+      <div class="grid-3 specs">
+        {
+          promises.map((p, i) => (
+            <article class="spec" data-reveal style={`--d: ${(i % 3) * 90}ms`}>
+              <div class="spec__top">
+                <span class="spec__n">{n2(i, promises.length)}</span>
+                <span class="card__icon">
+                  <Icon name={p.icon} />
+                </span>
+              </div>
+              <h3 class="h3">{p.title}</h3>
+              <p>{p.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="Industries"
+        index="03 / 03"
+        title="Built for service businesses."
+        lead="Different industries, same problem: skilled people stuck doing admin. Here’s what we automate where you work."
+      />
+      <ol class="ledger">
+        {
+          industries.map((ind, i) => (
+            <li class="ledger__row" data-reveal style={`--d: ${(i % 3) * 60}ms`}>
+              <span class="ledger__n">{String(i + 1).padStart(2, '0')}</span>
+              <span class="ledger__icon">
+                <Icon name={ind.icon} />
+              </span>
+              <div class="ledger__main">
+                <h3 class="h3">{ind.title}</h3>
+                <p>{ind.text}</p>
+              </div>
+              <ul class="tags">
+                {ind.tags.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container"><Guarantee /></div>
+  </section>
+
+  <Cta />
+</Base>

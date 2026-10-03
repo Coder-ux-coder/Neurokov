@@ -1,0 +1,46 @@
+---
+/** The services as an index: one ruled row each, which fills orange on hover. */
+import { services, type Service } from '../data/services';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Leave one out (the service page lists the others). */
+  except?: string;
+  /** The "not sure where to start" line under the list. */
+  foot?: boolean;
+}
+
+const { except, foot = true } = Astro.props;
+const list: [Service, number][] = services.map((s, i) => [s, i]);
+---
+
+<ol class="rows">
+  {
+    list
+      .filter(([s]) => s.slug !== except)
+      .map(([s, i], k) => (
+        <li>
+          <a class="row" href={`/services/${s.slug}/`} data-reveal style={`--d: ${k * 60}ms`} data-cursor="Explore">
+            <span class="row__n">S/{String(i + 1).padStart(2, '0')}</span>
+            <span class="row__name">{s.name}</span>
+            <span class="row__text">{s.card}</span>
+            <span class="row__go" aria-hidden="true">
+              <Icon name="arrow-up-right" size={20} />
+            </span>
+          </a>
+        </li>
+      ))
+  }
+</ol>
+{
+  foot && (
+    <div class="rows__foot" data-reveal>
+      <p>
+        <b>Not sure where to start?</b> That’s what the free audit is for. Thirty minutes, and you’ll know exactly what’s
+        worth automating first.
+      </p>
+      <Button label="Find out in 30 minutes" />
+    </div>
+  )
+}

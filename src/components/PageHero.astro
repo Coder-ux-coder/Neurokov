@@ -1,0 +1,69 @@
+---
+/**
+ * The opener for inner pages: a running head (label, rule, meta), the title
+ * rising word by word, the guarantee, the lead and, when there is one, the
+ * booking button.
+ */
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  label: string;
+  meta?: string;
+  title: string;
+  lead?: string;
+  /** Label for a booking button under the lead. */
+  cta?: string;
+  /** Shows the guarantee under the title, followed by this (may be empty). */
+  promise?: string;
+  back?: { href: string; label: string };
+  /** Marks the lead as placeholder copy. */
+  ph?: string;
+}
+
+const { label, meta, title, lead, cta, promise, back, ph } = Astro.props;
+---
+
+<section class="page-hero" data-hold>
+  <div class="gridlines" aria-hidden="true"></div>
+  <div class="container page-hero__inner">
+    {
+      back && (
+        <a class="back-link" href={back.href} data-reveal>
+          <Icon name="arrow-left" size={16} /> {back.label}
+        </a>
+      )
+    }
+    <div class="runhead" data-reveal>
+      <span class="label label--signal"><span data-decode>{label}</span></span>
+      <span class="runhead__line draw" aria-hidden="true"></span>
+      {meta && <span class="label runhead__meta">{meta}</span>}
+    </div>
+    <h1 class="h1" data-reveal data-split>{title}</h1>
+    {
+      promise !== undefined && (
+        <p class="promise" data-reveal style="--d: 140ms">
+          <Icon name="shield-check" size={22} />
+          <span>
+            <mark>If it doesn’t work, you don’t pay.</mark> {promise}
+          </span>
+        </p>
+      )
+    }
+    {
+      lead && (
+        <p class="lead" data-reveal style="--d: 220ms" data-ph={ph}>
+          {lead}
+        </p>
+      )
+    }
+    {
+      cta && (
+        <div class="hero__cta" data-reveal style="--d: 320ms">
+          <Button size="lg" label={cta} />
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>

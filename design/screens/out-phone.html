@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="size" content="390x844@3" />
+    <link rel="stylesheet" href="app.css" />
+    <style>
+      html,
+      body,
+      .screen {
+        background: #000;
+      }
+
+      .screen {
+        --w: 390px;
+        --h: 844px;
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+      }
+
+      i svg {
+        display: block;
+        width: 18px;
+        height: 18px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        height: 54px;
+        padding: 14px 30px 0 38px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .status .icons {
+        margin-left: auto;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .status .icons svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .bar {
+        display: flex;
+        align-items: center;
+        padding: 6px 16px 0;
+        color: var(--brand-2);
+        font-size: 16px;
+        gap: 4px;
+      }
+
+      .bar .right {
+        margin-left: auto;
+        display: flex;
+        gap: 20px;
+      }
+
+      .bar svg {
+        width: 21px;
+        height: 21px;
+      }
+
+      .week {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        padding: 14px 10px 0;
+        text-align: center;
+      }
+
+      .week small {
+        display: block;
+        font-size: 10.5px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .week b {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        margin: 0 auto;
+        border-radius: 50%;
+        font-weight: 500;
+        font-size: 17px;
+      }
+
+      .week .today b {
+        background: var(--brand);
+        font-weight: 700;
+      }
+
+      .date {
+        padding: 12px 0 10px;
+        text-align: center;
+        font-size: 13.5px;
+        color: var(--text);
+        border-bottom: 1px solid rgb(255 255 255 / 0.09);
+      }
+
+      .day {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .hour {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-left: 12px;
+        font-size: 11px;
+        color: var(--dim);
+      }
+
+      .hour::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgb(255 255 255 / 0.08);
+      }
+
+      .hour span {
+        width: 40px;
+        text-align: right;
+      }
+
+      .ev {
+        position: absolute;
+        left: 62px;
+        right: 10px;
+        padding: 5px 9px;
+        border-radius: 6px;
+        border-left: 3px solid var(--brand);
+        background: rgb(255 90 31 / 0.32);
+        font-size: 13px;
+        line-height: 1.25;
+        overflow: hidden;
+      }
+
+      .ev b {
+        display: block;
+        font-weight: 600;
+      }
+
+      .ev small {
+        color: rgb(236 236 241 / 0.72);
+        font-size: 11.5px;
+      }
+
+      .ev.gray {
+        border-color: #6b7280;
+        background: rgb(148 163 184 / 0.2);
+      }
+
+      .ev.green {
+        border-color: var(--green);
+        background: rgb(52 211 153 / 0.2);
+      }
+
+      .now {
+        position: absolute;
+        left: 50px;
+        right: 0;
+        height: 2px;
+        background: #ff453a;
+      }
+
+      .now::before {
+        content: '';
+        position: absolute;
+        left: -4px;
+        top: -3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff453a;
+      }
+
+      .tabs {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 22px 32px;
+        color: var(--brand-2);
+        font-size: 16px;
+        border-top: 1px solid rgb(255 255 255 / 0.08);
+        background: #0b0b0d;
+      }
+
+      .home {
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        width: 134px;
+        height: 5px;
+        margin-left: -67px;
+        border-radius: 3px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen">
+      <div class="status">
+        10:24
+        <div class="icons"><i data-i="signal"></i><i data-i="wifi"></i><i data-i="battery-full"></i></div>
+      </div>
+      <div class="bar">
+        <i data-i="chevron-left"></i>September
+        <div class="right"><i data-i="search"></i><i data-i="plus"></i></div>
+      </div>
+      <div class="week">
+        <div><small>S</small><b>20</b></div>
+        <div><small>M</small><b>21</b></div>
+        <div><small>T</small><b>22</b></div>
+        <div class="today"><small>W</small><b>23</b></div>
+        <div><small>T</small><b>24</b></div>
+        <div><small>F</small><b>25</b></div>
+        <div><small>S</small><b>26</b></div>
+      </div>
+      <div class="date">Wednesday, September 23, 2026</div>
+      <div class="day">
+        <div class="hour" style="top: 4px"><span>9 AM</span></div>
+        <div class="hour" style="top: 64px"><span>10 AM</span></div>
+        <div class="hour" style="top: 124px"><span>11 AM</span></div>
+        <div class="hour" style="top: 184px"><span>Noon</span></div>
+        <div class="hour" style="top: 244px"><span>1 PM</span></div>
+        <div class="hour" style="top: 304px"><span>2 PM</span></div>
+        <div class="hour" style="top: 364px"><span>3 PM</span></div>
+        <div class="hour" style="top: 424px"><span>4 PM</span></div>
+        <div class="hour" style="top: 484px"><span>5 PM</span></div>
+        <div class="hour" style="top: 544px"><span>6 PM</span></div>
+
+        <div class="ev" style="top: 40px; height: 29px"><b>Intro call · Kestrel &amp; Row</b></div>
+        <div class="ev" style="top: 130px; height: 29px"><b>Discovery · Fieldwork Partners</b></div>
+        <div class="ev green" style="top: 190px; height: 58px"><b>Lunch with Sam</b><small>Blue Door Café</small></div>
+        <div class="ev" style="top: 310px; height: 29px"><b>Intro call · Helio Studio</b></div>
+        <div class="ev" style="top: 370px; height: 44px"><b>Proposal review · Oakline</b><small>Zoom</small></div>
+        <div class="ev" style="top: 460px; height: 29px"><b>Intro call · Parallax Systems</b></div>
+        <div class="ev gray" style="top: 520px; height: 29px"><b>School pickup</b></div>
+        <div class="now" style="top: 88px"></div>
+      </div>
+      <div class="tabs"><span>Today</span><span>Calendars</span><span>Inbox</span></div>
+      <div class="home"></div>
+    </div>
+    <script src="icons.js"></script>
+    <script src="app.js"></script>
+    <script src="anim.js"></script>
+    <script>
+      // The call that reply booked drops into today's calendar.
+      ANIM.setup(() => {
+        const A = ANIM;
+        const ev = A.html(`<div class="ev" style="top: 250px; height: 29px"><b>Intro call · Brightfold</b></div>`);
+        A.$('.day').insertBefore(ev, A.$('.now'));
+        A.track((t) => {
+          const e = A.ramp(t, 4.6, 0.45, A.out);
+          ev.style.opacity = e.toFixed(3);
+          ev.style.visibility = e <= 0 ? 'hidden' : '';
+          ev.style.transform = `scale(${(0.92 + 0.08 * e).toFixed(4)})`;
+          A.glow(ev, A.hit(t, 4.8, 2.4));
+        });
+      });
+    </script>
+  </body>
+</html>

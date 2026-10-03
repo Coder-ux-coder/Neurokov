@@ -1,0 +1,22 @@
+---
+import PageHero from '../components/PageHero.astro';
+import { ph } from '../data/site';
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  updated: string;
+}
+
+const { title, description, updated } = Astro.props;
+---
+
+<Base title={`${title} | Neurokov`} description={description}>
+  <PageHero label="Legal" meta={`Updated ${updated}`} title={title} />
+  <section class="section" style="padding-top: 0">
+    <div class="container--narrow prose" data-ph={ph('legal-review')}>
+      <slot />
+    </div>
+  </section>
+</Base>

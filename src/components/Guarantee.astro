@@ -1,0 +1,56 @@
+---
+/**
+ * The guarantee, stamped onto a ruled sheet. The stamp lands when the banner
+ * scrolls into view and the sheet shakes with the impact (CSS only).
+ */
+import { site } from '../data/site';
+import Button from './Button.astro';
+
+const ink = `ink-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="guarantee" data-reveal>
+  <div class="banner">
+    <div class="stamp" aria-hidden="true">
+      <svg viewBox="0 0 380 190" width="200" height="100">
+        <defs>
+          <!-- Worn ink: speckled holes from noise, then a slight wobble. -->
+          <filter id={ink} x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"></feTurbulence>
+            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -7 4.6" result="holes"></feColorMatrix>
+            <feComposite in="SourceGraphic" in2="holes" operator="in" result="inked"></feComposite>
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3" result="warp"></feTurbulence>
+            <feDisplacementMap in="inked" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+          </filter>
+        </defs>
+        <g filter={`url(#${ink})`}>
+          <rect x="6" y="6" width="368" height="178" rx="16" fill="none" stroke="currentColor" stroke-width="7"></rect>
+          <rect x="18" y="18" width="344" height="154" rx="9" fill="none" stroke="currentColor" stroke-width="2"></rect>
+          <text x="190" y="50" text-anchor="middle" class="stamp__small" textLength="210" lengthAdjust="spacing">
+            {site.name} guarantee
+          </text>
+          <text x="190" y="112" text-anchor="middle" class="stamp__big" textLength="300" lengthAdjust="spacingAndGlyphs">
+            It works
+          </text>
+          <text x="190" y="151" text-anchor="middle" class="stamp__mid" textLength="292" lengthAdjust="spacingAndGlyphs">
+            or you don’t pay
+          </text>
+        </g>
+      </svg>
+    </div>
+    <div class="banner__copy">
+      <span class="label label--signal">The {site.name} guarantee</span>
+      <h2 class="h2" data-split>It works, or you don’t pay.</h2>
+      <p class="lead">
+        Before we build anything, we write down exactly what your system will do. If what we deliver doesn’t do that, you
+        don’t pay. No fine print, no arguing. We can promise that because we’ve shipped more than 150 of these.
+      </p>
+      <ul class="stats stats--left">
+        <li class="stat"><span class="stat__value">Free</span><span class="stat__label">audit, always</span></li>
+        <li class="stat"><span class="stat__value">Day one</span><span class="stat__label">it starts working</span></li>
+        <li class="stat"><span class="stat__value">$0</span><span class="stat__label">if it doesn’t work</span></li>
+      </ul>
+    </div>
+    <Button size="lg" label="Start risk-free" />
+  </div>
+</div>

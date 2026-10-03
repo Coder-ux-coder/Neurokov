@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 20s" />
+    <meta name="poster" content="16.3" />
+    <title>Automated lead generation</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script src="board.js"></script>
+    <script>
+      // Automated lead generation, as a board game (services.ts: "The outbound
+      // engine"). Act 1: the founder is still the only one selling, squeezing
+      // prospecting in after client work. Act 2: NK-01 hops through the engine's
+      // six steps. The number is case 02's: 46 qualified calls in 30 days.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 4.6],
+          [4.6, 17.0],
+          [17.0, 20.1],
+        ]);
+        const { blinkAt, headline } = K;
+
+        // ---------- Act 1: selling after hours ----------
+        const g1 = K.act(0);
+        K.room(g1, { floor: 870 });
+        CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, color: PAPER, o: 0.05 });
+        const win = CAST.window(g1, { w: 250, h: 300 });
+        S.put(win.g, { x: 1580, y: 360 });
+        S.put(CAST.moon(win.outside, { r: 34 }), { x: 50, y: -80 });
+        const clock = CAST.clock(g1, { r: 56 });
+        S.put(clock.g, { x: 1290, y: 290 });
+        S.track((t) => clock.set(21.5 + 2.4 * ramp(t, 0, 4.6, E.linear)));
+
+        const desk = CAST.desk(g1, { w: 560, h: 190 });
+        S.put(desk, { x: 1110, y: 870 });
+        const chair = CAST.chair(g1);
+        S.put(chair, { x: 760, y: 870 });
+        const mug = CAST.mug(g1);
+        S.put(mug.g, { x: 1320, y: 680 });
+        const lap = CAST.laptop(g1, { w: 300, h: 190 });
+        S.put(lap.g, { x: 1080, y: 680 });
+        // an email typed out line by line and sent, then another, slower; the
+        // third never goes out
+        const MAILS = [
+          [0.2, 1.0],
+          [1.15, 2.1],
+          [2.75, 99],
+        ];
+        S.svg('rect', { x: -120, y: -160, width: 70, height: 9, rx: 4.5, fill: ORANGE, stroke: INK, 'stroke-width': 2 }, lap.ui);
+        const mailLines = [0, 1, 2].map((i) => S.svg('rect', { x: -120, y: -136 + i * 26, height: 9, rx: 4.5, fill: INK, opacity: 0.8 }, lap.ui));
+        const sendBtn = S.g(lap.ui);
+        S.svg('rect', { x: 50, y: -64, width: 72, height: 26, rx: 6, fill: ORANGE, stroke: INK, 'stroke-width': 2.5 }, sendBtn);
+        const sendTx = S.svg('text', { x: 86, y: -46, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 14, 'letter-spacing': 1, fill: INK }, sendBtn);
+        sendTx.textContent = 'SEND';
+        const sentBadge = CAST.badge(g1, { r: 26 });
+        S.put(sentBadge.g, { x: 1220, y: 500 });
+        const planes = [0, 1].map(() => CAST.plane(g1));
+        S.track((t) => {
+          let k = 0;
+          while (k < MAILS.length - 1 && t >= MAILS[k][1] + 0.2) k++;
+          const [a, b] = MAILS[k];
+          const typed = k < 2 ? ramp(t, a, b - a - 0.2, E.linear) : Math.min(0.5, ramp(t, a, 1.2, E.linear));
+          const shown = t < b + 0.05; // the screen clears once it has gone
+          mailLines.forEach((l, i) => {
+            const w = [230, 200, 130][i] * S.clamp(typed * 3 - i);
+            l.setAttribute('width', Math.max(0.01, w).toFixed(1));
+            l.style.visibility = w > 0.5 && shown ? '' : 'hidden';
+          });
+          S.put(sendBtn, { s: 1 - 0.15 * hit(t, b - 0.1, 0.2), o: typed > 0.95 && shown ? 1 : 0.3 });
+          const sent = MAILS.filter(([, e]) => t > e).length;
+          sentBadge.set(String(sent));
+          S.put(sentBadge.g, { x: 1220, y: 500, s: K.pop(t, MAILS[0][1]) * (1 + 0.3 * hit(t, MAILS[Math.max(0, sent - 1)][1], 0.3)), o: sent ? 1 : 0 });
+          planes.forEach((pl, i) => {
+            // off the SEND button and out of the window, into the night
+            const p = ramp(t, MAILS[i][1], 0.75, (x) => x * x);
+            S.put(pl, { x: 1166 + 480 * p, y: 600 - 310 * p - 60 * Math.sin(Math.PI * p), r: -24, s: (0.6 - 0.35 * p) * K.pop(t, MAILS[i][1], MAILS[i][1] + 0.75), o: t > MAILS[i][1] && p < 1 ? 1 : 0 });
+          });
+          mug.set(t);
+        });
+        // the founder: typing after a full day, slower, yawning, nodding off
+        const founder = CAST.person(g1, { shirt: '#c96f4a', hair: 'bun', hairColor: '#3a2a1e', glasses: true });
+        // small, and a short rise, to stay clear of the headline
+        const zzz = CAST.zzz(g1, { rise: 115 });
+        S.put(zzz.g, { x: 890, y: 548, s: 0.7 });
+        const mix = (a, b, k) => a.map((p, i) => p.map((v, j) => v + (b[i][j] - v) * k));
+        S.track((t) => {
+          const yawn = env(t, 2.2, 2.6, 0.2);
+          const nod = ramp(t, 3.3, 0.45);
+          const typing = (1 - yawn) * (1 - nod);
+          const tempo = 34 - 16 * ramp(t, 0, 4.6, E.linear);
+          const tap = Math.sin(t * tempo) * 6 * typing;
+          const droop = nod * (0.75 + 0.25 * Math.sin(t * 4));
+          founder.set({
+            x: 810, y: 870, seated: 120, leg: [[70, -70], [76, -74]],
+            lean: 8 + 10 * droop - 10 * yawn, headTilt: 18 * droop - 14 * yawn,
+            arm: mix(mix([[64, 40 + tap], [70, 34 - tap]], [[50, 52], [56, 48]], nod), [[168, 12], [160, 18]], yawn),
+            mouth: yawn > 0.3 ? 'open' : nod > 0.5 ? 'sleep' : t > 1.9 ? 'flat' : 'smile',
+            look: [1, 0.3], blink: Math.max(yawn > 0.4 || nod > 0.6 ? 1 : 0, blinkAt(t, [0.9, 1.8, 3.0])),
+          });
+          zzz.set(t, ramp(t, 3.55, 0.3));
+        });
+        headline(0, 'Fig. 1 · Sound familiar?', 'Selling, squeezed in<br />after <em>client work</em>.', 0.35, 4.25);
+
+        // ---------- Act 2: the outbound engine, square by square ----------
+        const g2 = K.act(1);
+        S.svg('rect', { x: -1400, y: -900, width: 7000, height: 2800, fill: PAPER }, g2);
+        CAST.dots(g2, { x0: -1400, y0: -900, w: 7000, h: 1770, o: 0.1 });
+        CAST.ground(g2, { x0: -1400, x1: 5600 }).setAttribute('transform', 'translate(0 870)');
+
+        const accounts = (p) => {
+          const bs = [
+            [-96, 110],
+            [-32, 80],
+            [32, 130],
+            [96, 95],
+          ].map(([x, h]) => {
+            const b = CAST.building(p, { w: 54, h });
+            S.put(b.g, { x, y: 84 });
+            return b;
+          });
+          const mag = CAST.magnifier(p, { r: 32 });
+          return {
+            set(u) {
+              S.put(mag, { x: -96 + 192 * ramp(u, 0.1, 1.2, E.inOut), y: -40 + 10 * Math.sin(u * 6) });
+              bs.forEach((b, i) => b.body.setAttribute('fill', (i === 0 && u > 0.3) || (i === 2 && u > 0.75) ? ORANGE : PAPER));
+            },
+          };
+        };
+        const enrich = (p) => {
+          const c = S.g(p);
+          S.svg('rect', { x: -114, y: -72, width: 228, height: 150, rx: 14, fill: INK }, c);
+          S.svg('rect', { x: -120, y: -80, width: 228, height: 150, rx: 14, fill: PAPER, stroke: INK, 'stroke-width': 4 }, c);
+          S.svg('circle', { cx: -74, cy: -32, r: 24, fill: '#8aa37b', stroke: INK, 'stroke-width': 4 }, c);
+          const fields = [
+            [-38, -46, 120],
+            [-38, -22, 84],
+            [-100, 16, 186],
+            [-100, 40, 140],
+          ].map(([x, y, w]) => [S.svg('rect', { x, y, height: 10, rx: 5, fill: INK, opacity: 0.75 }, c), w]);
+          const ck = CAST.check(p, { r: 24 });
+          return {
+            set(u) {
+              fields.forEach(([f, w], i) => {
+                const k = ramp(u, 0.15 + i * 0.16, 0.25, E.out);
+                f.setAttribute('width', Math.max(0.01, w * k).toFixed(1));
+                f.style.visibility = k <= 0 ? 'hidden' : '';
+              });
+              const k = S.spring(u, 0.95, { freq: 2.6, damp: 0.4 });
+              S.put(ck.g, { x: 100, y: -70, s: Math.max(0.001, Math.min(1.15, k)), o: u > 0.95 ? 1 : 0 });
+              ck.set(ramp(u, 1.05, 0.3, E.out));
+            },
+          };
+        };
+        const firstLine = (p) => {
+          S.put(CAST.bubble(p, { w: 250, h: 124, tail: 'left' }), { x: -4, y: -12 });
+          const bars = [
+            [-106, -46, 200],
+            [-106, -18, 170],
+            [-106, 10, 110],
+          ].map(([x, y, w]) => [S.svg('rect', { x, y, height: 10, rx: 5, fill: INK, opacity: 0.8 }, p), w]);
+          const sp = CAST.sparkle(p, { r: 20 });
+          return {
+            set(u) {
+              bars.forEach(([b, w], i) => {
+                const k = S.clamp(ramp(u, 0.2, 1.0, E.linear) * 3 - i);
+                b.setAttribute('width', Math.max(0.01, w * k).toFixed(1));
+                b.style.visibility = k <= 0 ? 'hidden' : '';
+              });
+              S.put(sp, { x: 112, y: -82, s: Math.max(0.001, Math.min(1, u * 3)) * (1 + 0.14 * Math.sin(u * 8)), r: 12 * Math.sin(u * 3), o: u > 0 ? 1 : 0 });
+            },
+          };
+        };
+        const send = (p) => {
+          // three inboxes, each warmed up first, each sending on its own
+          const boxes = [-84, 0, 84].map((x) => {
+            const e = CAST.envelope(p, { w: 64, h: 44 });
+            S.put(e.g, { x, y: 44 });
+            S.svg('rect', { x: x - 32, y: 80, width: 64, height: 12, rx: 6, fill: SHADE, stroke: INK, 'stroke-width': 2.5 }, p);
+            const bar = S.svg('rect', { x: x - 32, y: 80, height: 12, rx: 6, fill: ORANGE, stroke: INK, 'stroke-width': 2.5 }, p);
+            return { x, bar, plane: CAST.plane(p) };
+          });
+          return {
+            set(u) {
+              boxes.forEach(({ x, bar, plane }, i) => {
+                bar.setAttribute('width', (64 * ramp(u, 0.05 + i * 0.1, 0.45, E.out)).toFixed(1));
+                const a = 0.6 + i * 0.28;
+                const q = ramp(u, a, 0.6, E.in);
+                S.put(plane, { x: x + 50 * q, y: 10 - 110 * q, r: -30, s: 0.5 * K.pop(u, a, a + 0.6), o: u > a && q < 1 ? 1 : 0 });
+              });
+            },
+          };
+        };
+        const sortReplies = (p) => {
+          // replies drop in from the top and are sorted: interested ones to BOOK
+          const trays = [-72, 72].map((x) => {
+            const tr = CAST.tray(p, { w: 124 });
+            S.put(tr.g, { x, y: 100 });
+            return { ...tr, x };
+          });
+          S.put(CAST.tag(p, { text: 'BOOK', fill: ORANGE }), { x: -72, y: -4 });
+          S.put(CAST.tag(p, { text: 'LATER' }), { x: 72, y: -4 });
+          const mail = [
+            [0, 0.15, 0],
+            [1, 0.5, 0],
+            [0, 0.85, 1],
+          ].map(([side, a, j]) => ({ e: CAST.envelope(trays[side].pile, { w: 58, h: 40, seal: side ? GRAY : ORANGE }), side, a, j }));
+          return {
+            set(u) {
+              mail.forEach(({ e, side, a, j }) => {
+                // tray coordinates: from the top centre of the card into the tray
+                const x0 = -trays[side].x, y0 = -196;
+                const x1 = (j ? 14 : -10), y1 = -64 - 10 * j;
+                const q = ramp(u, a, 0.42, E.inOut);
+                S.put(e.g, { x: x0 + (x1 - x0) * q, y: y0 + (y1 - y0) * q - 40 * Math.sin(Math.PI * q), r: (side ? 10 : -8) * q + (j ? 6 : 0), s: K.pop(u, a - 0.15), o: u > a - 0.15 ? 1 : 0 });
+              });
+            },
+          };
+        };
+        const book = (p) => {
+          const cal = CAST.calendar(p, { w: 230, h: 180, cols: 5, rows: 2 });
+          S.put(cal.g, { x: -10, y: 6 });
+          const target = cal.cells[3];
+          const ck = CAST.check(p, { r: 24 });
+          return {
+            set(u) {
+              target.cell.setAttribute('fill', u > 0.5 ? ORANGE : SHADE);
+              const k = S.spring(u, 0.65, { freq: 2.6, damp: 0.4 });
+              S.put(ck.g, { x: -10 + target.cx + 20, y: 6 + target.cy - 18, s: Math.max(0.001, Math.min(1.15, k)), o: u > 0.65 ? 1 : 0 });
+              ck.set(ramp(u, 0.8, 0.3, E.out));
+            },
+          };
+        };
+
+        const board = BOARD(K, g2, {
+          steps: ['Find ideal accounts', 'Enrich and verify', 'Write a personal first line', 'Send from warmed inboxes', 'Sort replies by intent', 'Book the call'],
+          cards: [accounts, enrich, firstLine, send, sortReplies, book],
+          land: 6.3,
+          per: 1.55,
+          blink: [7.1, 10.0, 12.4],
+        });
+        headline(1, 'Fig. 2 · With Neurokov', 'Six steps, running<br /><em>every weekday</em>.', 4.95, 6.05, { dark: false });
+        headline(1, 'Fig. 3 · The whole engine', 'You show up<br />for <em>the calls</em>.', board.last + 1.1, 99, { dark: false });
+
+        // ---------- Act 3: the number ----------
+        K.endCard({
+          at: 17.0,
+          kicker: 'Automated lead generation · Real numbers from case 02',
+          big: '<b data-n>0</b> qualified calls',
+          count: [0, 46],
+          label: 'In the first 30 days · Zero sales hires',
+          cta: 'Book a free audit →',
+          size: 118,
+        });
+        K.wipes([[4.6, 'With Neurokov →']]);
+        K.note('Illustrated story · Real numbers from case 02', (t) => t < 4.6);
+        K.camera(
+          [
+            [0, [960, 600, 1.08]],
+            [4.6, [960, 600, 1.14], E.sine],
+            [4.61, board.keys[0][1], E.linear],
+            ...board.keys,
+            [20, [board.mid, 600, board.wide * 1.03], E.linear],
+          ],
+          [[board.lands[0], 0.3, 0.6]],
+        );
+      });
+    </script>
+  </body>
+</html>

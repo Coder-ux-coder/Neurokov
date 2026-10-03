@@ -1,0 +1,153 @@
+---
+import Clip from '../components/Clip.astro';
+import Cta from '../components/Cta.astro';
+import Flap from '../components/Flap.astro';
+import Guarantee from '../components/Guarantee.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { steps } from '../data/process';
+import Base from '../layouts/Base.astro';
+
+const dayOne: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'eye',
+    title: 'Tested on your real data',
+    text: 'Before launch, your real leads, emails and records run through the system. Edge cases get caught in testing, not by your clients.',
+  },
+  {
+    icon: 'workflow',
+    title: 'Built on proven platforms',
+    text: 'n8n, Make and Zapier: proven tools we know inside out. Nothing experimental, nothing we can’t support.',
+  },
+  {
+    icon: 'bell-ring',
+    title: 'Alerts before problems',
+    text: 'Every system watches itself. If something looks off, we hear about it straight away, usually before your team would notice.',
+  },
+  {
+    icon: 'graduation-cap',
+    title: 'Your team is ready',
+    text: 'A walkthrough and a plain-English handbook before launch, so nobody is guessing on day one.',
+  },
+];
+
+const needs = [
+  'A few hours at the start to walk us through how the work gets done',
+  'Access to the tools the system will touch',
+  'One person who can make decisions',
+  'Quick feedback when we show you the build',
+];
+---
+
+<Base
+  title="Our Process | Neurokov"
+  description="How a Neurokov project works: a free systems audit, a fixed-price scope, a system that works from day one, and optional support after launch."
+>
+  <PageHero
+    label="Our process"
+    meta="04 steps"
+    title="Four steps. No guesswork."
+    lead="No 40-slide decks and no six-month roadmaps. Here’s exactly what working with us looks like, from the free audit to a system that works from day one."
+    cta="Start with step one"
+    promise="And step one is free."
+  />
+
+  <section class="section" style="padding-top: 0">
+    <div class="container scrolly" data-scrolly>
+      <div class="scrolly__pin">
+        <span class="label label--signal">You are at step</span>
+        <div class="board" data-dark>
+          <div class="board__cell">
+            <Flap value="01" />
+            <span class="board__label" data-step-name>{steps[0].title}</span>
+          </div>
+        </div>
+        <div class="scrolly__rail" data-rail><span></span></div>
+        <p class="label">Scroll to walk through a project</p>
+      </div>
+      <ol class="scrolly__steps">
+        {
+          steps.map((s, i) => (
+            <li class="scrolly__step" data-step={s.title}>
+              <div class="scrolly__head">
+                <span class="step__n">
+                  Step <b>0{i + 1}</b>
+                </span>
+                <span class="tag">{s.tag}</span>
+                <span class="card__icon">
+                  <Icon name={s.icon} />
+                </span>
+              </div>
+              <h2 class="h2 scrolly__title">{s.title}</h2>
+              <p class="lead">{s.text}</p>
+              <Clip name={s.clip} class="scrolly__film" sizes="(max-width: 900px) 100vw, 760px" />
+              <p class="muted">{s.detail}</p>
+              <div class="scrolly__get">
+                <span class="label">What you get</span>
+                <ul class="checks">
+                  {s.get.map((g) => (
+                    <li>
+                      <Icon name="check" size={18} />
+                      {g}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--ink" data-dark>
+    <div class="container">
+      <SectionHead
+        label="Day one"
+        title="Why it works from day one."
+        lead="Plenty of agencies ask for 90 days before you see anything. We don’t, and here’s why."
+      />
+      <div class="grid-4">
+        {
+          dayOne.map((d, i) => (
+            <article class="spec" data-reveal style={`--d: ${i * 90}ms`}>
+              <div class="spec__top">
+                <span class="spec__n">
+                  {String(i + 1).padStart(2, '0')} / {String(dayOne.length).padStart(2, '0')}
+                </span>
+                <span class="card__icon">
+                  <Icon name={d.icon} />
+                </span>
+              </div>
+              <h3 class="h3">{d.title}</h3>
+              <p>{d.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split split--top">
+      <div class="split__copy">
+        <SectionHead
+          label="What we need from you"
+          title="Less than you’d think."
+          lead="You keep running the business while we do the building. Here’s all we ask for."
+        />
+      </div>
+      <ol class="numbered lead needs" data-reveal style="--d: 120ms">
+        {needs.map((n) => <li>{n}</li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container"><Guarantee /></div>
+  </section>
+
+  <Cta />
+</Base>

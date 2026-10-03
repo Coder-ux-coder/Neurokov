@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 12s" />
+    <meta name="poster" content="10.4" />
+    <title>Step 04, support and improve</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // Process, step 04: support and improve. NK-01 keeps an eye on the
+      // systems' dashboard; an alert rings, NK-01 fixes it before anyone
+      // notices, then plugs in an improvement and the chart climbs.
+      // A 12-second loop for the process page.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const GREEN = '#8aa37b';
+        const K = STORY([[0, 12.1]]);
+        const { blinkAt, headline } = K;
+        const g = K.act(0);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g);
+        K.paper(g, { floor: 870 });
+
+        // the client, with a coffee, not noticing a thing
+        S.put(CAST.plant(g), { x: 150, y: 870, s: 0.95 });
+        const chair = CAST.chair(g);
+        S.put(chair, { x: 390, y: 870 });
+        const client = CAST.person(g, { shirt: '#ffd166', hair: 'curly', hairColor: '#3a2a1e' });
+        const mug = CAST.mug(g);
+
+        // the dashboard, on a stand
+        const WX = 1080, WY = 600;
+        S.svg('rect', { x: WX - 12, y: WY + 200, width: 24, height: 870 - WY - 200, fill: INK }, g);
+        S.svg('rect', { x: WX - 110, y: 856, width: 220, height: 16, rx: 8, fill: INK }, g);
+        const bw = CAST.browser(g, { w: 720, h: 420 });
+        S.put(bw.g, { x: WX, y: WY });
+        const ui = bw.ui;
+        const UX = WX - 360, UY = WY - 210 + 44; // the ui's origin in the world
+
+        // the chart
+        S.svg('rect', { x: 28, y: 26, width: 400, height: 252, rx: 12, fill: PAPER, stroke: INK, 'stroke-width': 4 }, ui);
+        const ct = S.svg('text', { x: 48, y: 58, 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 16, 'letter-spacing': 2, fill: INK }, ui);
+        ct.textContent = 'HOURS SAVED';
+        S.svg('path', { d: 'M 52 90 L 52 254 L 408 254', fill: 'none', stroke: INK, 'stroke-width': 3, opacity: 0.4 }, ui);
+        const area = S.svg('path', { fill: ORANGE, opacity: 0.15 }, ui);
+        const line = S.svg('path', { fill: 'none', stroke: ORANGE, 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, ui);
+        const tip = S.svg('circle', { r: 9, fill: ORANGE, stroke: INK, 'stroke-width': 3 }, ui);
+        const N = 10;
+        const base = [0.18, 0.24, 0.22, 0.3, 0.34, 0.33, 0.4, 0.44, 0.47, 0.52];
+
+        // the systems' status rows, and a new one that arrives later
+        const row = (i, label) => {
+          const r = S.g(ui);
+          S.put(r, { x: 452, y: 34 + i * 62 });
+          S.svg('rect', { x: 0, y: 0, width: 244, height: 48, rx: 10, fill: PAPER, stroke: INK, 'stroke-width': 3.5 }, r);
+          const dot = S.svg('circle', { cx: 24, cy: 24, r: 10, fill: GREEN, stroke: INK, 'stroke-width': 3 }, r);
+          const tx = S.svg('text', { x: 46, y: 30, 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 17, 'letter-spacing': 1.5, fill: INK }, r);
+          tx.textContent = label;
+          const ck = CAST.check(r, { r: 13 });
+          S.put(ck.g, { x: 218, y: 24 });
+          ck.set(1);
+          return { r, dot, ck };
+        };
+        const rows = ['LEADS', 'BILLING', 'REPORTS'].map((l, i) => row(i, l));
+        const fresh = row(3, 'NEW FLOW');
+        const alertBadge = S.g(ui);
+        S.svg('circle', { cx: 218, cy: 24, r: 15, fill: ORANGE, stroke: INK, 'stroke-width': 3 }, alertBadge);
+        const ex = S.svg('text', { x: 218, y: 32, 'text-anchor': 'middle', 'font-family': 'Archivo Variable', 'font-weight': 800, 'font-size': 22, fill: INK }, alertBadge);
+        ex.textContent = '!';
+        S.put(alertBadge, { x: 452, y: 34 + 62 });
+        const newSpark = CAST.sparkle(ui, { r: 16 });
+
+        // the alert bell over the dashboard
+        const bell = CAST.bell(g, { r: 34 });
+        S.put(bell.g, { x: WX + 330, y: WY - 262 });
+        const rings = S.svg('path', { d: `M ${WX + 282} ${WY - 316} l -14 -12 M ${WX + 378} ${WY - 316} l 14 -12 M ${WX + 388} ${WY - 270} l 18 0 M ${WX + 272} ${WY - 270} l -18 0`, fill: 'none', stroke: INK, 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+
+        // NK-01, its wrench, the improvement it brings, the sparks of the fix
+        const bot = CAST.robot(g);
+        const wrench = S.g(g);
+        S.svg('rect', { x: 0, y: -7, width: 64, height: 14, rx: 7, fill: GRAY, stroke: INK, 'stroke-width': 4 }, wrench);
+        S.svg('path', { d: 'M 60 -20 A 20 20 0 1 1 60 20 L 70 8 L 84 8 L 84 -8 L 70 -8 Z', fill: GRAY, stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, wrench);
+        const plug = S.g(g);
+        S.svg('rect', { x: -36, y: -36, width: 72, height: 72, rx: 14, fill: ORANGE, stroke: INK, 'stroke-width': 5 }, plug);
+        S.svg('path', { d: 'M -16 0 L 16 0 M 0 -16 L 0 16', stroke: INK, 'stroke-width': 8, 'stroke-linecap': 'round' }, plug);
+        const sparks = CAST.burst(g, { n: 7, color: ORANGE, r0: 14, r1: 60, width: 6 });
+
+        const HOME = [1650, 600];
+        const FIX = [1590, 510];
+        const PLUG = [1590, 640];
+        const PATH = [
+          [0, HOME],
+          [3.3, HOME],
+          [3.8, FIX, E.out],
+          [5.0, FIX],
+          [5.5, HOME],
+          [6.3, HOME],
+          [7.0, PLUG, E.inOut],
+          [7.7, PLUG],
+          [8.4, HOME],
+        ];
+        S.track((t) => {
+          // the chart grows point by point; the improvement lifts the last stretch
+          const shown = 3 + (N - 3) * ramp(t, 0.3, 10.5, E.linear);
+          const boost = ramp(t, 7.6, 0.9, E.out);
+          const pts = [];
+          for (let i = 0; i < N; i++) {
+            if (i > shown) break;
+            const lift = i >= 6 ? boost * 0.1 * (i - 5) : 0;
+            const v = Math.min(0.95, base[i] + lift);
+            pts.push([60 + i * 38, 250 - v * 160]);
+          }
+          const last = Math.floor(shown);
+          if (last < N - 1) {
+            const f = shown - last;
+            const [x0, y0] = pts[last];
+            const lift = last + 1 >= 6 ? boost * 0.1 * (last + 1 - 5) : 0;
+            const y1 = 250 - Math.min(0.95, base[last + 1] + lift) * 160;
+            pts.push([x0 + 38 * f, y0 + (y1 - y0) * f]);
+          }
+          const d = 'M ' + pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L ');
+          line.setAttribute('d', d);
+          area.setAttribute('d', `${d} L ${pts[pts.length - 1][0].toFixed(1)} 254 L 60 254 Z`);
+          const [tx, ty] = pts[pts.length - 1];
+          S.put(tip, { x: tx, y: ty, s: 1 + 0.25 * S.wave(t, 0.8) });
+
+          // the alert: the middle row goes orange and rings until it's fixed
+          const alert = t > 3.0 && t < 4.9;
+          const blink = alert && t % 0.4 < 0.25;
+          rows[1].dot.setAttribute('fill', alert ? (blink ? ORANGE : PAPER) : GREEN);
+          S.put(rows[1].ck.g, { x: 218, y: 24, s: t > 4.9 ? Math.max(0.001, Math.min(1.15, S.spring(t, 4.9, { freq: 2.8, damp: 0.4 }))) : 1, o: alert ? 0 : 1 });
+          S.put(alertBadge, { x: 452, y: 34 + 62, s: 1 + 0.15 * Math.sin(t * 12), ox: 218, oy: 24, o: alert ? 1 : 0 });
+          const ringing = env(t, 3.0, 4.0, 0.05, 0.2);
+          S.put(bell.body, { r: 18 * Math.sin(t * 26) * ringing });
+          rings.style.visibility = ringing > 0.3 && Math.sin(t * 26) > -0.4 ? '' : 'hidden';
+
+          // the new flow slides in once it's plugged in
+          const nk = Math.min(1.12, S.spring(t, 7.55, { freq: 2.6, damp: 0.45 }));
+          S.put(fresh.r, { x: 452 + 60 * (1 - Math.min(1, nk)), y: 34 + 3 * 62, o: t > 7.55 ? Math.min(1, nk) : 0 });
+          fresh.dot.setAttribute('fill', ORANGE);
+          S.put(newSpark, { x: 700, y: 34 + 3 * 62, s: Math.max(0.001, Math.min(1, (t - 7.8) * 4)), r: 20 * t, o: t > 7.8 ? 1 : 0 });
+
+          // the client sips, reads the chart, and grins at the end
+          const sip = Math.max(env(t, 1.2, 2.0, 0.3), env(t, 4.0, 4.8, 0.3), env(t, 9.4, 10.2, 0.3));
+          const pleased = t > 8.6;
+          client.set({
+            x: 440, y: 870, seated: 120, leg: [[70, -70], [76, -74]], lean: -8,
+            arm: [[10, 20], [30 + 40 * sip, 100 + 25 * sip]], headTilt: -4 + 6 * sip,
+            mouth: pleased && !sip ? 'grin' : 'smile', look: [1, -0.2],
+            blink: blinkAt(t, [0.8, 3.2, 6.6, 11.0]),
+          });
+          const [mx, my] = client.hand;
+          S.put(mug.g, { x: 440 + mx, y: 870 + my + 32 });
+          mug.set(t);
+
+          // NK-01: watching, fixing, improving
+          const [x, y0] = S.kf(t, PATH);
+          const y = y0 + 6 * Math.sin(t * 3);
+          const fixing = t > 3.8 && t < 5.0;
+          const plugging = t > 6.3 && t < 7.7;
+          const away = t > 3.3 && t < 8.4;
+          const flying = (t > 3.3 && t < 3.8) || (t > 5.0 && t < 5.5) || (t > 6.3 && t < 7.0) || (t > 7.7 && t < 8.4);
+          const flip = -1;
+          const happy = t > 8.4;
+          bot.set({
+            x, y, t, flip, ground: 870 - y,
+            tilt: flying ? 12 : 0, flame: flying ? 0.8 : 0.25,
+            glow: 0.5 + 0.5 * S.wave(t, 0.7),
+            arm: happy ? [[25, -25], [150, -20 + 22 * Math.sin(t * 9)]]
+              : fixing ? [[20, -20], [70 + 30 * Math.sin(t * 30), -10]]
+              : plugging ? [[20, -20], [80, 10]]
+              : [[20, -20], [-20, 20]],
+            eyes: happy ? 'happy' : t > 3.0 && t < 3.8 ? 'wide' : 'normal',
+            look: away ? [0.8, 0.2] : [1, 0],
+            blink: blinkAt(t, [1.2, 2.6, 6.0, 10.2]),
+          });
+          const [hx, hy] = bot.hand;
+          const wk = K.pop(t, 3.8, 5.0);
+          S.put(wrench, { x: x + hx * flip, y: y + hy, sx: flip * wk, sy: wk, r: flip * 30 * Math.sin(t * 30), o: fixing ? 1 : 0 });
+          sparks.set(fixing ? ((t - 3.8) % 0.3) / 0.3 : 0);
+          S.put(sparks.g, { x: x + (hx + 70) * flip, y: y + hy });
+          const inserted = ramp(t, 7.3, 0.3, E.in);
+          S.put(plug, { x: x + (hx + 30) * flip - 60 * inserted, y: y + hy, s: Math.max(0.001, 0.8 * (1 - inserted) * K.pop(t, 6.3)), r: 8 * Math.sin(t * 5), o: plugging && inserted < 1 ? 1 : 0 });
+        });
+
+        headline(0, 'Step 04 · Optional', 'Watched,<br /><em>and improved</em>.', 0.3, 99, { dark: false });
+        K.note('Illustrated story · How a project works', () => false);
+        K.camera([
+          [0, [1010, 540, 1]],
+          [12, [1030, 540, 1.04], E.linear],
+        ]);
+      });
+    </script>
+  </body>
+</html>

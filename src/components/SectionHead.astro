@@ -1,0 +1,44 @@
+---
+/**
+ * A section opener, set like a drawing sheet: a ruled line with a mono label
+ * on the left and the section index on the right, then the title and lead.
+ */
+interface Props {
+  title: string;
+  lead?: string;
+  /** Mono label on the left of the rule, e.g. "Selected work". */
+  label?: string;
+  /** On the right of the rule, e.g. "03 / 08". */
+  index?: string;
+  center?: boolean;
+  /** Marks the lead as placeholder copy. */
+  ph?: string;
+}
+
+const { title, lead, label, index, center = false, ph } = Astro.props;
+---
+
+<div class:list={['section-head', center && 'section-head--center']}>
+  {
+    (label || index) && (
+      <div class="section-head__rule" data-reveal>
+        {label && (
+          <span class="label label--signal">
+            <span data-decode>{label}</span>
+          </span>
+        )}
+        {index && <span class="label">{index}</span>}
+      </div>
+    )
+  }
+  <h2 class="h2" data-reveal data-split>{title}</h2>
+  {
+    lead && (
+      <p class="lead" data-reveal style="--d: 140ms" data-ph={ph}>
+        {lead}
+        <slot name="after-lead" />
+      </p>
+    )
+  }
+  <slot />
+</div>

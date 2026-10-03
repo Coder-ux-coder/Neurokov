@@ -1,0 +1,217 @@
+---
+import Board from '../components/Board.astro';
+import Button from '../components/Button.astro';
+import Credentials from '../components/Credentials.astro';
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import Figure from '../components/Figure.astro';
+import Founder from '../components/Founder.astro';
+import Guide from '../components/Guide.astro';
+import Guarantee from '../components/Guarantee.astro';
+import Icon from '../components/Icon.astro';
+import Machine from '../components/Machine.astro';
+import Marquee from '../components/Marquee.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServiceRows from '../components/ServiceRows.astro';
+import Slides from '../components/Slides.astro';
+import Steps from '../components/Steps.astro';
+import Studies from '../components/Studies.astro';
+import Values from '../components/Values.astro';
+import Visual from '../components/Visual.astro';
+import { homeFaqs } from '../data/faqs';
+import Base from '../layouts/Base.astro';
+
+// Callouts on Fig. 02, placed on the dashboard in the photo (percent of the frame).
+// A callout near the right edge flips, its label reading leftward so it stays in the frame.
+const callouts = [
+  { x: 33.6, y: 30.4, w: 64, text: '01 Hours saved', delay: 1.5 },
+  { x: 47, y: 47, w: 54, text: '02 Runs per day', delay: 1.7 },
+  { x: 63.5, y: 57.6, w: 40, text: '03 Lead to booked call', delay: 1.9, flip: true },
+];
+---
+
+<Base intro>
+  <!-- Hero: the promise, then the proof flipping past on the right -->
+  <section class="hero" data-hold>
+    <div class="gridlines" aria-hidden="true"></div>
+    <div class="container">
+      <div class="runhead" data-reveal>
+        <span class="label label--signal"><span data-decode>Automation agency</span></span>
+        <span class="runhead__line draw" aria-hidden="true"></span>
+        <span class="label runhead__meta">Est. 2020 · 150+ systems shipped</span>
+      </div>
+      <h1 class="display hero__title" data-reveal data-split>
+        Scale with automation, not headcount<span class="accent-mark">.</span>
+      </h1>
+      <p class="promise" data-reveal style="--d: 140ms">
+        <Icon name="shield-check" size={22} />
+        <span><mark>If it doesn’t work, you don’t pay.</mark> And the audit is 100% free.</span>
+      </p>
+      <div class="hero__row">
+        <div class="hero__copy">
+          <div class="hero__pitch">
+            <p class="lead" data-reveal style="--d: 260ms">
+              Automated systems that find your leads, answer them in seconds and run your back office. Tested on your real
+              data before launch, so they work from day one.
+            </p>
+            <div class="hero__cta" data-reveal style="--d: 360ms">
+              <Button size="lg" label="Book your free audit" />
+            </div>
+          </div>
+          <div data-reveal style="--d: 460ms"><Credentials /></div>
+        </div>
+        <div class="hero__media" data-reveal="clip" style="--d: 200ms"><Slides /></div>
+      </div>
+      <div class="hero__board"><Board /></div>
+    </div>
+  </section>
+
+  <Marquee />
+
+  <!-- 01 The record -->
+  <section class="section">
+    <div class="container split">
+      <div class="split__copy">
+        <div class="section-head__rule" data-reveal>
+          <span class="label label--signal"><span data-decode>The record</span></span>
+          <span class="label">01 / 08</span>
+        </div>
+        <h2 class="h2" data-reveal data-split>50,000+ hours handed back to the teams we build for.</h2>
+        <p class="lead" data-reveal style="--d: 120ms">
+          We’ve booked a growth agency 46 qualified calls in 30 days, cut a consulting firm’s lead response from 19 hours
+          to under 60 seconds, and scaled a psychology platform our CEO co-founded by over 100% in a single month. Same
+          systems we build for clients.
+        </p>
+        <p class="lead" data-reveal style="--d: 180ms">
+          We don’t sell software or slide decks. We find the work that’s eating your team’s week, build the system that
+          does it instead and hand it over working.
+        </p>
+        <div data-reveal style="--d: 240ms"><Button label="Get the same systems" /></div>
+      </div>
+      <div class="split__media" data-reveal style="--d: 120ms">
+        <Figure n="02" caption="Automation overview: hours saved, runs per day and the busiest workflows.">
+          <div class="marks">
+            <Visual
+              name="home-feature"
+              alt="A monitor on a desk showing an automation dashboard: hours saved, workflow runs and success rate"
+              icon="workflow"
+              ratio="3 / 2"
+              sizes="(max-width: 900px) 100vw, 620px"
+              dither
+              live
+            >
+              <div class="callouts" aria-hidden="true">
+                {
+                  callouts.map((c) => (
+                    <span
+                      class:list={['callout', c.flip && 'callout--flip']}
+                      style={`--x: ${c.x}%; --y: ${c.y}%; --w: ${c.w}px; --cd: ${c.delay}s`}
+                    >
+                      <span class="callout__line" />
+                      <span class="callout__text">{c.text}</span>
+                    </span>
+                  ))
+                }
+              </div>
+            </Visual>
+          </div>
+        </Figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 How it works -->
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead
+        label="How it works"
+        index="02 / 08"
+        title="Every lead answered in under 60 seconds."
+        lead="Here’s one of the systems we build most, as a working model. Leads land from every channel, get checked against your ideal client, answered and booked while your team gets on with the day."
+      />
+      <div data-reveal><Machine /></div>
+    </div>
+  </section>
+
+  <!-- 03 Work -->
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="Selected work"
+        index="03 / 08"
+        title="Results, not promises."
+        lead="Every system below was scoped, built and launched by us. Here’s what changed once it went live."
+      >
+        <a slot="after-lead" class="text-link" href="/case-studies/"> See all case studies →</a>
+      </SectionHead>
+      <Studies />
+    </div>
+  </section>
+
+  <!-- 04 Founder -->
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead
+        label="Who builds it"
+        index="04 / 08"
+        title="Building automations since 2020."
+        lead="Long before every agency started selling automation."
+      />
+      <Founder film="04" />
+    </div>
+  </section>
+
+  <!-- 05 Why us -->
+  <section class="section section--ink" data-dark>
+    <div class="container">
+      <SectionHead label="Why us" index="05 / 08" title="We don’t sell hours. We ship systems." />
+      <Values />
+    </div>
+  </section>
+
+  <!-- 06 Services -->
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="What we automate"
+        index="06 / 08"
+        title="Five systems that give your team its week back."
+        lead="The five that win back the most time and revenue in a service business. Each one works from day one."
+      />
+      <div data-tour="services"><ServiceRows /></div>
+    </div>
+  </section>
+
+  <!-- 07 Process -->
+  <section class="section section--deep">
+    <div class="container">
+      <SectionHead
+        label="The process"
+        index="07 / 08"
+        title="From first call to launch."
+        lead="Four steps, one fixed price and a system that works from day one."
+      />
+      <Steps />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container"><Guarantee /></div>
+  </section>
+
+  <!-- 08 FAQ -->
+  <section class="section">
+    <div class="container faq-layout">
+      <div class="faq-layout__head">
+        <SectionHead label="Questions" index="08 / 08" title="Questions, answered." />
+        <p class="muted" data-reveal>
+          More on pricing, the guarantee and security in the <a class="text-link" href="/faq/">full FAQ</a>.
+        </p>
+      </div>
+      <Faq items={homeFaqs} />
+    </div>
+  </section>
+
+  <Cta />
+  <Guide />
+</Base>

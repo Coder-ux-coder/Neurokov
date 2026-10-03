@@ -1,0 +1,38 @@
+---
+/**
+ * A workflow drawn as a live circuit: a pulse runs down the wire and each step
+ * lights up in turn (circuit.ts). The run is a simulation and says so.
+ */
+interface Props {
+  steps: string[];
+  title?: string;
+}
+
+const { steps, title = 'Workflow' } = Astro.props;
+---
+
+<div class="circuit" data-circuit>
+  <div class="circuit__head">
+    <span class="label label--signal">{title}</span>
+    <span class="label">Simulated run <b data-circuit-run>0001</b></span>
+  </div>
+  <div class="circuit__body">
+    <span class="circuit__wire" aria-hidden="true"><span class="circuit__pulse"></span></span>
+    <ol class="circuit__list">
+      {
+        steps.map((s) => (
+          <li class="circuit__node">
+            <span class="circuit__text">{s}</span>
+            <span class="circuit__state" aria-hidden="true">
+              Ready
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+  <div class="circuit__foot label">
+    <span>{steps.length} steps · runs on its own</span>
+    <span data-circuit-clock>T+00:00.0</span>
+  </div>
+</div>

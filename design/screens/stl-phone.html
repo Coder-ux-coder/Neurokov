@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="size" content="390x844@3" />
+    <link rel="stylesheet" href="app.css" />
+    <style>
+      .screen {
+        --w: 390px;
+        --h: 844px;
+        display: block;
+        background:
+          radial-gradient(120% 60% at 80% 105%, #8a3a12 0%, transparent 60%),
+          radial-gradient(90% 50% at 0% 0%, #2a1a12 0%, transparent 70%),
+          linear-gradient(180deg, #0d0b0a 0%, #120e0c 55%, #2b170d 100%);
+        font-size: 14px;
+      }
+
+      i svg {
+        display: block;
+        width: 18px;
+        height: 18px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        height: 54px;
+        padding: 14px 30px 0 38px;
+        font-weight: 600;
+        font-size: 15px;
+      }
+
+      .status .icons {
+        margin-left: auto;
+        display: flex;
+        gap: 6px;
+      }
+
+      .status svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .lock {
+        display: grid;
+        place-items: center;
+        margin-top: 4px;
+        color: rgb(255 255 255 / 0.85);
+      }
+
+      .date {
+        margin-top: 8px;
+        text-align: center;
+        font-size: 19px;
+        font-weight: 500;
+        color: rgb(255 255 255 / 0.85);
+      }
+
+      .time {
+        text-align: center;
+        font-size: 92px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: rgb(255 255 255 / 0.92);
+      }
+
+      .stack {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 372px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .note {
+        display: grid;
+        grid-template-columns: 38px 1fr;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 22px;
+        background: rgb(62 58 55 / 0.62);
+        font-size: 14px;
+        line-height: 1.3;
+      }
+
+      .note.back {
+        margin: -2px 14px 0;
+        padding: 9px 14px;
+        opacity: 0.55;
+        border-radius: 18px;
+        grid-template-columns: 1fr;
+      }
+
+      .app {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 17px;
+      }
+
+      .note .t {
+        display: flex;
+        gap: 8px;
+        font-weight: 600;
+      }
+
+      .note .t span {
+        margin-left: auto;
+        font-weight: 400;
+        color: rgb(255 255 255 / 0.55);
+        font-size: 13px;
+      }
+
+      .note p {
+        color: rgb(255 255 255 / 0.86);
+      }
+
+      .bottom {
+        position: absolute;
+        left: 46px;
+        right: 46px;
+        bottom: 50px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .bottom span {
+        display: grid;
+        place-items: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgb(255 255 255 / 0.14);
+      }
+
+      .bottom svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .home {
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        width: 134px;
+        height: 5px;
+        margin-left: -67px;
+        border-radius: 3px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen">
+      <div class="status">
+        <span></span>
+        <div class="icons"><i data-i="signal"></i><i data-i="wifi"></i><i data-i="battery-full"></i></div>
+      </div>
+      <div class="lock"><i data-i="lock"></i></div>
+      <div class="date">Wednesday, September 23</div>
+      <div class="time">6:48</div>
+
+      <div class="stack">
+        <div class="note">
+          <span class="app" style="background: linear-gradient(135deg, #0ea5a4, #155e75)">A</span>
+          <div>
+            <div class="t">Call booked<span>now</span></div>
+            <p>Priya Shah, Harbor &amp; Finch. Thu 10:30 AM with Emma. First reply went out in 38 seconds.</p>
+          </div>
+        </div>
+        <div class="note">
+          <span class="app" style="background: linear-gradient(135deg, #ff7a3d, #d9430f)"><i data-i="sparkles"></i></span>
+          <div>
+            <div class="t">New inbound lead<span>2m ago</span></div>
+            <p>Brook Street Legal filled in the website form. Fit score 86. Reply sent.</p>
+          </div>
+        </div>
+        <div class="note back"><p>3 more notifications</p></div>
+      </div>
+
+      <div class="bottom">
+        <span><i data-i="flashlight"></i></span>
+        <span><i data-i="camera"></i></span>
+      </div>
+      <div class="home"></div>
+    </div>
+    <script src="icons.js"></script>
+    <script src="app.js"></script>
+    <script src="anim.js"></script>
+    <script>
+      // The next lead lands on the lock screen as it lands on the board.
+      ANIM.setup(() => {
+        const A = ANIM;
+        const note = A.html(`
+          <div class="note">
+            <span class="app" style="background: linear-gradient(135deg, #ff7a3d, #d9430f)"><i data-i="sparkles"></i></span>
+            <div>
+              <div class="t">New inbound lead<span>now</span></div>
+              <p>Lakeside Partners filled in the website form. Fit score 91. Writing the reply.</p>
+            </div>
+          </div>`);
+        A.insert(note, A.$('.note'), 4.3, { gap: 8, flash: false });
+      });
+    </script>
+  </body>
+</html>

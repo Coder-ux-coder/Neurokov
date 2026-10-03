@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 20s" />
+    <meta name="poster" content="16.95" />
+    <title>Psychology platform</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // Case 01, told as a story: every new client at an online psychology
+      // platform brought more admin, and the admin put a ceiling on growth. With
+      // the business automated end to end, from the first enquiry to the final
+      // invoice, the business grew by over 100% in a single month. Real numbers only
+      // (case 01); no amounts.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 4.5],
+          [4.5, 8.2],
+          [8.2, 15.6],
+          [15.6, 20.1],
+        ]);
+        const { blinkAt, headline } = K;
+        const TEAL = '#6d9c95', BLUE = '#5b7fa6', PLUM = '#9b6b8e', MUSTARD = '#e0b44c';
+        const AVATARS = [TEAL, ORANGE, MUSTARD, BLUE, PLUM];
+
+        // The six jobs each new client brings, as small icons.
+        const icon = (parent, k, s = 1) => {
+          const g = S.g(parent);
+          const inner = S.g(g);
+          [
+            () => CAST.envelope(inner, { w: 86, h: 58 }),
+            () => S.put(CAST.clipboard(inner, { w: 280, h: 360, fields: 4, button: 'SEND' }).g, { s: 0.3 }),
+            () => S.put(CAST.calendar(inner, { w: 300, h: 260, cols: 4, rows: 2 }).g, { s: 0.32 }),
+            () => CAST.bell(inner, { r: 30 }),
+            () => CAST.receipt(inner, { w: 74, h: 100 }),
+            () => CAST.sticky(inner, { text: 'Follow\nup', w: 84, size: 16 }),
+          ][k]();
+          S.put(inner, { s });
+          return g;
+        };
+        const avatar = (parent, color, r = 22) => {
+          const g = S.g(parent);
+          S.svg('circle', { r, fill: color, stroke: INK, 'stroke-width': 4 }, g);
+          S.svg('circle', { cy: -r * 0.12, r: r * 0.52, fill: PAPER, stroke: INK, 'stroke-width': 3 }, g);
+          S.svg('circle', { cx: -r * 0.18, cy: -r * 0.18, r: r * 0.08, fill: INK }, g);
+          S.svg('circle', { cx: r * 0.18, cy: -r * 0.18, r: r * 0.08, fill: INK }, g);
+          S.svg('path', { d: `M ${-r * 0.2} ${r * 0.05} Q 0 ${r * 0.22} ${r * 0.2} ${r * 0.05}`, fill: 'none', stroke: INK, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, g);
+          return g;
+        };
+
+        // ---------- Act 1: every client brings more admin ----------
+        const g1 = K.act(0);
+        K.room(g1, { floor: 870, wall: '#e9e4ea', ground: '#dcd5dc' });
+        CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, o: 0.08 });
+        const win1 = CAST.window(g1, { w: 170, h: 220, night: false });
+        S.put(win1.g, { x: 1640, y: 420 });
+        S.put(CAST.sun(win1.outside, { r: 30 }).g, { x: 40, y: -50 });
+        S.put(CAST.plant(g1), { x: 1000, y: 870, s: 1.05 });
+        const pro = CAST.person(g1, { shirt: TEAL, hair: 'bob', hairColor: '#3a2a1e', glasses: true });
+        // the loop keeps right of the headline's last word
+        const JUG = { x: 1350, y: 440, a: 160, b: 150 };
+        const spin = (t) => 2.6 * t + 0.32 * t * t;
+        const clients = [0, 1, 2, 3, 4, 5].map((i) => {
+          const at = 0.35 + i * 0.6;
+          const pos = [[330, 640], [470, 560], [610, 650], [390, 770], [560, 780], [730, 720]][i];
+          const av = avatar(g1, AVATARS[i % 5], 34);
+          const job = icon(g1, i, 0.9);
+          S.track((t) => {
+            const p = Math.min(1.15, S.spring(t, at, { freq: 2.6, damp: 0.45 }));
+            S.put(av, { x: pos[0], y: pos[1], s: Math.max(0.001, p), o: t > at ? 1 : 0 });
+            // the job flies from the new client into the juggle, and falls with the rest
+            // low across to the practitioner's hands, then up into the loop
+            const toHand = ramp(t, at + 0.25, 0.35, E.inOut);
+            const up = ramp(t, at + 0.6, 0.2, E.out);
+            const th = spin(t) + i * 2.1;
+            const lx = JUG.x + JUG.a * Math.cos(th), ly = JUG.y - JUG.b * Math.sin(th);
+            const hx = 1330, hy = 620;
+            let x = pos[0] + (hx - pos[0]) * toHand + (lx - hx) * up;
+            let y = pos[1] + (hy - pos[1]) * toHand - 40 * Math.sin(Math.PI * toHand) + (ly - hy) * up;
+            let r = 30 * Math.sin(th);
+            const dropAt = 3.95 + i * 0.07;
+            if (t > dropAt) {
+              const u = t - dropAt;
+              const th0 = spin(dropAt) + i * 2.1;
+              const x0 = JUG.x + JUG.a * Math.cos(th0), y0 = JUG.y - JUG.b * Math.sin(th0);
+              x = x0 + (i % 2 ? 1 : -1) * 120 * u;
+              y = Math.min(830 - (i % 3) * 8, y0 - 300 * u + 2600 * u * u);
+              r = 30 * Math.sin(th0) + (i % 2 ? 1 : -1) * 260 * Math.min(u, 0.45);
+            }
+            S.put(job, { x, y, r, s: K.pop(t, at + 0.25), o: t > at + 0.25 ? 1 : 0 });
+          });
+          return at;
+        });
+        const drops1 = [0, 1].map(() => CAST.sweat(g1));
+        S.track((t) => {
+          const w = spin(t) * 2;
+          const dropped = t > 3.95;
+          const flail = dropped ? env(t, 3.95, 4.5, 0.1) : 0;
+          pro.set({
+            x: 1330, y: 870, arm: dropped ? [[-20 - 60 * flail, 40], [20 + 60 * flail, 40]] : [[16 + 22 * Math.sin(w), 112], [16 - 22 * Math.sin(w), 112]],
+            mouth: dropped ? 'frown' : t > 2.2 ? 'o' : 'smile', look: dropped ? [0.3, 0.9] : [0.3 * Math.cos(spin(t)), -1],
+            blink: dropped ? (t < 4.2 ? 1 : 0) : blinkAt(t, [1.6, 3.1]), bob: dropped ? 0 : 3 * Math.abs(Math.sin(w)),
+          });
+          drops1.forEach((d, i) => {
+            S.put(d.g, { x: 1375, y: 470 });
+            d.set(ramp(t, 2.7 + i * 0.7, 0.55, E.linear));
+          });
+        });
+        headline(0, 'Fig. 1 · Online psychology platform', 'Every new client<br />meant <em>more admin</em>.', 0.45, 4.1, { dark: false });
+
+        // ---------- Acts 2 and 4: the growth chart, and its ceiling ----------
+        const chart = S.g(S.cam);
+        // (up until the closing card's wipe has covered it)
+        S.track((t) => (chart.style.visibility = (t >= 4.5 && t < 8.2) || (t >= 15.6 && t < 18.6) ? '' : 'hidden'));
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, chart);
+        K.paper(chart);
+        const BX = [980, 1100, 1220, 1340, 1460, 1640];
+        const HB = [110, 170, 226, 270, 270, 552];
+        const CEIL = 600;
+        const bars = BX.map((x, i) => {
+          const g = S.g(chart);
+          const r = S.svg('rect', { x: x - 42, width: 84, rx: 6, fill: i === 5 ? ORANGE : i === 4 ? '#ffc8a8' : SHADE, stroke: INK, 'stroke-width': 5 }, g);
+          return { g, r, x };
+        });
+        // the ceiling, in chunks so it can break. Its name plate sits on the
+        // middle chunk, clear of the seams, and flies off with it. The chunks
+        // to the left only hop, so none flies up through the headline, and none
+        // falls through the two labels under the last bars (x 1385 to 1720).
+        const chunks = [0, 1, 2, 3, 4].map((i) => {
+          const g = S.g(chart);
+          const x0 = 940 + i * 150;
+          S.svg('rect', { x: 0, y: 0, width: 150, height: 58, fill: '#b9b2a5', stroke: INK, 'stroke-width': 5 }, g);
+          for (let k = 0; k < 4; k++) S.svg('line', { x1: 10 + k * 38, y1: 50, x2: 36 + k * 38, y2: 8, stroke: INK, 'stroke-width': 2.5, opacity: 0.35 }, g);
+          if (i === 2) {
+            S.svg('rect', { x: 11, y: 12, width: 128, height: 34, fill: SHADE, stroke: INK, 'stroke-width': 3 }, g);
+            const name = S.svg('text', { x: 75, y: 37, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 21, 'letter-spacing': 3, fill: INK }, g);
+            name.textContent = 'CEILING';
+          }
+          return { g, x0, vx: [-200, -90, -60, 520, 620][i], vy: [-260, -320, -820, -900, -700][i], spin: [-220, 160, -140, 260, 300][i] };
+        });
+        const crack = S.svg('path', { d: 'M 1625 600 L 1640 580 L 1625 566 L 1647 552 M 1640 580 L 1663 572', fill: 'none', stroke: INK, 'stroke-width': 4, 'stroke-linecap': 'round' }, chart);
+        // (its lines only go down and out: one going up would cross the ceiling's name)
+        const bonk = CAST.burst(chart, { color: INK, r0: 36, r1: 66, n: 8, keep: (a) => a > 90 && a < 270 });
+        const stars = [0, 1, 2].map(() => S.svg('path', { d: 'M 0 -12 L 3 -3 L 12 0 L 3 3 L 0 12 L -3 3 L -12 0 L -3 -3 Z', fill: '#ffd166', stroke: INK, 'stroke-width': 2.5 }, chart));
+        const labBefore = S.html('<div class="mono" style="left:1460px;top:896px;transform:translateX(-50%);font-size:18px">Month before</div>', S.hudCam);
+        const labAfter = S.html('<div class="mono" style="left:1640px;top:896px;transform:translateX(-50%);font-size:18px;color:#ff4f00;font-weight:600">One month in</div>', S.hudCam);
+        const twice = S.html('<div style="position:absolute;left:1640px;top:250px;transform:translate(-50%,-50%);font-weight:800;font-stretch:125%;font-size:62px;letter-spacing:-0.03em;color:#ff4f00">2×+</div>', S.hudCam);
+        const debris = CAST.burst(chart, { color: INK, r0: 60, r1: 150, n: 10, width: 7 });
+        const pro2 = CAST.person(chart, { shirt: TEAL, hair: 'bob', hairColor: '#3a2a1e', glasses: true });
+        const bot4 = CAST.robot(chart);
+        const BREAK = 16.45;
+        S.track((t) => {
+          const act4 = t >= 15.6;
+          bars.forEach(({ r, x, g }, i) => {
+            let h;
+            if (i < 5) h = HB[i] * Math.min(1.04, S.spring(t, 4.85 + i * 0.45, { freq: 2.2, damp: 0.5 }));
+            else h = !act4 ? 0 : t < BREAK ? Math.min(HB[3], 700 * ramp(t, 15.85, 0.45, E.in) * 0.6) : HB[3] + (HB[5] - HB[3]) * Math.min(1.03, S.spring(t, BREAK, { freq: 1.6, damp: 0.45 }));
+            if (i >= 3 && i < 5) h = Math.min(h, HB[3]);
+            if (act4 && i < 5) h = HB[i];
+            r.setAttribute('y', (870 - h).toFixed(1));
+            r.setAttribute('height', Math.max(0, h).toFixed(1));
+            // pressing against the ceiling
+            const squash = i === 5 && t > 16.2 && t < BREAK ? 0.03 * Math.sin(t * 60) : 0;
+            S.put(g, { x: x * squash, sx: 1 + squash, sy: 1 });
+          });
+          const bonkAt = [4.85 + 3 * 0.45 + 0.18, 4.85 + 4 * 0.45 + 0.18];
+          const lastBonk = bonkAt.filter((a) => t > a && !act4).pop();
+          if (lastBonk) {
+            const i = bonkAt.indexOf(lastBonk) + 3;
+            S.put(bonk.g, { x: BX[i], y: CEIL });
+            bonk.set(ramp(t, lastBonk, 0.3, E.linear));
+          } else bonk.set(0);
+          stars.forEach((st, k) => {
+            const on = !act4 && t > bonkAt[1];
+            const a = t * 5 + (k * 2 * Math.PI) / 3;
+            S.put(st, { x: BX[4] + 60 * Math.cos(a), y: CEIL + 44 + 16 * Math.sin(a), r: t * 200, o: on ? 1 : 0 });
+          });
+          // the ceiling gives way
+          chunks.forEach(({ g, x0, vx, vy, spin: sp }) => {
+            const u = act4 ? Math.max(0, t - BREAK) : 0;
+            S.put(g, { x: x0 + 75 + vx * u, y: CEIL - 29 + vy * u + 1800 * u * u, r: sp * u, ox: 75, oy: 29, o: u < 1.4 ? 1 : 0 });
+          });
+          S.draw(crack, act4 ? ramp(t, 16.2, 0.2, E.out) : 0);
+          crack.style.visibility = act4 && t > 16.2 && t < BREAK ? '' : 'hidden';
+          S.put(debris.g, { x: BX[5], y: CEIL - 20 });
+          debris.set(act4 ? ramp(t, BREAK, 0.5, E.linear) : 0);
+          labBefore.style.visibility = labAfter.style.visibility = act4 ? '' : 'hidden';
+          twice.style.visibility = act4 ? '' : 'hidden';
+          twice.style.opacity = ramp(t, 16.95, 0.2).toFixed(3);
+          twice.style.transform = `translate(-50%,-50%) scale(${Math.max(0.001, Math.min(1.15, S.spring(t, 16.95))).toFixed(3)})`;
+          // the practitioner: stuck, then cheering
+          const cheer = act4 ? env(t, BREAK + 0.1, 20, 0.2) : 0;
+          pro2.set({
+            x: 600, y: 870, arm: cheer > 0 ? [[-150 + 20 * Math.sin(t * 10), 20], [150 - 20 * Math.sin(t * 10), -20]] : [[10, 20], [-10, 30]],
+            mouth: cheer > 0 ? 'grin' : act4 ? 'o' : t > 6.5 ? 'frown' : 'flat', look: [1, -0.8], bob: 16 * cheer * Math.abs(Math.sin(t * 8)),
+            blink: blinkAt(t, [5.6, 7.4, 17.8]), headTilt: -6,
+          });
+          const fly = Math.min(1, S.spring(t, 16.7, { freq: 1.6, damp: 0.5 }));
+          // (it flies in from beyond the frame's left edge)
+          bot4.set({ x: -150 + 960 * fly, y: 610 + 8 * Math.sin(t * 2.6), t, ground: 260, eyes: 'happy', look: [0.8, -0.6], arm: [[20, -20], [-150 + 24 * Math.sin(t * 12), -30]], flame: 0.4 + 0.6 * (1 - fly), tilt: -12 * (1 - fly), glow: 0.8 });
+          bot4.root.style.visibility = act4 && t > 16.7 ? '' : 'hidden';
+        });
+        headline(1, 'Fig. 2 · The problem', 'The admin put a<br /><em>ceiling</em> on growth.', 4.95, 7.8, { dark: false });
+        headline(3, 'Fig. 4 · One month in', 'The business<br />more than <em>doubled</em>.', 15.95, 99, { dark: false });
+
+        // ---------- Act 3: end to end ----------
+        const g3 = K.act(2);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g3);
+        CAST.dots(g3, { x0: -600, y0: -600, w: 3200, h: 2400 });
+        const LINE = 'M 100 800 L 560 800 Q 640 800 700 740 L 800 640 Q 860 580 940 580 L 1260 580 Q 1340 580 1400 520 L 1500 420 Q 1560 360 1640 360 L 1900 360';
+        S.svg('path', { d: LINE, fill: 'none', stroke: INK, 'stroke-width': 26, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g3);
+        S.svg('path', { d: LINE, fill: 'none', stroke: SHADE, 'stroke-width': 12, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g3);
+        const lit = S.svg('path', { d: LINE, fill: 'none', stroke: ORANGE, 'stroke-width': 12, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g3);
+        const line = S.svg('path', { d: LINE, fill: 'none', stroke: 'none' }, g3);
+        const TOTAL = line.getTotalLength();
+        const lenAt = (x, y) => {
+          let best = 0, bd = 1e9;
+          for (let l = 0; l <= TOTAL; l += 4) {
+            const p = line.getPointAtLength(l);
+            const d = (p.x - x) ** 2 + (p.y - y) ** 2;
+            if (d < bd) (bd = d), (best = l);
+          }
+          return best;
+        };
+        const STN = [
+          ['Enquiry answered', 380, 800, 0],
+          ['Intake forms back', 750, 690, 1],
+          ['Session booked', 1100, 580, 2],
+          ['Reminder + follow-up', 1450, 470, 3],
+          ['Invoiced + reported', 1760, 360, 4],
+        ].map(([label, x, y, k], i) => {
+          const L = lenAt(x, y);
+          const dot = S.svg('circle', { cx: x, cy: y, r: 24, fill: PAPER, stroke: INK, 'stroke-width': 7 }, g3);
+          const ring = S.svg('circle', { cx: x, cy: y, r: 24, fill: 'none', stroke: ORANGE, 'stroke-width': 5 }, g3);
+          const badge = S.g(g3);
+          S.svg('circle', { r: 54, fill: PAPER, stroke: INK, 'stroke-width': 5 }, badge);
+          icon(badge, [0, 1, 2, 3, 4][k], 0.72);
+          const ck = CAST.check(badge, { r: 18 });
+          S.put(ck.g, { x: 40, y: -40 });
+          // (the last label hangs left of its stop, clear of the frame's edge)
+          const lab = K.hudAct(S.html(`<div class="mono" style="left:${x}px;top:${y + 174}px;transform:translateX(${i === 4 ? -75 : -50}%);font-size:24px;font-weight:600">${label}</div>`, S.hudCam), 2);
+          return { L, x, y, dot, ring, badge, ck, lab };
+        });
+        // the first client's ride: to each station, a pause while it's handled, on
+        const T1 = [8.6];
+        STN.forEach((_, i) => T1.push(T1[T1.length - 1] + (i === 0 ? 0.5 : 0.55), T1[T1.length - 1] + (i === 0 ? 0.5 : 0.55) + 0.28));
+        const keys1 = [[8.6, 0]];
+        STN.forEach((s, i) => {
+          keys1.push([T1[1 + i * 2], s.L, E.inOut]);
+          keys1.push([T1[2 + i * 2], s.L, E.linear]);
+        });
+        keys1.push([T1[T1.length - 1] + 0.45, TOTAL + 60, E.in]);
+        const reach = STN.map((_, i) => T1[1 + i * 2]);
+        const first = avatar(g3, TEAL, 28);
+        const stream = Array.from({ length: 12 }, (_, j) => ({ g: avatar(g3, AVATARS[(j + 1) % 5], 22), at: 11.3 + j * 0.33 }));
+        const bot3 = CAST.robot(g3);
+        bot3.root.firstChild.style.display = 'none'; // a map has no floor to cast a shadow on
+        const zap = CAST.burst(g3, { color: ORANGE, r0: 30, r1: 60, n: 7 });
+        S.track((t) => {
+          const l1 = S.kf(t, keys1);
+          const p1 = line.getPointAtLength(Math.min(l1, TOTAL));
+          S.put(first, { x: p1.x + Math.max(0, l1 - TOTAL), y: p1.y - 4, s: K.pop(t, 8.6), o: t > 8.6 && l1 < TOTAL + 50 ? 1 : 0 });
+          S.draw(lit, Math.min(1, l1 / TOTAL));
+          const streamLens = stream.map(({ g, at }) => {
+            const l = (t - at) * 760;
+            const p = line.getPointAtLength(S.clamp(l, 0, TOTAL));
+            // (each grows in at the line's start, and rides on off its end, out of frame)
+            S.put(g, { x: p.x + Math.max(0, l - TOTAL), y: p.y - 4, s: Math.max(0.001, E.out(S.clamp(l / 50))), o: l > 0 && l < TOTAL + 60 ? 1 : 0 });
+            return l;
+          });
+          STN.forEach(({ L, dot, ring, badge, ck, x, y }, i) => {
+            const on = t >= reach[i];
+            dot.setAttribute('fill', on ? ORANGE : PAPER);
+            const p = Math.min(1.12, S.spring(t, reach[i] - 0.05, { freq: 2.4, damp: 0.45 }));
+            S.put(badge, { x, y: y + 104, s: Math.max(0.001, 0.4 + 0.6 * p), o: 1 });
+            ck.set(ramp(t, reach[i] + 0.1, 0.22, E.out));
+            // a ring pulses as each later client passes through
+            const since = streamLens.map((l) => (l - L) / 760).filter((d) => d >= 0 && d < 0.4);
+            const u = since.length ? since[0] / 0.4 : t >= reach[i] && t < reach[i] + 0.4 ? (t - reach[i]) / 0.4 : 1;
+            ring.setAttribute('r', (24 + 26 * u).toFixed(1));
+            ring.setAttribute('opacity', (u < 1 ? 1 - u : 0).toFixed(3));
+          });
+          // NK-01 rides along with the first client, then watches the line
+          const done = t > T1[T1.length - 1] + 0.2;
+          const settle = done ? Math.min(1, S.spring(t, T1[T1.length - 1] + 0.2, { freq: 1.4, damp: 0.6 })) : 0;
+          const bx = done ? 1770 + (1480 - 1770) * settle : p1.x + 10;
+          const by = done ? 210 + (220 - 210) * settle : p1.y - 150;
+          const at = reach.find((a) => t >= a && t < a + 0.3);
+          bot3.set({
+            x: bx, y: by + 8 * Math.sin(t * 2.6), t, s: 0.85, ground: 300,
+            flame: 0.5, glow: at ? 1 : 0.6, eyes: done ? 'happy' : 'normal', look: done ? [-0.5, 0.6] : [0, 0.9],
+            arm: [[20, -20], at ? [-10, 70] : done ? [-150 + 24 * Math.sin(t * 12), -30] : [-30, 30]], blink: blinkAt(t, [9.7, 12.9, 14.6]),
+          });
+          if (at) {
+            const s = STN[reach.indexOf(at)];
+            S.put(zap.g, { x: s.x, y: s.y });
+            zap.set(ramp(t, at, 0.3, E.linear));
+          } else zap.set(0);
+        });
+        headline(2, 'Fig. 3 · With Neurokov', 'Now it runs<br /><em>end to end</em>.', 8.75, 15.3, { dark: false });
+
+        // ---------- The close ----------
+        K.endCard({
+          at: 18.0,
+          countFor: 0.9, // lands on 100 by 19.35s and holds
+          kicker: 'Case 01 · Online psychology platform · Co-founded by Mohid Zeeshan',
+          big: '<b data-n>0</b>%+ growth',
+          count: [0, 100],
+          label: 'In a single month · Automated end to end, from first enquiry to final invoice',
+          size: 116,
+        });
+        K.wipes([
+          [4.5, 'Growth, meanwhile →'],
+          [8.2, '◀◀ Rewind · With Neurokov'],
+          [15.6, 'One month in →'],
+        ]);
+        K.note('Illustrated story · Real numbers from case 01', () => false);
+        K.camera(
+          [
+            [0, [960, 640, 1.12]],
+            [4.5, [960, 640, 1.18], E.sine],
+            [4.51, [960, 640, 1.12], E.linear],
+            [8.2, [970, 640, 1.16], E.sine],
+            [8.21, [960, 600, 1.0], E.linear],
+            [15.6, [960, 600, 1.04], E.sine],
+            [15.61, [960, 640, 1.12], E.linear],
+            [20, [960, 640, 1.15], E.sine],
+          ],
+          [
+            [6.38, 0.3, 0.5],
+            [6.83, 0.3, 0.5],
+            [16.45, 0.5, 1.4],
+          ],
+        );
+      });
+    </script>
+  </body>
+</html>
