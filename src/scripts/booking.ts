@@ -80,6 +80,10 @@ function loadCal(): Promise<boolean> {
   /* eslint-enable */
   cal()('init', CAL_NS, { origin: 'https://app.cal.com' });
   cal().ns[CAL_NS]('ui', calUi());
+  // While the questions are being answered, the calendar's own page loads out of sight, so its code
+  // is already here when the answers go in and the calendar opens.
+  const form = document.querySelector<HTMLFormElement>('form.booking');
+  if (form) cal().ns[CAL_NS]('preload', { calLink: calLink(form) });
   document.addEventListener('nk:theme', () => cal().ns[CAL_NS]('ui', calUi()));
   const script = document.querySelector<HTMLScriptElement>(`script[src="${CAL_SRC}"]`);
   calLoad = new Promise<boolean>((resolve) => {

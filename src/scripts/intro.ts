@@ -66,7 +66,7 @@ function boot(el: HTMLElement) {
     const t = Math.min(1, (now - start) / (DURATION - 200));
     const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     if (count) count.textContent = String(Math.round(e * 100)).padStart(3, '0');
-    if (bar) bar.style.width = `${e * 100}%`;
+    if (bar) bar.style.clipPath = `inset(0 ${100 - e * 100}% 0 0)`;
     if (t < 1) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -79,7 +79,7 @@ function boot(el: HTMLElement) {
       li.classList.add('is-on', 'is-ok');
     });
     if (count) count.textContent = '100';
-    if (bar) bar.style.width = '100%';
+    if (bar) bar.style.clipPath = 'inset(0)';
     el.classList.add('is-leaving');
     document.dispatchEvent(new CustomEvent('nk:intro-done'));
     removeEventListener('keydown', finish);

@@ -5,6 +5,8 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/600.css';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
 import plexLatin from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url';
+import plexLatin500 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url';
+import plexLatin600 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2?url';
 import '../styles/global.css';
 import BookingForm from '../components/BookingForm.astro';
 import Footer from '../components/Footer.astro';
@@ -66,10 +68,13 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    {/* On every page, not just the first: a page whose fonts arrive after its first paint reflows as
-        they swap in. Chrome notes an unused preload when a font came from its own memory instead. */}
+    {/* Every page uses all four, so all four are asked for at once: a font found only once the page is
+        laid out arrives after the first paint, and the whole page is laid out again when it swaps in.
+        Chrome notes an unused preload when a font came from its own memory instead. */}
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={plexLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={plexLatin500} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={plexLatin600} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -108,7 +113,11 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
         }
         var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (calm) r.classList.add('calm');
-        if (intro && !calm) {
+        // The intro is for a big screen on a capable machine. On a phone, a tablet or a slow computer it
+        // would hold the page back for seconds and keep the processor busy while the page loads.
+        var roomy = matchMedia('(min-width: 900px) and (pointer: fine)').matches;
+        var quick = (navigator.hardwareConcurrency || 8) >= 4 && !(navigator.connection && navigator.connection.saveData);
+        if (intro && !calm && roomy && quick) {
           var seen = false;
           try {
             seen = sessionStorage.getItem('nk-intro') === '1';
