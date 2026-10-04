@@ -6,11 +6,7 @@
  * outlines them on the page, and `npm run build` refuses to finish while any
  * are left. Delete a key once the real value is in.
  */
-export const unconfirmed = new Set<string>([
-  // site.web3forms, the key that emails us the booking form's answers. Make one at web3forms.com
-  // with site.email (no account or password: the key arrives by email), put it in, then delete this.
-  'web3forms',
-]);
+export const unconfirmed = new Set<string>([]);
 
 /** The data-ph value for a key that is still a placeholder, else undefined (attribute omitted). */
 export const ph = (key: string) => (unconfirmed.has(key) ? key : undefined);
@@ -26,7 +22,7 @@ export const site = {
   email: 'mohid@neurokov.com',
   // The booking form's answers are emailed to `email` the moment the form is sent, booked or not,
   // through Web3Forms. Its access key is public by design: it only ever sends to the address it was made for.
-  web3forms: '',
+  web3forms: '3ed13961-19b3-492c-a6be-b5909e134f64',
   cal: {
     link: 'neurokov/free-systems-audit', // cal.com/<link>
   },
