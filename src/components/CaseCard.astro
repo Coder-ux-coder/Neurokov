@@ -10,6 +10,8 @@ interface Props {
   sizes?: string;
   /** 2 where the cards sit straight under the page's h1, 3 under a section heading. */
   level?: 2 | 3;
+  /** The first card under a page's opening, on screen as the page loads: its poster loads first. */
+  eager?: boolean;
 }
 
 const {
@@ -17,6 +19,7 @@ const {
   delay = 0,
   sizes = '(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 640px',
   level = 3,
+  eager = false,
 } = Astro.props;
 const Title = `h${level}` as const;
 const n = String(cases.indexOf(study) + 1).padStart(2, '0');
@@ -32,7 +35,7 @@ const [headline] = study.stats;
   data-ph={study.placeholder ? `case:${study.slug}` : undefined}
 >
   <div class="marks">
-    <Clip name={study.clip} mode="hover" sizes={sizes} decorative>
+    <Clip name={study.clip} mode="hover" sizes={sizes} eager={eager} decorative>
       <span class="case-card__arrow" aria-hidden="true"><Icon name="arrow-up-right" size={20} /></span>
     </Clip>
   </div>

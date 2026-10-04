@@ -29,7 +29,7 @@ const anyPlaceholder = cases.some((c) => c.placeholder);
   <section class="section" style="padding-top: 0">
     <div class="container">
       <div class="cases cases--2">
-        {cases.map((c, i) => <CaseCard study={c} delay={(i % 2) * 120} level={2} />)}
+        {cases.map((c, i) => <CaseCard study={c} delay={(i % 2) * 120} level={2} eager={i === 0} />)}
       </div>
     </div>
   </section>
