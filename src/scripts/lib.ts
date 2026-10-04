@@ -27,6 +27,17 @@ export const store = {
 /** Living photos play unless motion is reduced or the visitor asked to save data. */
 export const liveOk = !calm && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
+/**
+ * Once the page has loaded and the browser has a moment to spare. Films and loops start no sooner, so a
+ * phone fetches the page, its fonts and its first screen before any video, and nothing looks different
+ * while they wait: each one's poster is its first frame.
+ */
+export const settled = new Promise<void>((resolve) => {
+  const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(() => resolve(), { timeout: 1000 }) : setTimeout(resolve, 100));
+  if (document.readyState === 'complete') idle();
+  else addEventListener('load', idle, { once: true });
+});
+
 /** Plays a living photo's loop, fetching it first if need be; it fades in once it runs. */
 export function playLive(video: HTMLVideoElement) {
   if (!video.dataset.bound) {

@@ -6,7 +6,7 @@
  * is. With reduced motion or save-data, nothing plays until asked.
  */
 import { Flap } from './flap';
-import { afterIntro, liveOk, loop, playLive, watchVisible } from './lib';
+import { afterIntro, liveOk, loop, playLive, settled, watchVisible } from './lib';
 import { decode } from './reveal';
 
 const host = document.querySelector<HTMLElement>('[data-slides]');
@@ -31,8 +31,9 @@ function reel(host: HTMLElement) {
   let held = !liveOk;
   let visible = true;
   let started = false;
+  let ready = false; // the page has settled (lib.ts): until then no film loads
 
-  const running = () => started && !held && visible && !document.hidden;
+  const running = () => started && ready && !held && visible && !document.hidden;
 
   const meter = loop(() => {
     const v = films[i];
@@ -75,7 +76,7 @@ function reel(host: HTMLElement) {
     title.textContent = d.title ?? '';
     link.href = d.href ?? '#';
     if (asked) say.textContent = `Case ${d.n}, ${d.title}: ${d.stat} ${d.label}.`;
-    films[i].preload = 'auto';
+    if (ready) films[i].preload = 'auto';
     films[i].currentTime = 0;
     sync();
   };
@@ -117,5 +118,10 @@ function reel(host: HTMLElement) {
   afterIntro(() => {
     started = true;
     go(0, { instant: true });
+  });
+  settled.then(() => {
+    ready = true;
+    films[i].preload = 'auto';
+    sync();
   });
 }

@@ -6,11 +6,11 @@
  * reel (slides.ts), the case index (studies.ts) and the welcome guide
  * (guide.ts), which run them.
  */
-import { calm, fine, liveOk, loop, playLive, playPreview, watchVisible } from './lib';
+import { calm, fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
 
 document.querySelectorAll<HTMLElement>('[data-clip="auto"]').forEach((host) => {
   const film = player(host);
-  watchVisible(host, film.want, { threshold: 0.4 });
+  settled.then(() => watchVisible(host, film.want, { threshold: 0.4 }));
 });
 if (fine && !calm) document.querySelectorAll<HTMLElement>('[data-clip="hover"]').forEach(hover);
 
