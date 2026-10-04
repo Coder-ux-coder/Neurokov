@@ -53,73 +53,6 @@ PLATES = {
                  bl=dict(box=[798, 470, 2198, 477]), blur=1.2, bloom=0.1, haze=0.02),
         ],
     ),
-    'case-psychology': dict(
-        crop=[43, 0, 3557, 2343],
-        screens=[
-            dict(ui='psych-laptop', device='macbook16', quad=[[1191.5, 733.4], [2267.1, 730.9], [2244.4, 1444.9], [1209.1, 1444.8]],
-                 inset=1.5, bl=dict(mode='off'), peak=0.8, blur=1.2),
-        ],
-    ),
-    'case-outbound': dict(
-        screens=[
-            dict(ui='out-laptop', device='macbook16', quad=[[1104.4, 372.2], [2446.5, 366.8], [2417.6, 1255.7], [1135.6, 1262.0]],
-                 inset=1.5, bl=dict(mode='off'), peak=0.7, blur=1.2),
-            dict(ui='out-phone', device='iphone', quad=[[2573.6, 1210.3], [2814.3, 1211.7], [2923.4, 1548.8], [2651.7, 1538.8]],
-                 inset=1.0, bl=dict(mode='off'), peak=0.6, blur=1.0,
-                 front=[[[2974, 1453], [2943, 1464], [2922, 1476], [2908, 1489], [2898, 1503], [2892, 1519], [2888, 1539],
-                         [2886, 1560], [2885, 1620], [3120, 1700], [3120, 1453]]]),
-        ],
-    ),
-    'case-speed-to-lead': dict(
-        screens=[
-            dict(ui='stl-laptop', device='flat', quad=[[1482.7, 555.6], [2634.0, 660.9], [2568.7, 1344.3], [1428.2, 1212.8]],
-                 bl=dict(box=[1442, 760, 1458, 840]), blur=1.2, bloom=0.1, haze=0.02),
-            # the phone's foot is hidden behind the stand's lip: the quad runs on behind it, the lip goes back on top
-            dict(ui='stl-phone', device='iphone', quad=[[2952.0, 1076.5], [3207.7, 1146.8], [3006.4, 1798.0], [2731.0, 1714.1]],
-                 inset=1.0, bl=dict(mode='off'), peak=0.6, blur=1.4,
-                 front=[[[2690, 1669.0], [3080, 1786.2], [3080, 1900], [2690, 1900]]]),
-        ],
-    ),
-    'case-back-office': dict(
-        grade=dict(sat=0.85),
-        screens=[
-            # the right monitor sits behind the left one, so it goes in first
-            # the wallpaper's dark gaps show the glass's own black (glare, reflections) all over
-            dict(ui='bo-right', device='flat', quad=[[1342.4, 589.6], [2319.2, 691.4], [2321.2, 1345.8], [1342.9, 1402.4]],
-                 bl=dict(pct=3, blocks=(6, 4), sat=0), blur=2.8, bloom=0.1, haze=0.02),
-            dict(ui='bo-left', device='flat', quad=[[354.2, 243.0], [1271.6, 576.6], [1288.9, 1407.0], [370.0, 1596.6]],
-                 bl=dict(pct=5, sat=0.3), blur=1.2, bloom=0.1, haze=0.02),
-        ],
-    ),
-    'about-workspace': dict(
-        lens=dict(k=0.0095),
-        screens=[
-            dict(ui='about-wide', device='flat', quad=[[413.7, 176.1], [3182.8, 111.0], [3132.8, 1468.7], [387.0, 1301.4]],
-                 bl=dict(box=[1700, 115, 1900, 128]), blur=1.0, bloom=0.1, haze=0.02,
-                 # the laptop lid in front, and the plant's leaves over the bottom-right corner
-                 front=['lid'], front_blur=0.35,
-                 keep=[dict(box=[2840, 1330, 3200, 1485])]),
-            dict(ui='home-laptop', device='flat', quad=[[966.5, 1350.9], [1987.8, 1400.6], [1901.1, 2110.8], [852.2, 2010.7]],
-                 bl=dict(box=[885, 1650, 900, 1750]), blur=1.0, bloom=0.1, haze=0.02),
-        ],
-    ),
-}
-
-# Outlines of things in front of a screen, traced from the photo (source px).
-OUTLINES = {
-    # the About laptop's lid over the monitor: fitted top edge (half-level crossing), the silver
-    # rim's outer edge down each side, and the rounded corners fitted between them (r 43.5 / 40.5)
-    'lid': [
-        [918.8, 1450.0], [937.0, 1340.8], [937.6, 1338.1], [938.3, 1335.5], [939.1, 1332.9], [940.2, 1330.3],
-        [941.4, 1327.9], [942.7, 1325.5], [944.2, 1323.2], [945.8, 1321.0], [947.6, 1318.9], [949.5, 1316.9],
-        [951.5, 1315.0], [953.7, 1313.3], [955.9, 1311.7], [958.2, 1310.3], [960.7, 1309.0], [963.2, 1307.8],
-        [965.7, 1306.9], [968.4, 1306.0], [971.0, 1305.4], [973.7, 1304.9], [976.5, 1304.6], [979.2, 1304.5],
-        [981.9, 1304.5], [1984.7, 1350.8], [1987.5, 1351.0], [1990.3, 1351.4], [1993.1, 1352.0], [1995.8, 1352.9],
-        [1998.5, 1353.9], [2001.1, 1355.1], [2003.6, 1356.4], [2006.0, 1358.0], [2008.2, 1359.7], [2010.4, 1361.6],
-        [2012.4, 1363.6], [2014.3, 1365.7], [2016.0, 1368.0], [2017.5, 1370.4], [2018.9, 1372.9], [2020.1, 1375.5],
-        [2021.1, 1378.1], [2022.0, 1380.9], [2022.6, 1383.7], [2023.0, 1386.5], [2023.3, 1389.3], [2023.3, 1392.2],
-        [2023.1, 1395.0], [2018.0, 1450.0],
-    ],
 }
 
 
@@ -277,10 +210,6 @@ def sample(plate, box, q):
     return plate[y0:y1, x0:x1].reshape(-1, 3).mean(axis=0)
 
 
-def outline(poly):
-    return OUTLINES[poly] if isinstance(poly, str) else poly
-
-
 def prepare(plate, original, sc, q, u, lens, ui, debug=False):
     """Everything about placing one screen that doesn't depend on what it shows: the warp
     from panel to photo, the glass, its black level and brightness, and the mattes.
@@ -361,7 +290,7 @@ def prepare(plate, original, sc, q, u, lens, ui, debug=False):
     # objects in front of the screen (a laptop lid, a cup): outlined, put back from the photo
     for poly in sc.get('front', []):
         mk = np.zeros(plate.shape[:2], np.uint8)
-        cv2.fillPoly(mk, [np.round(np.float32(outline(poly)) * q * 8).astype(np.int32)], 255, cv2.LINE_AA, shift=3)
+        cv2.fillPoly(mk, [np.round(np.float32(poly) * q * 8).astype(np.int32)], 255, cv2.LINE_AA, shift=3)
         mk = cv2.GaussianBlur(mk.astype(np.float32) / 255, (0, 0), sc.get('front_blur', 0.6) * u)
         rows, cols = np.nonzero(mk.any(axis=1))[0], np.nonzero(mk.any(axis=0))[0]
         fy0, fy1, fx0, fx1 = rows[0], rows[-1] + 1, cols[0], cols[-1] + 1

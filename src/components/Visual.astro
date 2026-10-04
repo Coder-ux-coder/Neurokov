@@ -54,16 +54,9 @@ const videos = import.meta.glob<string>('/src/assets/video/*.mp4', { eager: true
 const video = img && live ? Object.entries(videos).find(([path]) => path.endsWith(`/${name}.mp4`))?.[1] : undefined;
 const widths = img ? [480, 768, 1080, 1440, 1920].filter((w) => w <= img.width) : [];
 if (img && !widths.includes(img.width) && img.width < 1920) widths.push(img.width);
-
-// Photos whose subject sits high in the frame: crops (like the 21:9 case study heroes) keep it in shot.
-const FOCUS: Record<string, string> = {
-  'case-outbound': '50% 34%',
-  'case-back-office': '50% 16%',
-};
-const style = [ratio && `--ratio: ${ratio}`, FOCUS[name] && `--focus: ${FOCUS[name]}`].filter(Boolean).join('; ');
 ---
 
-<div class:list={['media', cls]} style={style || undefined} data-dither={img && dither ? '' : undefined}>
+<div class:list={['media', cls]} style={ratio ? `--ratio: ${ratio}` : undefined} data-dither={img && dither ? '' : undefined}>
   {
     img ? (
       <Picture

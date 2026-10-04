@@ -10,15 +10,12 @@ interface Props {
   label?: string;
   /** On the right of the rule, e.g. "03 / 08". */
   index?: string;
-  center?: boolean;
-  /** Marks the lead as placeholder copy. */
-  ph?: string;
 }
 
-const { title, lead, label, index, center = false, ph } = Astro.props;
+const { title, lead, label, index } = Astro.props;
 ---
 
-<div class:list={['section-head', center && 'section-head--center']}>
+<div class="section-head">
   {
     (label || index) && (
       <div class="section-head__rule" data-reveal>
@@ -34,7 +31,7 @@ const { title, lead, label, index, center = false, ph } = Astro.props;
   <h2 class="h2" data-reveal data-split>{title}</h2>
   {
     lead && (
-      <p class="lead" data-reveal style="--d: 140ms" data-ph={ph}>
+      <p class="lead" data-reveal style="--d: 140ms">
         {lead}
         <slot name="after-lead" />
       </p>
