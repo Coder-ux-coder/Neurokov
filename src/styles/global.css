@@ -1742,8 +1742,9 @@ button {
   color: var(--accent);
 }
 
-/* A % is wider than a tile, so signs are set narrow and show whole. */
+/* A % is wider than a tile, so signs are set narrow and show whole (Archivo Signs: fonts.css). */
 .fc--signal > span > i {
+  font-family: 'Archivo Signs', var(--font);
   font-stretch: 62.5%;
 }
 
@@ -5713,6 +5714,25 @@ html:not(.js) .clip__full {
 .js [data-reveal].is-in {
   opacity: 1;
   transform: none;
+}
+
+/* With no boot intro to open onto it, the first screen ([data-hold]) doesn't wait for the script: it
+   rises in as soon as the page paints, so what the visitor came for is there at once (and the browser
+   counts it as the page's main paint straight away). It rises without fading, in view from the first
+   frame. Split headlines and wiped media still wait for the script, which runs their animation. */
+.js.no-intro:not(.calm) [data-hold] [data-reveal]:not([data-reveal='clip'], [data-reveal='none'], [data-split]) {
+  opacity: 1;
+  animation: rise-in 1s var(--ease-out) var(--d, 0ms) both;
+}
+
+@keyframes rise-in {
+  from {
+    transform: translateY(26px);
+  }
+
+  to {
+    transform: none;
+  }
 }
 
 /* Containers that animate their children instead of themselves. */

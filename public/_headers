@@ -1,7 +1,7 @@
 # Netlify sends these with every page and file (the build copies this file into dist/).
 # npm run build stops if the Content-Security-Policy would block one of the site's own scripts.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-GyxVg+zdJszNQFE33+S6NH4807e/5mlFlj/GPLZ8GVU=' 'sha256-6Q1jlZd6wxmy5Js/CvztYiehE/5fRyNxgMiXdSpWPig=' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://app.cal.com https://cal.com; font-src 'self' https://cal.com; media-src 'self'; connect-src 'self' https://app.cal.com https://api.web3forms.com; frame-src https://app.cal.com https://cal.com; object-src 'none'; base-uri 'self'; form-action 'self' https://cal.com https://app.cal.com; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-g9+euv0tMei4Y7AbqQIxo3kguyg0OhP4xByAP4s+89U=' 'sha256-t8cVQSbfkoQS+YSgIUq8snACL4tRGVkl43PrkVi7Op4=' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://app.cal.com https://cal.com; font-src 'self' https://cal.com; media-src 'self'; connect-src 'self' https://app.cal.com https://api.web3forms.com; frame-src https://app.cal.com https://cal.com; object-src 'none'; base-uri 'self'; form-action 'self' https://cal.com https://app.cal.com; frame-ancestors 'none'
   Strict-Transport-Security: max-age=63072000
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   X-Frame-Options: DENY
