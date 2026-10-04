@@ -5,6 +5,9 @@ dist/
 incoming/
 *.log
 
+# Netlify CLI's local state, if you ever run it
+.netlify/
+
 # secrets, if the site ever needs any (it has none today)
 .env
 .env.*

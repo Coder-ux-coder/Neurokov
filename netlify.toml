@@ -1,0 +1,15 @@
+# Netlify builds and publishes the site from this file on every push to main.
+# The security and cache headers are in public/_headers, which the build copies into dist/.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 7 needs Node 22.12 or newer.
+  NODE_VERSION = "24"
+
+# Every page lives at its address with a trailing slash, as in the sitemap and the canonical
+# links: /about answers with a redirect to /about/.
+[build.processing.html]
+  pretty_urls = true

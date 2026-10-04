@@ -1,6 +1,5 @@
-// Fails the build when the security headers would block the site's own code, or when
-// their two copies disagree: public/_headers is read by Netlify and Cloudflare Pages,
-// vercel.json by Vercel, with the same rules path by path ("/*" there is "/(.*)" here).
+// Fails the build when the security headers would block the site's own code or wouldn't be
+// sent at all. They live in public/_headers, which Astro copies into dist/ for Netlify.
 // The Content-Security-Policy lets an inline script run only by its sha256 hash, and a
 // hash changes whenever its script does (an edit to the theme script in Base.astro, or
 // an Astro upgrade that wraps it differently), so every inline script in the build is
@@ -10,39 +9,27 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const problems = [];
 
-// public/_headers: a path on its own line, then its "Name: value" lines, indented. Keyed by the
-// path as vercel.json writes it.
-const netlify = new Map();
+// dist/_headers: a path on its own line, then its "Name: value" lines, indented. Netlify skips a
+// line it can't read, so one is an error here.
+const rules = new Map();
+const headers = await readFile(join(dist, '_headers'), 'utf8').catch(() => null);
+if (headers === null) problems.push('dist/_headers is missing, so Netlify would send no headers at all. Run astro build first.');
 let rule = null;
-for (const line of (await readFile(join(root, 'public/_headers'), 'utf8')).split(/\r?\n/)) {
+for (const [i, line] of (headers ?? '').split(/\r?\n/).entries()) {
   if (!line.trim() || line.trim().startsWith('#')) continue;
-  if (/^\S/.test(line)) netlify.set(line.trim().replaceAll('*', '(.*)'), (rule = new Map()));
-  else if (rule && /^\s+[\w-]+:/.test(line)) rule.set(line.slice(0, line.indexOf(':')).trim(), line.slice(line.indexOf(':') + 1).trim());
-}
-const vercel = new Map(
-  JSON.parse(await readFile(join(root, 'vercel.json'), 'utf8')).headers.map((r) => [r.source, new Map(r.headers.map((h) => [h.key, h.value]))]),
-);
-for (const source of new Set([...netlify.keys(), ...vercel.keys()])) {
-  const [a, b] = [netlify.get(source), vercel.get(source)];
-  if (!a || !b) {
-    problems.push(`The rule for ${source} is only in ${a ? 'public/_headers' : 'vercel.json'}.`);
-    continue;
-  }
-  for (const name of new Set([...a.keys(), ...b.keys()])) {
-    if (a.get(name) !== b.get(name)) problems.push(`${name} for ${source} differs between public/_headers and vercel.json.`);
-  }
+  if (/^\S/.test(line)) {
+    if (!line.startsWith('/')) problems.push(`Line ${i + 1} of public/_headers should be a path, starting with /, or indented: "${line.trim()}".`);
+    rules.set(line.trim(), (rule = new Map()));
+  } else if (rule && /^\s+[\w-]+:\s*\S/.test(line)) rule.set(line.slice(0, line.indexOf(':')).trim(), line.slice(line.indexOf(':') + 1).trim());
+  else problems.push(`Line ${i + 1} of public/_headers isn't a header under a path: "${line.trim()}".`);
 }
 
-// Astro copies public/ into the build. Without that copy, Netlify and Cloudflare send no headers at all.
-await readFile(join(dist, '_headers')).catch(() => problems.push('dist/_headers is missing. Run astro build first.'));
-
-const csp = netlify.get('/(.*)')?.get('Content-Security-Policy') ?? '';
+const csp = rules.get('/*')?.get('Content-Security-Policy') ?? '';
 const scriptSrc = csp.split(';').map((d) => d.trim()).find((d) => d.startsWith('script-src ')) ?? '';
-if (!scriptSrc) problems.push('The Content-Security-Policy has no script-src.');
+if (headers !== null && !scriptSrc) problems.push('The Content-Security-Policy for /* in public/_headers has no script-src.');
 const allowed = new Set([...scriptSrc.matchAll(/'(sha256-[^']+)'/g)].map((m) => m[1]));
 
 async function* htmlFiles(dir) {
@@ -68,10 +55,12 @@ for await (const file of htmlFiles(dist)) {
     needed.get(hash).push(page);
   }
 }
-for (const [hash, pages] of needed) {
-  if (allowed.has(hash)) continue;
-  const shown = pages.slice(0, 3).join(', ') + (pages.length > 3 ? ` +${pages.length - 3} more` : '');
-  problems.push(`An inline script on ${shown} would be blocked. Add '${hash}' to script-src in public/_headers and vercel.json.`);
+if (scriptSrc) {
+  for (const [hash, pages] of needed) {
+    if (allowed.has(hash)) continue;
+    const shown = pages.slice(0, 3).join(', ') + (pages.length > 3 ? ` +${pages.length - 3} more` : '');
+    problems.push(`An inline script on ${shown} would be blocked. Add '${hash}' to script-src in public/_headers.`);
+  }
 }
 
 if (problems.length) {
