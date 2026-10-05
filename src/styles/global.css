@@ -272,6 +272,26 @@ button {
   padding-block: calc(var(--section) * 0.6);
 }
 
+/* On a phone or tablet, a section below the first screen is laid out and painted only as it nears
+   the screen, so the first screen paints without first setting every line of text on the page in its
+   fonts: most of a phone's work before that first paint. Until then each holds a placeholder height,
+   and its real one once it has been shown. Up to the width where the scroll ruler appears, which
+   reads the page's full height. Not the case study list, whose preview frame follows the pointer
+   across the screen (a contained section would hold it inside), nor during the welcome tour, which
+   measures where each stop sits on the page. */
+@media (max-width: 1100px) {
+  main > section:not(:first-child):not(:has([data-studies])),
+  body > .footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1000px;
+  }
+
+  .touring main > section,
+  .touring body > .footer {
+    content-visibility: visible;
+  }
+}
+
 /* Column hairlines, like the grid on a drafting sheet. */
 .gridlines {
   position: absolute;

@@ -25,7 +25,9 @@ const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
 const mobileMenu = document.querySelector<HTMLElement>('[data-mobile-menu]');
 
 const onScroll = () => nav?.classList.toggle('is-scrolled', window.scrollY > 8);
-onScroll();
+// In the next frame, not now: reading the scroll position while the scripts start would lay the page out
+// an extra time before its first paint. The effects hold their first measurements back the same way.
+requestAnimationFrame(onScroll);
 addEventListener('scroll', onScroll, { passive: true });
 
 const setMenu = (open: boolean) => {

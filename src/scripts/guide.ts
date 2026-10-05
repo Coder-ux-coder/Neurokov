@@ -239,7 +239,8 @@ function guide(host: HTMLElement) {
   // A new width reflows the page, so once it settles the stop is framed again. A new height alone
   // (a phone's address bar sliding away as the visitor scrolls) only moves the tip: re-framing
   // then would fight their scrolling.
-  let lastW = innerWidth;
+  // Taken when the tour starts rather than now, which would lay the page out before its first paint.
+  let lastW = 0;
   let settle = 0;
   addEventListener(
     'resize',
@@ -257,6 +258,7 @@ function guide(host: HTMLElement) {
 
   function startTour() {
     if (!stops.length) return;
+    lastW = innerWidth;
     dock.hidden = true;
     layer.hidden = false;
     root.classList.add('touring');

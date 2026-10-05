@@ -24,7 +24,7 @@ if (ruler) {
   };
   addEventListener('scroll', queue, { passive: true });
   addEventListener('resize', queue, { passive: true });
-  paint();
+  queue();
 }
 
 /* ---------- Process page: the step you're reading lights up and the counter flips ---------- */

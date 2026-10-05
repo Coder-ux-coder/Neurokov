@@ -142,7 +142,7 @@ function machine(host: HTMLElement) {
     });
   });
 
-  pick();
+  requestAnimationFrame(pick);
   addEventListener('resize', pick, { passive: true });
   if (calm) return;
   watchVisible(host, (v) => (v ? engine.start() : engine.stop()), { rootMargin: '80px 0px' });
