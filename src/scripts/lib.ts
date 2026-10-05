@@ -55,12 +55,6 @@ export function playPreview(video: HTMLVideoElement) {
   playLive(video);
 }
 
-/** Runs fn once the boot intro has opened, or straight away when there is none. */
-export function afterIntro(fn: () => void) {
-  if (root.classList.contains('intro-play')) document.addEventListener('nk:intro-done', () => fn(), { once: true });
-  else fn();
-}
-
 /** Calls fn the first time el scrolls into view. */
 export function onceVisible(el: Element, fn: () => void, options: IntersectionObserverInit = { threshold: 0.25 }) {
   if (!('IntersectionObserver' in window)) return fn();

@@ -37,9 +37,9 @@
         for (const x of [420, 600, 880, 1060, 1340, 1520]) S.svg('rect', { x: x - 9, y: PY - 30, width: 18, height: 60, rx: 5, fill: INK }, g);
         const lights = [
           [280, 'LEADS'],
-          [740, 'SALES'],
-          [1200, 'OPS'],
-          [1660, 'BILLING'],
+          [740, 'REPLIES'],
+          [1200, 'CALLS'],
+          [1660, 'CLIENTS'],
         ].map(([x, name], i) => {
           const b = S.g(g);
           S.put(b, { x, y: PY });
@@ -170,7 +170,7 @@
         });
 
         headline(0, 'Step 01 · 100% free', 'Find the<br /><em>leaks</em>.', 0.3, 99, { dark: false });
-        K.note('Illustrated story · How a project works', () => false);
+        K.note('Illustrated story · How working with us goes', () => false);
         K.camera([
           [0, [960, 560, 1]],
           [12, [960, 560, 1.04], E.linear],

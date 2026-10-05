@@ -5,7 +5,7 @@ interface Props {
   label?: string;
 }
 
-const { label = 'We build on the tools you already use' } = Astro.props;
+const { label = 'We work with the tools you already use' } = Astro.props;
 const items = marqueeTools.map((name) => ({ name, path: toolMark(name) }));
 ---
 

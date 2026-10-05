@@ -8,7 +8,6 @@ import '../styles/global.css';
 import BookingForm from '../components/BookingForm.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import Intro from '../components/Intro.astro';
 import Nav from '../components/Nav.astro';
 import { ph, site } from '../data/site';
 
@@ -19,8 +18,6 @@ interface Props {
   image?: string;
   noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
-  /** Play the boot intro (first visit of a session only). */
-  intro?: boolean;
 }
 
 const {
@@ -29,7 +26,6 @@ const {
   image = '/og.png',
   noindex = false,
   jsonLd,
-  intro = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
@@ -90,8 +86,8 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
     {/* Every < escaped, so no text in the data can ever close this script tag early. */}
     <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />
 
-    <!-- Runs before first paint: theme (light unless the visitor chose dark) and whether the boot intro plays. -->
-    <script is:inline define:vars={{ intro }}>
+    <!-- Runs before first paint: the theme (light unless the visitor chose dark) and reduced motion. -->
+    <script is:inline>
       (function () {
         var r = document.documentElement;
         r.classList.add('js');
@@ -99,7 +95,7 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
         // time the page has loaded (it failed to download, or the browser is too old for it), show
         // the page as it reads without JavaScript instead of leaving it blank.
         addEventListener('load', function () {
-          if (!r.hasAttribute('data-ready')) r.classList.remove('js', 'intro-play');
+          if (!r.hasAttribute('data-ready')) r.classList.remove('js');
         });
         try {
           if (localStorage.getItem('nk-theme') === 'dark') r.dataset.theme = 'dark';
@@ -108,27 +104,12 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
           var m = document.querySelector('meta[name="theme-color"]');
           if (m) m.setAttribute('content', '#0f0f0e');
         }
-        var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (calm) r.classList.add('calm');
-        // The intro is for a big screen on a capable machine. On a phone, a tablet or a slow computer it
-        // would hold the page back for seconds and keep the processor busy while the page loads.
-        var roomy = matchMedia('(min-width: 900px) and (pointer: fine)').matches;
-        var quick = (navigator.hardwareConcurrency || 8) >= 4 && !(navigator.connection && navigator.connection.saveData);
-        if (intro && !calm && roomy && quick) {
-          var seen = false;
-          try {
-            seen = sessionStorage.getItem('nk-intro') === '1';
-          } catch (e) {}
-          if (!seen) r.classList.add('intro-play');
-        }
-        // No intro to open onto it: the first screen comes in as soon as the page paints (global.css).
-        if (!r.classList.contains('intro-play')) r.classList.add('no-intro');
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('calm');
       })();
     </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    {intro && <Intro />}
     <Nav />
     <main id="main">
       <slot />
@@ -142,9 +123,6 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
     <div class="ruler" data-ruler aria-hidden="true">
       <span class="ruler__track"><span class="ruler__fill"></span></span>
       <span class="ruler__read" data-ruler-read>000</span>
-    </div>
-    <div class="cursor" data-pointer-tag aria-hidden="true">
-      <span class="cursor__read" data-pointer-read></span>
     </div>
     {/* Netlify adds a "Powered by Netlify" badge script to every page it serves (/.netlify/scripts/hud).
         It builds the badge in a frame whose inline script the Content-Security-Policy blocks, which

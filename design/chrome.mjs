@@ -6,7 +6,8 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+// Set CHROME to use another browser binary (on Linux or a Mac, say).
+const CHROME = process.env.CHROME ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 export async function launch() {
   const profile = mkdtempSync(join(tmpdir(), 'nk-capture-'));
@@ -18,6 +19,8 @@ export async function launch() {
     '--font-render-hinting=none',
     '--remote-debugging-port=0',
     `--user-data-dir=${profile}`,
+    // Chrome refuses to run as root (in a container, say) with its sandbox on.
+    ...(process.getuid?.() === 0 ? ['--no-sandbox'] : []),
     'about:blank',
   ]);
   const url = await new Promise((resolve, reject) => {

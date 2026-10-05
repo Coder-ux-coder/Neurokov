@@ -1,8 +1,8 @@
 import type { IconName } from '../components/icons';
 
 /**
- * No build durations here (the user's call): the promise is that a system works
- * from the day it goes live, not how many days it takes to get there.
+ * No timelines here (the user's call): the promise is results from launch, not how many days it
+ * takes to get there.
  */
 export const steps: {
   icon: IconName;
@@ -18,58 +18,58 @@ export const steps: {
 }[] = [
   {
     icon: 'calendar-check',
-    title: 'Free systems audit',
-    text: '30 minutes, 100% free. We map where your hours and leads leak, find the bottlenecks and show you exactly what to automate first.',
+    title: 'Free growth audit',
+    text: '30 minutes, 100% free. We look at where your clients come from today, where leads go cold and where your next clients will come from.',
     detail:
-      'Bring the messy version: how leads come in, what happens to them next and where your team’s week actually goes. We ask the questions that surface the expensive problems, and you leave with a plan whether you work with us or not.',
+      'Bring the honest version: where your clients come from, how fast you reply to new leads and what happens to the ones who don’t buy. You leave knowing where the quickest new business is, whether you work with us or not.',
     tag: '100% free',
     clip: 'process-audit',
     get: [
-      'A map of where your team’s hours actually go',
-      'The two or three automations with the biggest payoff',
+      'Where your leads go cold today',
+      'The fastest route to more booked calls',
       'A straight answer on whether we’re the right fit',
     ],
   },
   {
     icon: 'file-signature',
-    title: 'Scope and fixed price',
-    text: 'You get a written scope: exactly what we’ll build, what it will do and one fixed price. No hourly billing, no surprise invoices.',
+    title: 'Plan and fixed price',
+    text: 'You get a written plan: who we’ll reach, what we’ll deliver and one fixed price. No hourly billing, no surprise invoices.',
     detail:
-      'It’s written in plain English, not jargon. The scope spells out what the finished system does, and it’s what our guarantee is measured against. If what we deliver doesn’t do what the scope says, you don’t pay.',
+      'It’s written in plain English. The plan spells out who we’ll go after and what we’ll deliver, and it’s what our guarantee is measured against. If we don’t deliver it, you don’t pay.',
     tag: 'One fixed price',
     clip: 'process-scope',
     get: [
-      'A written scope with every step itemized',
-      'One fixed price, agreed before any work starts',
-      'Ideas for phase two, if they’re worth doing',
+      'Your ideal buyers, defined in writing',
+      'What we’ll deliver, agreed upfront',
+      'One fixed price, before any work starts',
     ],
   },
   {
     icon: 'rocket',
-    title: 'Build and launch',
-    text: 'We build it, test it on your real data and switch it on. It works from day one: no ramp-up, no “give it 90 days”.',
+    title: 'Launch',
+    text: 'We set everything up, you approve the messaging, and it goes live. From day one, leads get answered and conversations start.',
     detail:
-      'You get a short update every week while we build, so you always know where things stand. Before launch, we run your real leads, emails and records through the system and fix anything that trips it up. Launch day is when the work starts getting done, not when the testing starts.',
-    tag: 'Works from day one',
+      'The slow parts, like warming up new sending inboxes, happen before launch, so launch day is a real day, not a test. You approve every message before it goes out, and you get a short update every week.',
+    tag: 'Live from day one',
     clip: 'process-build',
     get: [
-      'A short progress update every week',
-      'Testing on your real data before anything goes live',
-      'A handbook and a walkthrough for your team',
+      'Messaging you approve before it goes out',
+      'A short update every week',
+      'Booked calls landing on your calendar',
     ],
   },
   {
-    icon: 'life-buoy',
-    title: 'Support and improve',
-    text: 'Optional monthly support. We watch your systems, fix anything that breaks and keep improving them as you grow.',
+    icon: 'trending-up',
+    title: 'Scale what works',
+    text: 'Optional monthly plan. We do more of what books calls, drop what doesn’t and keep the calendar full as you grow.',
     detail:
-      'Once the first system is running, the next one is usually obvious. Support keeps what you have in shape and gives you a team for whatever comes next. Rather run it yourselves? Everything is documented and yours, so you can.',
+      'Once the first campaign is booking calls, the next move is usually obvious: a new market, a new offer, more volume. Rather run it yourselves? Everything is documented and yours, so you can.',
     tag: 'Optional',
     clip: 'process-support',
     get: [
-      'Monitoring and error alerts on every system',
-      'Fixes and small improvements included',
-      'A monthly check-in on what to automate next',
+      'A monthly report on replies, booked calls and new clients',
+      'More of what works, less of what doesn’t',
+      'A monthly check-in on where to grow next',
     ],
   },
 ];

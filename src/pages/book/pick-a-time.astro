@@ -10,18 +10,18 @@ import { bookingEmbedUrl, bookingUrl, ph, site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title={`Pick a time | ${site.name}`} description="Pick a time for your free systems audit." noindex>
+<Base title={`Pick a time | ${site.name}`} description="Pick a time for your free growth audit." noindex>
   <PageHero
     label="Step 2 of 2 · Pick a time"
     meta="30 minutes · 100% free"
     title="Thanks. Now pick a time."
-    lead="Your answers are with us. Choose a time for your free systems audit, and the invite comes to you by email."
+    lead="Your answers are with us. Choose a time for your free growth audit, and the invite comes to you by email."
   />
   <section class="section section--tight">
     <div class="container">
       <div class="book__cal booking-time booking-time--page" data-ph={ph('booking')}>
         <div class="booking-time__frame">
-          <iframe src={bookingEmbedUrl} title="Pick a time for your free systems audit"></iframe>
+          <iframe src={bookingEmbedUrl} title="Pick a time for your free growth audit"></iframe>
         </div>
         <p class="cta__note booking__note">
           <Icon name="calendar-check" size={16} />

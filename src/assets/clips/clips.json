@@ -1,31 +1,15 @@
 {
-  "about": {
-    "poster": 13.4,
-    "duration": 20
-  },
-  "automation-agents": {
+  "lead-conversion": {
     "poster": 16.2,
-    "duration": 20
-  },
-  "back-office": {
-    "poster": 11.5,
-    "duration": 20
-  },
-  "crm-sales-automation": {
-    "poster": 16.2,
-    "duration": 20
-  },
-  "founder": {
-    "poster": 9.9,
     "duration": 20
   },
   "lead-generation": {
     "poster": 16.3,
     "duration": 20
   },
-  "marketing-automation": {
-    "poster": 16.2,
-    "duration": 20
+  "lead-reactivation": {
+    "poster": 11.9,
+    "duration": 14.6
   },
   "not-found": {
     "poster": 6.2,
@@ -33,7 +17,7 @@
   },
   "outbound-engine": {
     "poster": 11.3,
-    "duration": 20
+    "duration": 13
   },
   "process-audit": {
     "poster": 10.6,
@@ -57,14 +41,6 @@
   },
   "speed-to-lead": {
     "poster": 12.4,
-    "duration": 20
-  },
-  "welcome": {
-    "poster": 2.2,
-    "duration": 20
-  },
-  "workflow-automation": {
-    "poster": 16.2,
     "duration": 20
   }
 }

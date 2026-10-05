@@ -36,8 +36,8 @@ const n = String(cases.indexOf(study) + 1).padStart(2, '0');
 const sections = [
   { id: 'outcomes', title: 'Outcomes' },
   { id: 'challenge', title: 'The challenge' },
-  { id: 'built', title: 'What we built' },
-  { id: 'how', title: 'How it works' },
+  { id: 'built', title: 'What we did' },
+  { id: 'how', title: 'How it plays out' },
   ...(study.stack ? [{ id: 'stack', title: 'The stack' }] : []),
   ...(service ? [{ id: 'service', title: 'The service' }] : []),
 ];
@@ -134,13 +134,13 @@ const sections = [
           <p class="lead">{study.challenge}</p>
         </section>
         <section class="case-body" id="built" data-reveal>
-          <h2>What we built</h2>
+          <h2>What we did</h2>
           <ol class="numbered lead">
             {study.built.map((b) => <li>{b}</li>)}
           </ol>
         </section>
         <section class="case-body" id="how" data-reveal>
-          <h2>How it works</h2>
+          <h2>How it plays out</h2>
           <p class="lead">{study.how}</p>
         </section>
         {
@@ -189,5 +189,5 @@ const sections = [
     </div>
   </section>
 
-  <Cta title="Want a system like this?" label="Get a system like this" />
+  <Cta title="Want results like these?" label="Get results like these" />
 </Base>

@@ -16,11 +16,10 @@
     <script src="cast.js"></script>
     <script src="story.js"></script>
     <script>
-      // Case 01, told as a story: every new client at an online psychology
-      // platform brought more admin, and the admin put a ceiling on growth. With
-      // the business automated end to end, from the first enquiry to the final
-      // invoice, the business grew by over 100% in a single month. Real numbers only
-      // (case 01); no amounts.
+      // Case 01, told as a story: every enquiry at an online psychology platform
+      // needed chasing, and growth hit a ceiling. With Neurokov, new clients come
+      // in and every enquiry is answered and booked, and the business grew by
+      // over 100% in a single month. Real numbers only (case 01); no amounts.
       STAGE.setup((S) => {
         const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
         const { E, ramp, env, hit } = S;
@@ -59,7 +58,7 @@
           return g;
         };
 
-        // ---------- Act 1: every client brings more admin ----------
+        // ---------- Act 1: every enquiry needs chasing ----------
         const g1 = K.act(0);
         K.room(g1, { floor: 870, wall: '#e9e4ea', ground: '#dcd5dc' });
         CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, o: 0.08 });
@@ -117,7 +116,7 @@
             d.set(ramp(t, 2.7 + i * 0.7, 0.55, E.linear));
           });
         });
-        headline(0, 'Fig. 1 · Online psychology platform', 'Every new client<br />meant <em>more admin</em>.', 0.45, 4.1, { dark: false });
+        headline(0, 'Fig. 1 · Online psychology platform', 'Every enquiry<br />needed <em>chasing</em>.', 0.45, 4.1, { dark: false });
 
         // ---------- Acts 2 and 4: the growth chart, and its ceiling ----------
         const chart = S.g(S.cam);
@@ -158,7 +157,6 @@
         const twice = S.html('<div style="position:absolute;left:1640px;top:250px;transform:translate(-50%,-50%);font-weight:800;font-stretch:125%;font-size:62px;letter-spacing:-0.03em;color:#ff4f00">2×+</div>', S.hudCam);
         const debris = CAST.burst(chart, { color: INK, r0: 60, r1: 150, n: 10, width: 7 });
         const pro2 = CAST.person(chart, { shirt: TEAL, hair: 'bob', hairColor: '#3a2a1e', glasses: true });
-        const bot4 = CAST.robot(chart);
         const BREAK = 16.45;
         S.track((t) => {
           const act4 = t >= 15.6;
@@ -206,15 +204,11 @@
             mouth: cheer > 0 ? 'grin' : act4 ? 'o' : t > 6.5 ? 'frown' : 'flat', look: [1, -0.8], bob: 16 * cheer * Math.abs(Math.sin(t * 8)),
             blink: blinkAt(t, [5.6, 7.4, 17.8]), headTilt: -6,
           });
-          const fly = Math.min(1, S.spring(t, 16.7, { freq: 1.6, damp: 0.5 }));
-          // (it flies in from beyond the frame's left edge)
-          bot4.set({ x: -150 + 960 * fly, y: 610 + 8 * Math.sin(t * 2.6), t, ground: 260, eyes: 'happy', look: [0.8, -0.6], arm: [[20, -20], [-150 + 24 * Math.sin(t * 12), -30]], flame: 0.4 + 0.6 * (1 - fly), tilt: -12 * (1 - fly), glow: 0.8 });
-          bot4.root.style.visibility = act4 && t > 16.7 ? '' : 'hidden';
         });
-        headline(1, 'Fig. 2 · The problem', 'The admin put a<br /><em>ceiling</em> on growth.', 4.95, 7.8, { dark: false });
+        headline(1, 'Fig. 2 · The problem', 'Growth hit<br />a <em>ceiling</em>.', 4.95, 7.8, { dark: false });
         headline(3, 'Fig. 4 · One month in', 'The business<br />more than <em>doubled</em>.', 15.95, 99, { dark: false });
 
-        // ---------- Act 3: end to end ----------
+        // ---------- Act 3: every enquiry, on to a booking ----------
         const g3 = K.act(2);
         S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g3);
         CAST.dots(g3, { x0: -600, y0: -600, w: 3200, h: 2400 });
@@ -238,7 +232,6 @@
           ['Intake forms back', 750, 690, 1],
           ['Session booked', 1100, 580, 2],
           ['Reminder + follow-up', 1450, 470, 3],
-          ['Invoiced + reported', 1760, 360, 4],
         ].map(([label, x, y, k], i) => {
           const L = lenAt(x, y);
           const dot = S.svg('circle', { cx: x, cy: y, r: 24, fill: PAPER, stroke: INK, 'stroke-width': 7 }, g3);
@@ -248,8 +241,7 @@
           icon(badge, [0, 1, 2, 3, 4][k], 0.72);
           const ck = CAST.check(badge, { r: 18 });
           S.put(ck.g, { x: 40, y: -40 });
-          // (the last label hangs left of its stop, clear of the frame's edge)
-          const lab = K.hudAct(S.html(`<div class="mono" style="left:${x}px;top:${y + 174}px;transform:translateX(${i === 4 ? -75 : -50}%);font-size:24px;font-weight:600">${label}</div>`, S.hudCam), 2);
+          const lab = K.hudAct(S.html(`<div class="mono" style="left:${x}px;top:${y + 174}px;transform:translateX(-50%);font-size:24px;font-weight:600">${label}</div>`, S.hudCam), 2);
           return { L, x, y, dot, ring, badge, ck, lab };
         });
         // the first client's ride: to each station, a pause while it's handled, on
@@ -264,8 +256,6 @@
         const reach = STN.map((_, i) => T1[1 + i * 2]);
         const first = avatar(g3, TEAL, 28);
         const stream = Array.from({ length: 12 }, (_, j) => ({ g: avatar(g3, AVATARS[(j + 1) % 5], 22), at: 11.3 + j * 0.33 }));
-        const bot3 = CAST.robot(g3);
-        bot3.root.firstChild.style.display = 'none'; // a map has no floor to cast a shadow on
         const zap = CAST.burst(g3, { color: ORANGE, r0: 30, r1: 60, n: 7 });
         S.track((t) => {
           const l1 = S.kf(t, keys1);
@@ -291,24 +281,14 @@
             ring.setAttribute('r', (24 + 26 * u).toFixed(1));
             ring.setAttribute('opacity', (u < 1 ? 1 - u : 0).toFixed(3));
           });
-          // NK-01 rides along with the first client, then watches the line
-          const done = t > T1[T1.length - 1] + 0.2;
-          const settle = done ? Math.min(1, S.spring(t, T1[T1.length - 1] + 0.2, { freq: 1.4, damp: 0.6 })) : 0;
-          const bx = done ? 1770 + (1480 - 1770) * settle : p1.x + 10;
-          const by = done ? 210 + (220 - 210) * settle : p1.y - 150;
           const at = reach.find((a) => t >= a && t < a + 0.3);
-          bot3.set({
-            x: bx, y: by + 8 * Math.sin(t * 2.6), t, s: 0.85, ground: 300,
-            flame: 0.5, glow: at ? 1 : 0.6, eyes: done ? 'happy' : 'normal', look: done ? [-0.5, 0.6] : [0, 0.9],
-            arm: [[20, -20], at ? [-10, 70] : done ? [-150 + 24 * Math.sin(t * 12), -30] : [-30, 30]], blink: blinkAt(t, [9.7, 12.9, 14.6]),
-          });
           if (at) {
             const s = STN[reach.indexOf(at)];
             S.put(zap.g, { x: s.x, y: s.y });
             zap.set(ramp(t, at, 0.3, E.linear));
           } else zap.set(0);
         });
-        headline(2, 'Fig. 3 · With Neurokov', 'Now it runs<br /><em>end to end</em>.', 8.75, 15.3, { dark: false });
+        headline(2, 'Fig. 3 · With Neurokov', 'Every enquiry<br />becomes a <em>booking</em>.', 8.75, 15.3, { dark: false });
 
         // ---------- The close ----------
         K.endCard({
@@ -317,7 +297,7 @@
           kicker: 'Case 01 · Online psychology platform · Co-founded by Mohid Zeeshan',
           big: '<b data-n>0</b>%+ growth',
           count: [0, 100],
-          label: 'In a single month · Automated end to end, from first enquiry to final invoice',
+          label: 'In a single month · New clients in, every enquiry answered',
           size: 116,
         });
         K.wipes([

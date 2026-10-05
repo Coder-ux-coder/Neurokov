@@ -18,11 +18,14 @@ import history from 'lucide-static/icons/history.svg?raw';
 import keyRound from 'lucide-static/icons/key-round.svg?raw';
 import landmark from 'lucide-static/icons/landmark.svg?raw';
 import lifeBuoy from 'lucide-static/icons/life-buoy.svg?raw';
+import mail from 'lucide-static/icons/mail.svg?raw';
 import megaphone from 'lucide-static/icons/megaphone.svg?raw';
 import menu from 'lucide-static/icons/menu.svg?raw';
+import messageSquareReply from 'lucide-static/icons/message-square-reply.svg?raw';
 import moon from 'lucide-static/icons/moon.svg?raw';
 import palette from 'lucide-static/icons/palette.svg?raw';
 import receipt from 'lucide-static/icons/receipt.svg?raw';
+import refreshCcw from 'lucide-static/icons/refresh-ccw.svg?raw';
 import rocket from 'lucide-static/icons/rocket.svg?raw';
 import ruler from 'lucide-static/icons/ruler.svg?raw';
 import scale from 'lucide-static/icons/scale.svg?raw';
@@ -31,6 +34,8 @@ import shieldCheck from 'lucide-static/icons/shield-check.svg?raw';
 import sparkles from 'lucide-static/icons/sparkles.svg?raw';
 import sun from 'lucide-static/icons/sun.svg?raw';
 import target from 'lucide-static/icons/target.svg?raw';
+import timer from 'lucide-static/icons/timer.svg?raw';
+import trendingUp from 'lucide-static/icons/trending-up.svg?raw';
 import users from 'lucide-static/icons/users.svg?raw';
 import workflow from 'lucide-static/icons/workflow.svg?raw';
 import x from 'lucide-static/icons/x.svg?raw';
@@ -55,11 +60,14 @@ export const icons = {
   'key-round': keyRound,
   landmark,
   'life-buoy': lifeBuoy,
+  mail,
   megaphone,
   menu,
+  'message-square-reply': messageSquareReply,
   moon,
   palette,
   receipt,
+  'refresh-ccw': refreshCcw,
   rocket,
   ruler,
   scale,
@@ -68,6 +76,8 @@ export const icons = {
   sparkles,
   sun,
   target,
+  timer,
+  'trending-up': trendingUp,
   users,
   workflow,
   x,

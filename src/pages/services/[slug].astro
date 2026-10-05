@@ -50,8 +50,8 @@ const faqLd = {
     meta={service.name}
     title={service.title}
     lead={service.sub}
-    cta="Scope it for my business"
-    promise="Built to work from day one."
+    cta="Find out what I’d get"
+    promise="And the audit is 100% free."
   />
 
   <section class="section section--tight" style="padding-top: 0">
@@ -98,10 +98,10 @@ const faqLd = {
   <section class="section section--deep">
     <div class="container">
       <SectionHead
-        label="Scope"
+        label="What you get"
         index={at(2)}
-        title="What’s included."
-        lead="Built, tested and handed over, all inside one fixed price."
+        title="What you get."
+        lead="All inside one fixed price, and judged on booked calls and new clients."
       />
       <div class="grid-3 specs">
         {
@@ -126,7 +126,7 @@ const faqLd = {
           label="In practice"
           index={at(3)}
           title={service.flow.title + '.'}
-          lead="Here’s a system we build often. Yours will be shaped around how your business actually works."
+          lead="Here’s how it runs for most clients. Yours is shaped around how your business actually works."
         />
         <p class="muted" data-reveal>{service.flow.caption}</p>
         <div class="tools" data-reveal>
@@ -160,7 +160,7 @@ const faqLd = {
     related.length > 0 && (
       <section class="section section--deep">
         <div class="container">
-          <SectionHead label="Proof" index={at(4)} title="See it in action." />
+          <SectionHead label="Proof" index={at(4)} title="See the results." />
           <div class="cases cases--2">
             {related.map((c, i) => (
               <CaseCard study={c} delay={i * 100} />
@@ -186,7 +186,7 @@ const faqLd = {
 
   <section class="section section--deep section--tight">
     <div class="container">
-      <SectionHead label="More systems" title="Other ways we can help." />
+      <SectionHead label="More services" title="Other ways we bring you clients." />
       <ServiceRows except={service.slug} foot={false} />
     </div>
   </section>

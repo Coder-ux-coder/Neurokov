@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="clip" content="1920x1080 20s" />
+    <meta name="clip" content="1920x1080 13s" />
     <meta name="poster" content="11.3" />
     <title>Outbound engine</title>
     <link rel="stylesheet" href="clip.css" />
@@ -17,26 +17,24 @@
     <script src="story.js"></script>
     <script>
       // Case 02, told as a story: an agency that lived on referrals (great
-      // months, then quiet ones) burned a domain twice trying cold email. The
-      // engine finds matching companies, writes a real first line, sends from
-      // warmed inboxes away from the main domain and sorts the replies: 46
-      // qualified calls in the first 30 days. Real numbers only (case 02).
+      // months, then quiet ones) burned a domain twice trying cold email. With
+      // Neurokov, the calendar fills up: 46 qualified calls in the first 30
+      // days. The result, not the machinery. Real numbers only (case 02).
       STAGE.setup((S) => {
         const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
         const { E, ramp, env, hit } = S;
         const K = STORY([
           [0, 4.4],
           [4.4, 8.4],
-          [8.4, 15.6],
-          [15.6, 20.1],
+          [8.4, 13.0],
         ]);
         const { blinkAt, headline } = K;
         const BLUE = '#5b7fa6', GREEN = '#8aa37b';
 
-        // ---------- Acts 1 and 4: the founders' office ----------
+        // ---------- Acts 1 and 3: the founders' office ----------
         const office = S.g(S.cam);
         // (up until the closing card's wipe has covered it: it never uncovers a bare stage)
-        S.track((t) => (office.style.visibility = t < 4.4 || (t >= 15.6 && t < 18.9) ? '' : 'hidden'));
+        S.track((t) => (office.style.visibility = t < 4.4 || (t >= 8.4 && t < 11.7) ? '' : 'hidden'));
         K.room(office, { floor: 870, wall: '#ebe5d9', ground: '#ddd5c6' });
         CAST.dots(office, { x0: -600, y0: -600, w: 3200, h: 1470, o: 0.08 });
         const cal = CAST.calendar(office, { w: 460, h: 400, cols: 7, rows: 5 });
@@ -49,7 +47,7 @@
         const weekend = (i) => i % 7 >= 5;
         // act 1: a busy month, then a quiet one
         const busy = [0, 1, 3, 4, 7, 8, 9, 10, 11, 14, 16, 17, 18, 21, 22, 23, 25, 28, 29, 31, 32];
-        // act 4: 30 days, two calls a working day and three on two of them: 46
+        // act 3: 30 days, two calls a working day and three on two of them: 46
         const calls = cal.cells.map((_, i) => (i >= 30 || weekend(i) ? 0 : i === 9 || i === 22 ? 3 : 2));
         const desk = CAST.desk(office, { w: 640, h: 190 });
         S.put(desk, { x: 780, y: 870 });
@@ -61,7 +59,7 @@
         const founderB = CAST.person(office, { shirt: GREEN, hair: 'bob', hairColor: '#6b4a2e' });
         const lap = CAST.laptop(office, { w: 220, h: 150 });
         S.put(lap.g, { x: 860, y: 680 });
-        // a video call on the laptop, in act 4
+        // a video call on the laptop, in act 3
         const call = S.g(lap.ui);
         S.svg('rect', { x: -98, y: -138, width: 196, height: 120, fill: '#cfe0f0' }, call);
         S.svg('circle', { cx: 0, cy: -84, r: 26, fill: PAPER, stroke: INK, 'stroke-width': 4 }, call);
@@ -72,32 +70,32 @@
         const web = S.svg('path', { d: 'M -60 -40 L 4 18 M -60 -40 L -60 20 M -60 -40 L 30 -40 M -60 -14 Q -38 -16 -34 -40 M -60 6 Q -18 2 -10 -40', fill: 'none', stroke: INK, 'stroke-width': 2.5 }, office);
         S.put(web, { x: 670, y: 610 });
         const weed = CAST.tumbleweed(office, { r: 52 });
-        const count4 = S.html('<div class="chip" style="left:1480px;top:700px;transform:translateX(-50%);font-size:26px"></div>', S.hudCam);
+        const count3 = S.html('<div class="chip" style="left:1480px;top:700px;transform:translateX(-50%);font-size:26px"></div>', S.hudCam);
         S.track((t) => {
-          const act4 = t >= 15.6;
+          const act3 = t >= 8.4;
           // the calendar: busy, a page turn, empty; then the first 30 days fill
-          const flip = act4 ? 0 : env(t, 2.05, 2.35, 0.15);
-          const quiet = !act4 && t > 2.2;
-          const day = act4 ? Math.floor(30 * ramp(t, 15.95, 1.8, E.linear)) : 0;
-          month.textContent = act4 ? `DAY ${String(Math.max(1, day)).padStart(2, '0')} OF 30` : quiet ? 'APRIL' : 'MARCH';
+          const flip = act3 ? 0 : env(t, 2.05, 2.35, 0.15);
+          const quiet = !act3 && t > 2.2;
+          const day = act3 ? Math.floor(30 * ramp(t, 8.75, 1.8, E.linear)) : 0;
+          month.textContent = act3 ? `DAY ${String(Math.max(1, day)).padStart(2, '0')} OF 30` : quiet ? 'APRIL' : 'MARCH';
           let booked = 0;
           cal.cells.forEach((c, i) => {
             let fill = weekend(i) ? '#d6cebf' : SHADE;
-            if (!act4 && !quiet && busy.includes(i) && t > 0.3 + busy.indexOf(i) * 0.07) fill = '#ffc8a8';
-            if (act4 && i < day) fill = '#fff3ea';
+            if (!act3 && !quiet && busy.includes(i) && t > 0.3 + busy.indexOf(i) * 0.07) fill = '#ffc8a8';
+            if (act3 && i < day) fill = '#fff3ea';
             c.cell.setAttribute('fill', fill);
             chips[i].forEach((ch, k) => {
-              const on = act4 ? i < day && k < calls[i] : !quiet && busy.includes(i) && k < 2 - (i % 2) && t > 0.35 + busy.indexOf(i) * 0.07;
-              if (act4 && on) booked++;
+              const on = act3 ? i < day && k < calls[i] : !quiet && busy.includes(i) && k < 2 - (i % 2) && t > 0.35 + busy.indexOf(i) * 0.07;
+              if (act3 && on) booked++;
               ch.style.visibility = on ? '' : 'hidden';
             });
           });
           S.put(cal.g, { x: 1480, y: 470, sy: 1 - 0.9 * flip, sx: 1 });
-          count4.style.visibility = act4 ? '' : 'hidden';
-          count4.innerHTML = `Calls booked · <b>${String(booked).padStart(2, '0')}</b>`;
-          count4.style.transform = `translateX(-50%) scale(${(1 + 0.08 * hit(t, 17.75, 0.3)).toFixed(3)})`;
+          count3.style.visibility = act3 ? '' : 'hidden';
+          count3.innerHTML = `Calls booked · <b>${String(booked).padStart(2, '0')}</b>`;
+          count3.style.transform = `translateX(-50%) scale(${(1 + 0.08 * hit(t, 10.55, 0.3)).toFixed(3)})`;
           // the phone rings in the good months, gathers dust in the quiet one
-          phone.ring(t, (t < 1.9 && Math.sin(t * 5) > -0.3) || (act4 && t > 15.9 && Math.sin(t * 5) > -0.3) ? 1 : 0);
+          phone.ring(t, (t < 1.9 && Math.sin(t * 5) > -0.3) || (act3 && t > 8.7 && Math.sin(t * 5) > -0.3) ? 1 : 0);
           S.put(web, { x: 670, y: 612, s: Math.max(0.001, ramp(t, 3.0, 0.6, E.out)), o: quiet && t > 3.0 ? 1 : 0 });
           // a tumbleweed rolls through the quiet month
           const wx = 2000 - 2300 * ramp(t, 2.45, 1.9, E.linear);
@@ -106,25 +104,25 @@
           // the founders
           const happy = !quiet;
           const watch = quiet ? S.clamp((wx - 780) / 700, -1, 1) : 0;
-          const pump = act4 ? env(t, 16.3, 18.3, 0.2) * Math.abs(Math.sin(t * 7)) : t < 2 ? 0.6 * Math.abs(Math.sin(t * 6)) : 0;
+          const pump = act3 ? env(t, 9.1, 11.1, 0.2) * Math.abs(Math.sin(t * 7)) : t < 2 ? 0.6 * Math.abs(Math.sin(t * 6)) : 0;
           const drum = quiet ? Math.sin(t * 30) * 6 : 0;
           founderA.set({
             x: 580, y: 870, seated: 120, leg: [[70, -70], [76, -74]], bob: happy ? 4 * Math.abs(Math.sin(t * 6)) : 0,
             arm: [[40, 60], happy ? [150 - 40 * pump, 20 + 30 * pump] : [62, 40 + drum]], lean: quiet ? 8 : 0,
             mouth: happy ? 'grin' : t > 3.4 ? 'frown' : 'flat', look: quiet ? [watch, 0.3] : [0.6, -0.4],
-            blink: blinkAt(t, [1.4, 3.9, 16.9]),
+            blink: blinkAt(t, [1.4, 3.9, 9.7]),
           });
-          const talking = act4 ? K.talk(t, 16.0, 18.3) : 'grin';
+          const talking = act3 ? K.talk(t, 8.8, 11.1) : 'grin';
           founderB.set({
             x: 1040, y: 870, flip: -1, seated: 120, leg: [[70, -70], [76, -74]], bob: happy ? 4 * Math.abs(Math.sin(t * 6 + 1)) : 0,
             arm: [[40, 60], [55, 50]], lean: quiet ? 8 : 0, headTilt: quiet ? 6 : 0,
-            mouth: act4 ? talking : happy ? 'grin' : 'flat', look: act4 ? [1, 0.3] : quiet ? [-watch, 0.3] : [0.2, -0.6],
-            blink: blinkAt(t, [0.9, 3.3, 17.3]),
+            mouth: act3 ? talking : happy ? 'grin' : 'flat', look: act3 ? [1, 0.3] : quiet ? [-watch, 0.3] : [0.2, -0.6],
+            blink: blinkAt(t, [0.9, 3.3, 10.1]),
           });
-          call.style.visibility = act4 ? '' : 'hidden';
+          call.style.visibility = act3 ? '' : 'hidden';
         });
         headline(0, 'Fig. 1 · Referrals only', 'Great months,<br />then <em>quiet ones</em>.', 0.45, 4.0, { dark: false });
-        headline(3, 'Fig. 4 · The first 30 days', 'Now the calendar<br /><em>fills itself</em>.', 16.0, 99, { dark: false });
+        headline(2, 'Fig. 3 · With Neurokov', 'Now the calendar<br /><em>fills up</em>.', 8.8, 99, { dark: false });
 
         // ---------- Act 2: cold email, burned twice ----------
         const g2 = K.act(1);
@@ -189,240 +187,9 @@
         K.stamp('Burned', { x: 1655, y: 770, at: 7.65, until: 8.4, rot: 7, size: 44 });
         headline(1, 'Fig. 2 · They tried cold email', 'It burned a domain.<br /><em>Twice.</em>', 4.85, 8.0, { dark: false });
 
-        // ---------- Act 3: the engine ----------
-        const g3 = K.act(2);
-        S.svg('rect', { x: -600, y: -600, width: 7400, height: 2400, fill: PAPER }, g3);
-        CAST.dots(g3, { x0: -600, y0: -600, w: 7400, h: 2400 });
-        CAST.ground(g3, { x0: -600, x1: 7000 }).setAttribute('transform', 'translate(0 870)');
-        const ST = [960, 2400, 3840, 5280];
-        const stationChip = K.hudAct(S.html('<div class="chip" style="left:1500px;top:170px"></div>'), 2);
-        const CHIPS = [
-          [8.95, '01 · 6,000 companies that fit'],
-          [10.45, '02 · A first line about something real'],
-          [12.35, '03 · 36 warmed inboxes, 12 domains'],
-          [14.15, '04 · Replies sorted in seconds'],
-        ];
-        S.track((t) => {
-          const cur = CHIPS.filter(([at]) => t >= at).pop();
-          if (!cur) return (stationChip.style.opacity = 0);
-          const next = CHIPS.find(([at]) => at > t);
-          const p = Math.min(1.15, S.spring(t, cur[0], { freq: 2.4, damp: 0.45 }));
-          const out = next ? ramp(t, next[0] - 0.4, 0.2, E.in) : 0;
-          stationChip.textContent = cur[1];
-          stationChip.style.opacity = 1;
-          stationChip.style.transform = `translate(-50%, -50%) scale(${Math.max(0.001, p * (1 - out)).toFixed(3)}) rotate(-2deg)`;
-        });
-        // 01: find the companies that fit
-        const HB = [150, 190, 130, 170, 200, 140];
-        const MATCH = [1, 2, 4, 5];
-        const blds = HB.map((h, i) => {
-          const b = CAST.building(g3, { w: 100, h });
-          S.put(b.g, { x: 330 + i * 130, y: 870 });
-          return b;
-        });
-        // the belt: matched companies ride to the writer, and on as emails
-        const belt = CAST.belt(g3, { x0: 1150, x1: 3700, speed: 300, legs: 78 });
-        S.put(belt.g, { y: 740 });
-        S.track((t) => belt.set(t));
-        const B0 = 1180, CONV = 2400, BEND = 3690;
-        const items = Array.from({ length: 28 }, (_, k) => {
-          const g = S.g(g3);
-          const card = CAST.card(g, { w: 120, h: 76, lines: 2 });
-          S.put(card, { y: -40 });
-          const env3 = CAST.envelope(g, { w: 104, h: 70 });
-          S.put(env3.g, { y: -38 });
-          return { g, card, env: env3.g, k };
-        });
-        const xOf = (k, t) => BEND - 180 * k + 300 * (t - 8.4);
-        const puff = CAST.burst(g3, { color: ORANGE, r0: 50, r1: 90, n: 6 });
-        S.put(puff.g, { x: CONV, y: 700 });
-        // (and one where each email leaves the belt as a plane)
-        const puff2 = CAST.burst(g3, { color: ORANGE, r0: 40, r1: 80, n: 6 });
-        S.put(puff2.g, { x: BEND, y: 700 });
-        S.track((t) => {
-          let lastConv = -1, lastBend = -1;
-          items.forEach(({ g, card, env: en, k }) => {
-            const x = xOf(k, t);
-            const on = x >= B0 && x <= BEND;
-            // (each grows up out of the belt's start, and shrinks away at its end)
-            const s = Math.min(E.out(S.clamp((x - B0) / 60)), S.clamp((BEND - x) / 40));
-            S.put(g, { x, y: 740, s: Math.max(0.001, s), o: on ? 1 : 0 });
-            card.style.visibility = x < CONV ? '' : 'hidden';
-            en.style.visibility = x >= CONV ? '' : 'hidden';
-            const tc = 8.4 + (CONV - BEND + 180 * k) / 300; // when it passes the writer
-            if (t >= tc && t < tc + 0.3) lastConv = tc;
-            const tb = 8.4 + (180 * k) / 300; // when it reaches the end
-            if (t >= tb && t < tb + 0.3) lastBend = tb;
-          });
-          puff.set(lastConv > 0 ? ramp(t, lastConv, 0.3, E.linear) : 0);
-          puff2.set(lastBend > 0 ? ramp(t, lastBend, 0.3, E.linear) : 0);
-        });
-        // 02: a first line about something real
-        const site = CAST.browser(g3, { w: 560, h: 360 });
-        S.put(site.g, { x: 2900, y: 490 });
-        S.svg('circle', { cx: 54, cy: 50, r: 26, fill: GREEN, stroke: INK, 'stroke-width': 4 }, site.ui);
-        S.svg('rect', { x: 96, y: 34, width: 160, height: 12, rx: 6, fill: INK }, site.ui);
-        S.svg('rect', { x: 96, y: 56, width: 100, height: 10, rx: 5, fill: GRAY }, site.ui);
-        [0, 1, 2].forEach((i) => S.svg('rect', { x: 28, y: 96 + i * 22, width: i === 2 ? 300 : 500, height: 10, rx: 5, fill: GRAY }, site.ui));
-        S.svg('path', { d: 'M 480 60 c -8 -14 -28 -8 -22 8 l 22 20 l 22 -20 c 6 -16 -14 -22 -22 -8 z', fill: ORANGE, stroke: INK, 'stroke-width': 3.5 }, site.ui);
-        const draftBox = S.svg('rect', { x: 20, y: 184, width: 520, height: 110, rx: 12, fill: '#fff3ea', stroke: ORANGE, 'stroke-width': 4 }, site.ui);
-        const draftTag = S.svg('text', { x: 36, y: 212, 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 16, 'letter-spacing': 1.5, fill: ORANGE }, site.ui);
-        draftTag.textContent = 'FIRST LINE · WRITTEN FOR THEM';
-        // (two lines that fit the box; it shrinks with the window, about the window's centre)
-        const draft = S.html('<div class="say" style="left:2900px;top:580px;transform:translate(-50%,0);transform-origin:50% -90px;font-size:26px;text-align:left;width:480px;white-space:normal"></div>', S.hudCam);
-        K.hudAct(draft, 2);
-        const scan = S.svg('path', { fill: ORANGE, opacity: 0.22 }, g3);
-        // 03: sent from warmed inboxes, well away from the main domain (five of them,
-        // so there is clear ground between the last one and the house)
-        const MB = [0, 1, 2, 3, 4].map((i) => {
-          const m = CAST.mailbox(g3);
-          S.put(m.g, { x: 3830 + i * 128, y: 870 });
-          return m;
-        });
-        const house = S.g(g3);
-        S.svg('path', { d: 'M -110 0 L -110 -150 L 0 -240 L 110 -150 L 110 0 Z', fill: PAPER, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, house);
-        S.svg('path', { d: 'M -130 -140 L 0 -254 L 130 -140', fill: 'none', stroke: INK, 'stroke-width': 12, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, house);
-        S.svg('rect', { x: -26, y: -90, width: 52, height: 90, rx: 6, fill: ORANGE, stroke: INK, 'stroke-width': 5 }, house);
-        S.svg('rect', { x: 44, y: -120, width: 44, height: 40, rx: 4, fill: '#cfe0f0', stroke: INK, 'stroke-width': 4 }, house);
-        S.svg('rect', { x: -88, y: -120, width: 44, height: 40, rx: 4, fill: '#cfe0f0', stroke: INK, 'stroke-width': 4 }, house);
-        S.put(house, { x: 4600, y: 870 });
-        const guard = CAST.shield(g3, { r: 54 });
-        const houseTag = S.html('<div class="mono" style="left:4580px;top:895px;transform:translateX(-50%);font-size:20px">Your main domain · untouched</div>', S.hudCam);
-        K.hudAct(houseTag, 2);
-        const planes = items.map(({ k }) => {
-          const pl = CAST.plane(g3);
-          const at = 8.4 + (180 * k) / 300; // reaches the end of the belt
-          const box = k % MB.length;
-          S.track((t) => {
-            const toss = ramp(t, at, 0.3, E.inOut);
-            const fly = ramp(t, at + 0.35, 0.9, E.in);
-            const bx = 3830 + box * 128, by = 870 - 190;
-            let x, y, r, o;
-            if (fly <= 0) {
-              x = BEND + (bx - BEND) * toss;
-              y = 700 + (by - 700) * toss - 110 * Math.sin(Math.PI * toss);
-              r = -20;
-              o = t > at ? 1 : 0;
-            } else {
-              // off to the right, towards the replies' station: up clear of the
-              // mailboxes, then over the shield and under the station's chip
-              const [x1, y1, x2, y2] = [bx + 60, 330, 4950, 350];
-              const u = fly, v = 1 - u;
-              x = v * v * bx + 2 * u * v * x1 + u * u * x2;
-              y = v * v * by + 2 * u * v * y1 + u * u * y2;
-              const dir = (Math.atan2(v * (y1 - by) + u * (y2 - y1), v * (x1 - bx) + u * (x2 - x1)) * 180) / Math.PI;
-              r = -20 + (dir + 12 + 20) * Math.min(1, u / 0.15);
-              // only planes gone before the camera moves on (13.75): a later one
-              // would drift left across the frame as the camera pans
-              o = fly < 1 && at < 12.7 ? 1 : 0;
-            }
-            // (one that won't fly on, once the camera has gone, drops into its mailbox)
-            S.put(pl, { x, y, r, s: 0.6 * K.pop(t, at, at < 12.7 ? Infinity : at + 0.35), o });
-          });
-          return { at, box };
-        });
-        S.track((t) => {
-          MB.forEach((m, i) => {
-            const recent = planes.filter((p) => p.box === i && t > p.at + 0.3 && t < p.at + 0.9).length;
-            m.setFlag(recent ? 1 : 0);
-          });
-          S.put(guard, { x: 4600, y: 520 + 8 * Math.sin(t * 2.2), s: Math.max(0.001, Math.min(1.1, S.spring(t, 12.6))) });
-        });
-        // 04: replies, sorted in seconds
-        const cal3 = CAST.calendar(g3, { w: 420, h: 340, cols: 5, rows: 3 });
-        // (low enough that its rings clear the station's chip above it)
-        const CY = 520;
-        S.put(cal3.g, { x: 5760, y: CY });
-        const tray = CAST.tray(g3, { w: 180 });
-        const tbl = CAST.table(g3, { w: 220, h: 140 });
-        S.put(tbl, { x: 5010, y: 870 });
-        S.put(tray.g, { x: 5010, y: 730 });
-        const trayTag = S.html('<div class="mono" style="left:5010px;top:895px;transform:translateX(-50%);font-size:20px">Not now · nurture</div>', S.hudCam);
-        K.hudAct(trayTag, 2);
-        const ping = S.html('<div class="mono" style="left:5760px;top:745px;transform:translateX(-50%);padding:14px 20px;background:#121212;color:#f2efe8;font-size:22px;border-radius:12px;line-height:1.5"><b style="color:#ff4f00">●</b> New call booked<br />Founders notified in Slack</div>', S.hudCam);
-        K.hudAct(ping, 2);
-        const replies = [0, 1, 2, 3, 4, 5].map((i) => {
-          const hot = i !== 1 && i !== 4;
-          const e = CAST.envelope(g3, { w: 90, h: 60, seal: hot ? ORANGE : GRAY });
-          const at = 14.3 + i * 0.19;
-          const slot = [0, 1, 2, 3, 4, 5].slice(0, i).filter((j) => j !== 1 && j !== 4).length;
-          S.track((t) => {
-            const inP = ramp(t, at, 0.3, E.out);
-            const out = ramp(t, at + 0.34, 0.32, E.inOut);
-            const c = cal3.cells[slot + 5];
-            const tx = hot ? 5760 + c.cx : 5010, ty = hot ? CY + c.cy : 690;
-            // in from above, between the headline and the station's chip, to NK-01's
-            // raised hand, then sorted from there
-            const [hx, hy] = [5365, 525];
-            const x = 5450 + (hx - 5450) * inP + (tx - hx) * out;
-            const y = -60 + (hy + 60) * inP + (ty - hy) * out - 80 * Math.sin(Math.PI * out);
-            S.put(e.g, { x, y, r: -30 * (1 - inP) + 360 * out, s: 1 - (hot ? 0.55 : 0.2) * out, o: t > at && (!hot || out < 1) ? 1 : 0 });
-          });
-          return { hot, at, slot };
-        });
-        S.track((t) => {
-          cal3.cells.forEach((c, i) => {
-            const r = replies.find((rp) => rp.hot && rp.slot + 5 === i);
-            c.cell.setAttribute('fill', r && t > r.at + 0.66 ? ORANGE : SHADE);
-          });
-          ping.style.opacity = ramp(t, 14.95, 0.25).toFixed(3);
-          ping.style.transform = `translateX(-50%) translateY(${(24 * (1 - ramp(t, 14.95, 0.35, E.back))).toFixed(1)}px)`;
-        });
-        // NK-01 runs the line, flying station to station with the camera (low
-        // enough that its antenna's glow stays clear of the headline)
-        const bot = CAST.robot(g3);
-        const lens = CAST.magnifier(g3, { r: 46 });
-        S.track((t) => {
-          const [bx, by] = S.kf(t, [
-            [8.4, [650, 590]],
-            [10.0, [650, 590]],
-            [10.5, [2400, 560], E.inOut],
-            [11.95, [2400, 560]],
-            [12.45, [3560, 570], E.inOut],
-            [13.75, [3560, 570]],
-            [14.25, [5230, 560], E.inOut],
-          ]);
-          const travel = env(t, 10.0, 10.5, 0.1) + env(t, 11.95, 12.45, 0.1) + env(t, 13.75, 14.25, 0.1);
-          const bob = 9 * Math.sin(t * 2.6);
-          const sweep = t < 10 ? Math.sin((t - 8.6) * 2.2) : 0;
-          const atS2 = t > 10.5 && t < 11.95;
-          const atS4 = t > 14.25;
-          const catchA = atS4 ? replies.reduce((m, r) => Math.max(m, env(t, r.at + 0.2, r.at + 0.45, 0.08)), 0) : 0;
-          bot.set({
-            x: bx, y: by + bob, t, ground: 310 - bob, flame: 0.4 + 0.6 * travel, tilt: 12 * travel,
-            glow: 0.6 + 0.4 * S.wave(t, 0.6), eyes: atS4 && t > 15.1 ? 'happy' : 'normal',
-            look: t < 10 ? [-0.6 + 0.5 * sweep, 0.7] : atS2 ? [0.9, -0.2] : t > 12.45 && t < 13.75 ? [0.8, 0.5] : atS4 ? [0.7, -0.6] : [0, 0],
-            // (its front arm never swings in across its name: it sweeps and scribbles to
-            // the side, and catches each reply with its arm up towards it)
-            arm: t < 10 ? [[20, -20], [-35 + 25 * sweep, 70]] : atS2 ? [[30, -30], [-20 + 20 * Math.sin(t * 20), 60]] : [[30 + 40 * catchA, -30], [-30 + 170 * catchA, 30 - 60 * catchA]],
-            blink: blinkAt(t, [9.3, 11.2, 13.1, 14.9]),
-          });
-          const [hx, hy] = bot.hand;
-          S.put(lens, { x: bx + hx + 20, y: by + bob + hy + 50, r: -20, s: K.pop(t, -1, 10.3), o: t < 10.3 ? 1 : 0 });
-          // matches light up as the lens passes
-          blds.forEach((b, i) => {
-            const lit = MATCH.includes(i) && t > 8.95 + MATCH.indexOf(i) * 0.25;
-            b.body.setAttribute('fill', lit ? ORANGE : PAPER);
-          });
-          // the writer reads the post, then writes
-          if (atS2 && t > 10.55 && t < 11.9) {
-            scan.setAttribute('d', `M ${bx + 60} ${by - 10} L 2640 ${410 + 60 * Math.sin(t * 5)} L 2640 ${520 + 60 * Math.sin(t * 5)} Z`);
-            scan.style.visibility = '';
-          } else scan.style.visibility = 'hidden';
-          // written in time to be read before the camera moves on
-          S.type(t, draft, 'Loved your post on hiring. Quick idea for the new team…', 10.6, 60);
-          // the writer's window closes, quickly, as the camera moves on
-          const shut = ramp(t, 11.95, 0.2, E.backIn);
-          const ws = Math.max(0.001, 1 - shut);
-          S.put(site.g, { x: 2900, y: 490, s: ws, o: shut < 1 ? 1 : 0 });
-          draft.style.transform = `translate(-50%,0) scale(${ws.toFixed(4)})`;
-          draft.style.opacity = t > 10.6 && shut < 1 ? 1 : 0;
-        });
-        headline(2, 'Fig. 3 · With Neurokov', 'An engine that<br /><em>books the calls</em>.', 8.95, 15.25, { dark: false });
-
         // ---------- The close ----------
         K.endCard({
-          at: 18.3,
+          at: 11.1,
           kicker: 'Case 02 · Outbound engine · B2B growth agency, 25 people',
           big: '<b data-n>0</b> qualified calls',
           count: [0, 46],
@@ -430,8 +197,7 @@
         });
         K.wipes([
           [4.4, 'Then they tried cold email →'],
-          [8.4, '◀◀ Rewind · With Neurokov'],
-          [15.6, 'The first 30 days →'],
+          [8.4, 'With Neurokov · The first 30 days →'],
         ]);
         K.note('Illustrated story · Real numbers from case 02', () => false);
         K.camera(
@@ -440,16 +206,8 @@
             [4.4, [960, 640, 1.26], E.sine],
             [4.41, [960, 640, 1.15], E.linear],
             [8.4, [980, 640, 1.2], E.sine],
-            [8.41, [960, 620, 1.0], E.linear],
-            [10.0, [990, 620, 1.0], E.linear],
-            [10.5, [2400, 620, 1.0], E.inOut],
-            [11.95, [2430, 620, 1.0], E.linear],
-            [12.45, [3840, 620, 1.0], E.inOut],
-            [13.75, [3870, 620, 1.0], E.linear],
-            [14.25, [5280, 620, 1.0], E.inOut],
-            [15.6, [5300, 620, 1.03], E.linear],
-            [15.61, [960, 640, 1.15], E.linear],
-            [20, [960, 640, 1.2], E.sine],
+            [8.41, [960, 640, 1.15], E.linear],
+            [13, [960, 640, 1.2], E.sine],
           ],
           [
             [5.55, 0.35, 0.6],

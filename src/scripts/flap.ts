@@ -3,7 +3,7 @@
  * and the two leaves that fall between them. A change flips a tile through a
  * few random characters before it lands, like a station departures board.
  */
-import { afterIntro, calm, onceVisible, sleep } from './lib';
+import { calm, onceVisible, sleep } from './lib';
 
 const RANDOM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%+<';
 const isSignal = (c: string) => /[^A-Z0-9 ]/.test(c);
@@ -107,7 +107,5 @@ document.querySelectorAll<HTMLElement>('[data-flap]').forEach((el) => {
   const flap = new Flap(el);
   const value = el.dataset.flap ?? '';
   flap.blank();
-  const arm = () => onceVisible(el, () => flap.set(value, { flips: 5, stagger: 54, speed: 37 }), { threshold: 0.35 });
-  if (el.closest('[data-hold]')) afterIntro(arm);
-  else arm();
+  onceVisible(el, () => flap.set(value, { flips: 5, stagger: 54, speed: 37 }), { threshold: 0.35 });
 });

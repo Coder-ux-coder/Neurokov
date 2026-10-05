@@ -9,7 +9,7 @@ import Clip from './Clip.astro';
 import Flap from './Flap.astro';
 import Icon from './Icon.astro';
 
-const order = ['speed-to-lead', 'outbound-engine', 'back-office-autopilot', 'psychology-platform'];
+const order = ['outbound-engine', 'speed-to-lead', 'psychology-platform'];
 const slides = order.map((slug) => {
   const c = cases.find((x) => x.slug === slug)!;
   return { ...c, n: String(cases.indexOf(c) + 1).padStart(2, '0'), stat: c.stats[0] };
@@ -75,7 +75,7 @@ const sizes = '(max-width: 960px) 100vw, 760px';
     <span class="label">
       <b>Fig. 01</b>&nbsp;Case <span data-slide-n>{first.n}</span><span class="slides__name">&nbsp;· <span data-slide-title>{first.title}</span></span>
     </span>
-    <a class="label slides__read" href={`/case-studies/${first.slug}/`} data-slide-link data-cursor="Read">
+    <a class="label slides__read" href={`/case-studies/${first.slug}/`} data-slide-link>
       Read the case <Icon name="arrow-up-right" size={14} />
     </a>
   </div>

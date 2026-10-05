@@ -8,6 +8,7 @@ this script gathers the ones in use into icons.js so the pages work from file://
 usage: python render.py [name ...]      (default: every screen)
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -21,7 +22,8 @@ ROOT = HERE.parent.parent
 LUCIDE = ROOT / 'node_modules/lucide-static/icons'
 SIMPLE = ROOT / 'node_modules/simple-icons/icons'
 OUT = HERE / 'out'
-CHROME = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
+# Set CHROME to use another browser binary (on Linux or a Mac, say).
+CHROME = os.environ.get('CHROME', r'C:\Program Files\Google\Chrome\Application\chrome.exe')
 
 
 def lucide(name):
@@ -56,7 +58,9 @@ def render(page, profile):
     subprocess.run(
         [CHROME, '--headless=new', '--disable-gpu', '--hide-scrollbars', '--allow-file-access-from-files',
          '--font-render-hinting=none', f'--user-data-dir={profile}', f'--force-device-scale-factor={dpr}',
-         f'--window-size={w},{h}', '--virtual-time-budget=5000', f'--screenshot={png}', page.as_uri()],
+         f'--window-size={w},{h}', '--virtual-time-budget=5000', f'--screenshot={png}',
+         # Chrome refuses to run as root (in a container, say) with its sandbox on.
+         *(['--no-sandbox'] if hasattr(os, 'geteuid') and os.geteuid() == 0 else []), page.as_uri()],
         check=True, capture_output=True)
     size = Image.open(png).size
     want = (round(int(w) * float(dpr)), round(int(h) * float(dpr)))

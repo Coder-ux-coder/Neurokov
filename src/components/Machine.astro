@@ -1,9 +1,9 @@
 ---
 /**
- * A working model of the speed-to-lead system from the case study: leads come
- * in from four channels, pass through the system's three steps and come out as
- * actions. machine.ts runs simulated leads through it (the legend says so).
- * Two drawings of the same system: wide for desktop, tall for phones.
+ * A working model of how we answer leads (the speed-to-lead case study): leads
+ * come in from four channels, pass through three steps and come out as booked
+ * calls and follow-ups. machine.ts runs simulated leads through it (the legend says so).
+ * Two drawings of the same model: wide for desktop, tall for phones.
  */
 const inputs = [
   { label: 'Web form', sub: 'Channel 01' },
@@ -14,18 +14,18 @@ const inputs = [
 const inputTip = 'Every form fill, email and LinkedIn inquiry lands in one place.';
 
 const gates = [
-  { label: 'Enrich', tip: 'Each lead is deduplicated and enriched automatically.' },
+  { label: 'Check', tip: 'Each lead is checked for duplicates and matched to who it is.' },
   { label: 'Qualify', tip: 'Every lead is checked against your ideal-client criteria.' },
   { label: 'Reply', tip: 'A personal reply goes out within 60 seconds, day or night.' },
 ];
 
 const outputs = [
   { key: 'booked', label: 'Call booked', sub: 'Booking link sent', tip: 'Good-fit leads get a booking link for the right person.' },
-  { key: 'crm', label: 'CRM updated', sub: 'Stage moved', tip: 'Deals move stages on their own as calls are booked.' },
+  { key: 'crm', label: 'CRM updated', sub: 'Stage moved', tip: 'Deals move forward in your CRM as calls are booked.' },
   { key: 'team', label: 'Team pinged', sub: 'Slack, with context', tip: 'Your team gets a Slack message with the full context.' },
-  { key: 'nurture', label: 'Nurture', sub: 'Not a fit yet', tip: 'Everyone else goes into a nurture sequence worth reading.' },
+  { key: 'nurture', label: 'Follow-up', sub: 'Not ready yet', tip: 'Everyone else keeps hearing from you until they’re ready.' },
 ];
-const coreTip = 'One system, built around your tools, your data and your rules.';
+const coreTip = 'Every lead answered the same way, built around your tools and your rules.';
 
 // ---- Wide drawing: 1200 x 470 ----
 const W = { boxW: 224, boxH: 60, inX: 24, outX: 952, ys: [85, 185, 285, 385], mid: 235, busIn: 332, busOut: 868 };
@@ -63,7 +63,7 @@ const tallOut = ({ x, cy }: { x: number; cy: number }) => {
 const at = (v: number, from: number, len: number) => ((v - from) / len).toFixed(4);
 const n2 = (i: number) => String(i + 1).padStart(2, '0');
 const aria =
-  'Diagram of a speed-to-lead system. Leads from a web form, email, LinkedIn and cold email replies are enriched, qualified automatically and answered within 60 seconds. Good fits get a booked call, a CRM update and a Slack alert for the team; everyone else goes into a nurture sequence.';
+  'Diagram of how every lead gets answered. Leads from a web form, email, LinkedIn and cold email replies are checked, qualified and answered within 60 seconds. Good fits get a booked call, a CRM update and a Slack alert for the team; everyone else keeps getting follow-ups until they’re ready.';
 ---
 
 <div class="machine" data-machine>
@@ -86,7 +86,7 @@ const aria =
     }
     <g class="node" data-tip={coreTip}>
       <rect class="box box--core" x={core.x} y={core.y} width={core.w} height={core.h} rx="4" />
-      <text class="t-core" x={core.x + 24} y={core.y + 32}>Neurokov system</text>
+      <text class="t-core" x={core.x + 24} y={core.y + 32}>Neurokov</text>
       <text class="t-core-dim" x={core.x + core.w - 24} y={core.y + 32} text-anchor="end">Speed to lead</text>
       <text class="t-core-dim" x={core.x + 24} y={core.y + core.h - 26}>First reply</text>
       <text class="t-big" x={core.x + core.w - 24} y={core.y + core.h - 22} text-anchor="end">&lt;60 S</text>
@@ -130,7 +130,7 @@ const aria =
     }
     <g class="node" data-tip={coreTip}>
       <rect class="box box--core" x={tcore.x} y={tcore.y} width={tcore.w} height={tcore.h} rx="4" />
-      <text class="t-core" x={tcore.x + 20} y={tcore.y + 30}>Neurokov system</text>
+      <text class="t-core" x={tcore.x + 20} y={tcore.y + 30}>Neurokov</text>
       <text class="t-core-dim" x={tcore.x + tcore.w - 20} y={tcore.y + 30} text-anchor="end">Speed to lead</text>
       <text class="t-core-dim" x={tcore.x + 20} y={tcore.y + tcore.h - 24}>First reply</text>
       <text class="t-big" x={tcore.x + tcore.w - 20} y={tcore.y + tcore.h - 20} text-anchor="end">&lt;60 S</text>

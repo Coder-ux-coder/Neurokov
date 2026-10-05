@@ -17,7 +17,7 @@ const sizes = '(max-width: 960px) 100vw, 760px';
     {
       cases.map((c, i) => (
         <li>
-          <a class="row" href={`/case-studies/${c.slug}/`} data-reveal style={`--d: ${i * 70}ms`} data-cursor="Read case" data-i={i}>
+          <a class="row" href={`/case-studies/${c.slug}/`} data-reveal style={`--d: ${i * 70}ms`} data-i={i}>
             <span class="row__n">{String(i + 1).padStart(2, '0')}</span>
             <span class="row__main">
               <span class="row__name">{c.title}</span>

@@ -1,5 +1,9 @@
 import type { IconName } from '../components/icons';
 
+/**
+ * What Neurokov sells: new clients for B2B service businesses. Each service is sold on its result
+ * (booked calls, leads answered, old leads won back), not on how the work gets done.
+ */
 export interface Service {
   slug: string;
   name: string;
@@ -11,6 +15,7 @@ export interface Service {
   /** "Sound familiar?": the problems this service fixes, in the reader's words. */
   signs: string[];
   intro: string[];
+  /** What the client gets, as results. */
   included: { title: string; text: string }[];
   flow: { title: string; caption: string; steps: string[] };
   tools: string[];
@@ -21,95 +26,12 @@ export interface Service {
 
 export const services: Service[] = [
   {
-    slug: 'workflow-automation',
-    name: 'Workflow Automation',
-    icon: 'workflow',
-    card: 'Your repetitive work, done end to end by systems your team never has to babysit.',
-    title: 'Workflow automation.',
-    sub: 'Done-for-you systems that take the repetitive work off your team for good. We used them to grow a psychology platform by over 100% in one month.',
-    signs: [
-      'Your best people lose hours every week copying data from one tool to another.',
-      'Reports get built by hand, and they’re out of date by the time anyone reads them.',
-      'Onboarding a new client means a week of emails, folders and reminders.',
-      'Things slip through the cracks, and you find out when a client complains.',
-    ],
-    intro: [
-      'We don’t bolt a tool onto a broken process. We map how work actually moves through your business, find the steps where people copy, paste, check and chase, and hand those steps to systems that run them the same way every time.',
-      'Every build is scoped upfront and tested on your real data before it goes live, so it works from day one. And it’s documented, so your team still understands it a year from now.',
-      'This is where we started, back in 2020. More than 150 automations later, we know which ones pay for themselves and which ones only look good in a demo. We build the first kind.',
-    ],
-    included: [
-      {
-        title: 'Process mapping',
-        text: 'We sit with your team, map the workflow start to finish and rank every step by how much time it eats.',
-      },
-      {
-        title: 'Custom builds',
-        text: 'Automations built around your tools, your data and your rules. Not a template with your logo on it.',
-      },
-      {
-        title: 'Reading and drafting, built in',
-        text: 'Steps that read, sort, summarize and draft, wherever they save real time. Plain logic everywhere else, because it’s cheaper and it never guesses.',
-      },
-      {
-        title: 'Tested on your real data',
-        text: 'Before launch, your real records run through the system. Edge cases get caught in testing, not by your clients.',
-      },
-      {
-        title: 'Error alerts built in',
-        text: 'If anything looks off, the system tells us straight away, usually before your team would notice.',
-      },
-      {
-        title: 'A handbook people read',
-        text: 'Every system ships with a plain-English handbook and a walkthrough, so your team knows exactly what it does.',
-      },
-    ],
-    flow: {
-      title: 'Client onboarding, on autopilot',
-      caption:
-        'A typical first build. What used to take a week of back-and-forth emails now happens in the ten minutes after a contract is signed.',
-      steps: [
-        'Contract signed',
-        'Workspace and folders created',
-        'Welcome pack drafted',
-        'Kickoff call booked',
-        'Team briefed in Slack',
-      ],
-    },
-    tools: ['n8n', 'Make', 'Zapier', 'Claude', 'Google Sheets', 'Gmail', 'Airtable', 'Notion'],
-    faqs: [
-      {
-        q: 'What can you actually automate?',
-        a: 'Anything your team does the same way more than a few times a week. Data entry, reporting, onboarding, scheduling, invoicing, document handling. If it follows rules, a system can run it.',
-      },
-      {
-        q: 'Do we have to switch tools?',
-        a: 'Almost never. We build on top of what you already use. If a tool is genuinely holding you back, we’ll tell you, and explain why.',
-      },
-      {
-        q: 'How fast does it start working?',
-        a: 'Day one. We test on your real data before launch, so the system is doing real work the day it goes live. No ramp-up period.',
-      },
-      {
-        q: 'What if it doesn’t work?',
-        a: 'Then you don’t pay. We agree in writing what the system will do before we build it. If it doesn’t do that, that’s on us, not you.',
-      },
-      {
-        q: 'What happens when something breaks?',
-        a: 'You’ll know before it matters. Every system has error alerts built in, and our optional support plan covers fixes and improvements.',
-      },
-    ],
-    metaTitle: 'Workflow Automation Services for B2B Service Businesses | Neurokov',
-    metaDescription:
-      'Custom workflow automation that takes repetitive work off your team: onboarding, reporting, data entry and more. Fixed price, works from day one, or you don’t pay.',
-  },
-  {
     slug: 'lead-generation',
-    name: 'Automated Lead Generation',
+    name: 'Outbound Lead Generation',
     icon: 'target',
-    card: 'Cold email and outbound that finds your buyers and puts calls on your calendar.',
-    title: 'Automated lead generation.',
-    sub: 'Done-for-you outbound that finds your buyers, writes like a human and puts qualified calls on your calendar. 46 in the first 30 days for one agency.',
+    card: 'We find the companies that should buy from you and put qualified sales calls on your calendar.',
+    title: 'Qualified calls on your calendar.',
+    sub: 'We find your buyers, start the conversations and book the calls. You show up and close. One agency got 46 qualified calls in its first 30 days.',
     signs: [
       'Your pipeline runs on referrals, so some months are packed and others are silent.',
       'You’ve tried cold email before, and it burned a domain or booked nothing.',
@@ -117,34 +39,34 @@ export const services: Service[] = [
       'Hiring a sales rep feels slow, expensive and risky.',
     ],
     intro: [
-      'Most outbound fails for boring reasons. Bad lists, generic emails, burned domains and replies nobody answers for two days.',
-      'We build the whole engine properly: tight targeting, verified contacts, emails that read like a person wrote them, sending infrastructure that protects your main domain, and replies routed to you the minute they land.',
-      'You don’t need a sales team to run it. The system finds the accounts, writes the emails and sorts the replies. Your job is to show up to the calls.',
+      'You don’t want more emails sent or more names in a spreadsheet. You want sales calls with people who can say yes. That’s what we’re paid for.',
+      'We work out who actually buys from you, find those companies and the people who make the call, and start conversations that read like you wrote them yourself. When someone’s interested, the call goes straight onto your calendar.',
+      'No sales hires, and no risk to your main domain. For one growth agency, that meant 46 qualified calls in the first 30 days, with inbox placement above 90%.',
     ],
     included: [
       {
-        title: 'Lists that fit',
-        text: 'We define who actually buys from you, then build and verify lists of those companies and the people who make the call.',
+        title: 'Calls with real buyers',
+        text: 'Every call on your calendar is with a company that fits who you sell to, and a person who can make the decision.',
       },
       {
-        title: 'Personal, at scale',
-        text: 'Every prospect is researched automatically, and every email opens with a line that proves you looked. Thousands of emails, none of them reading like a template.',
+        title: 'Your buyers, found for you',
+        text: 'We define who buys from you, then find those companies and the right people inside them. You never build a list again.',
       },
       {
-        title: 'Sequences that get replies',
-        text: 'We write the sequences with you, test different angles and keep what works. No “just bumping this up” follow-ups.',
+        title: 'Messages that get replies',
+        text: 'Every message opens with something real about the prospect, so it reads like it was written just for them.',
       },
       {
-        title: 'Deliverability, done right',
-        text: 'Separate sending domains, warmed inboxes and proper DNS, so your emails land in the inbox and your main domain stays clean.',
+        title: 'Your main domain, untouched',
+        text: 'We send from separate, warmed-up inboxes, so the emails land in the inbox and your main domain stays clean.',
       },
       {
-        title: 'Replies handled in seconds',
-        text: 'Replies are sorted by intent the moment they arrive. Interested leads get a booking link, you get a heads-up, and the rest is handled for you.',
+        title: 'Interested replies, booked fast',
+        text: 'When a prospect says yes, they get a booking link within seconds and you get a heads-up with the whole conversation.',
       },
       {
         title: 'Numbers you can see',
-        text: 'Sends, replies and booked calls in one simple report, so you always know what the engine is producing.',
+        text: 'Replies, booked calls and new clients in one simple report, so you always know exactly what you’re getting.',
       },
     ],
     flow: {
@@ -159,7 +81,7 @@ export const services: Service[] = [
         'Book the call',
       ],
     },
-    tools: ['Apollo', 'Clay', 'Instantly', 'Claude', 'n8n', 'HubSpot', 'Gmail'],
+    tools: ['Apollo', 'Clay', 'Instantly', 'HubSpot', 'Gmail', 'Google Calendar'],
     faqs: [
       {
         q: 'Does cold email still work?',
@@ -171,149 +93,67 @@ export const services: Service[] = [
       },
       {
         q: 'Who writes the emails?',
-        a: 'We write the sequences with you, test different angles and keep what works. The system handles the personal touches. Humans handle the strategy.',
+        a: 'We write them with you, test different angles and keep what works. You approve the messaging before anything goes out.',
       },
       {
-        q: 'How fast does it start working?',
-        a: 'The day it launches, it’s sending. The slow parts, like warming up new inboxes, happen before launch, so day one is a real sending day, not a test.',
+        q: 'How soon will we see calls?',
+        a: 'Sending starts the day we launch. The slow parts, like warming up new inboxes, happen before launch, so day one is a real sending day. One agency had 46 qualified calls in its first 30 days.',
       },
       {
         q: 'What if it doesn’t work?',
-        a: 'Then you don’t pay. We agree in writing what the engine will do before we build it. If it doesn’t do that, that’s on us.',
+        a: 'Then you don’t pay. Before we start, we agree in writing what we’ll deliver. If we don’t deliver it, that’s on us, not you.',
       },
       {
         q: 'Is cold email legal?',
-        a: 'B2B cold email is legal in most markets when you follow the rules: honest subject lines, real sender details and an easy way to opt out. We build all of that in and flag anything specific to your market.',
+        a: 'B2B cold email is legal in most markets when you follow the rules: honest subject lines, real sender details and an easy way to opt out. We do all of that, and flag anything specific to your market.',
       },
     ],
-    metaTitle: 'Automated Lead Generation and Cold Email Systems | Neurokov',
+    metaTitle: 'Outbound Lead Generation: Qualified Sales Calls, Booked | Neurokov',
     metaDescription:
-      'Outbound systems that find your buyers, personalize every email automatically and book qualified calls on your calendar, without risking your main domain.',
+      'We find your buyers, start real conversations and put qualified sales calls on your calendar, without risking your main domain. Results, or you don’t pay.',
   },
   {
-    slug: 'automation-agents',
-    name: 'Custom Automation Agents',
-    icon: 'bot',
-    card: 'Automated assistants that read, sort, write and reply, with a human signing off where it counts.',
-    title: 'Custom automation agents.',
-    sub: 'Done-for-you automation agents that handle a job from start to finish, with a person signing off wherever a mistake would be expensive.',
-    signs: [
-      'Your inbox runs your day, and most of what’s in it doesn’t need you.',
-      'New leads wait hours for a reply because nobody’s free to answer.',
-      'Your team answers the same client questions again and again.',
-      'You’ve tried off-the-shelf tools, but they don’t know your business, your clients or your rules.',
-    ],
-    intro: [
-      'An automation agent is software that can take a task all the way through on its own. Read an inbox. Qualify a lead. Answer a client’s question. Prepare a meeting brief.',
-      'We build agents around one clear job at a time, give them access to only what they need, and add approval steps anywhere you want a human to have the final say.',
-      'We’re Claude experts, and we’ve been building automations since 2020. That’s the difference between an agent that does the job every day and one that only works in the demo.',
-    ],
-    included: [
-      {
-        title: 'Inbox agents',
-        text: 'Sorts incoming email, drafts replies in your voice and flags the handful of messages that actually need you.',
-      },
-      {
-        title: 'Lead qualifiers',
-        text: 'Replies to new leads within a minute, asks the right questions and books the good ones straight onto your calendar.',
-      },
-      {
-        title: 'Knowledge assistants',
-        text: 'Answers questions from your team or clients using your own documents, SOPs and past work. No more digging through folders.',
-      },
-      {
-        title: 'Meeting prep',
-        text: 'Before every call, a one-page brief on who you’re meeting, what they’ve said before and what they’re likely to ask.',
-      },
-      {
-        title: 'Human in the loop',
-        text: 'Nothing sensitive goes out without a person approving it. You set the rules, the agent follows them.',
-      },
-      {
-        title: 'A record of everything',
-        text: 'Every action the agent takes is logged, so you can see exactly what it did and why.',
-      },
-    ],
-    flow: {
-      title: 'An inbox agent',
-      caption: 'Your inbox, handled. You approve the replies that matter in one click.',
-      steps: [
-        'New email arrives',
-        'Read and classified',
-        'Drafts a reply in your voice',
-        'You approve in one click',
-        'Sent and logged in your CRM',
-      ],
-    },
-    tools: ['n8n', 'Claude', 'Gmail', 'HubSpot', 'Notion', 'Airtable', 'Google Sheets', 'Slack'],
-    faqs: [
-      {
-        q: 'Could the agent say something wrong to a client?',
-        a: 'Not if it’s built properly. Agents work from information you’ve approved, and anything client-facing can require a human’s OK before it goes out.',
-      },
-      {
-        q: 'Which tools does it run on?',
-        a: 'Whatever fits the job. Usually n8n and Claude, with simpler, cheaper tools for simple tasks. You’re never locked into one provider.',
-      },
-      {
-        q: 'Is our data safe?',
-        a: 'Agents only get access to the tools and data they need. We use business APIs that don’t train on your data, and we document exactly where every piece of information goes.',
-      },
-      {
-        q: 'How fast does it start working?',
-        a: 'Day one. We test the agent on your real emails, leads and documents before launch, so it’s doing the job the day it goes live.',
-      },
-      {
-        q: 'What if it doesn’t work?',
-        a: 'You don’t pay. Before we build, we agree in writing exactly what the agent will handle. If it doesn’t handle it, the cost is ours.',
-      },
-    ],
-    metaTitle: 'Custom Automation Agents for Service Businesses | Neurokov',
-    metaDescription:
-      'Automation agents that handle inboxes, qualify leads and answer questions from your own documents, with human approval wherever it matters.',
-  },
-  {
-    slug: 'crm-sales-automation',
-    name: 'CRM & Sales Automation',
-    icon: 'handshake',
-    card: 'Every lead followed up, every deal updated, every proposal out the same day.',
-    title: 'CRM & sales automation.',
-    sub: 'Every lead answered in under a minute, every deal updated and every proposal out the same day. One consulting firm closed 31% more.',
+    slug: 'lead-conversion',
+    name: 'Inbound Lead Conversion',
+    icon: 'timer',
+    card: 'Every lead that comes to you gets a reply in under 60 seconds and a call on your calendar.',
+    title: 'Every lead answered in under 60 seconds.',
+    sub: 'The leads you already pay for stop going cold. Each one gets a personal reply in under a minute, day or night, and the good ones book a call. One consulting firm closed 31% more.',
     signs: [
       'New leads wait hours, sometimes days, for a first reply.',
-      'Nobody trusts the CRM, so everyone keeps their own spreadsheet.',
-      'Proposals get written from scratch, late at night, days after the call.',
+      'By the time you call back, they’ve booked with someone else.',
+      'Leads that come in at night or over the weekend sit there until Monday.',
       'Good deals go quiet because nobody followed up.',
     ],
     intro: [
-      'Deals rarely die because the offer was wrong. They die because nobody followed up, the CRM was three weeks out of date, or the proposal took a week to write.',
-      'We automate the boring parts of selling. Your pipeline stays clean, and every lead gets a fast reply, whether it lands at 2pm on a Tuesday or 11pm on a Sunday.',
-      'For one consulting firm, that meant going from a 19-hour first reply to under 60 seconds, and a close rate that went up 31% in a single quarter.',
+      'The fastest reply usually wins the client. Most businesses take hours to answer a new lead, and by then the lead has booked a call with someone else.',
+      'We make sure that never happens to you. Every enquiry gets a personal reply in under a minute, whether it lands at 2pm on a Tuesday or 11pm on a Sunday. Good-fit leads book a call with the right person, and nobody slips through the cracks.',
+      'For one consulting firm, the first reply went from 19 hours to under 60 seconds, and the close rate went up 31% in a single quarter.',
     ],
     included: [
       {
-        title: 'Speed to lead',
-        text: 'New inquiries get a personal reply in under a minute, day or night, and the good ones get booked straight in.',
+        title: 'Replies in under 60 seconds',
+        text: 'Every new enquiry gets a personal reply in under a minute, day or night, weekends included.',
+      },
+      {
+        title: 'Calls booked straight in',
+        text: 'Good-fit leads pick a time on the right person’s calendar in the same reply. No phone tag.',
       },
       {
         title: 'Follow-ups that never slip',
-        text: 'Sequences that nudge leads at the right moments and stop the second someone replies.',
+        text: 'Leads who don’t book hear from you again at the right moments, and it stops the second they reply.',
       },
       {
-        title: 'A CRM that updates itself',
-        text: 'Calls, emails and meetings logged automatically. Deals move stages when things actually happen, not when someone remembers.',
+        title: 'The right lead to the right person',
+        text: 'Every lead goes to whoever should take it, by service, size or location, the first time.',
       },
       {
-        title: 'Proposals in minutes',
-        text: 'Your call notes become a draft proposal in your format, ready for you to review and send the same day.',
+        title: 'In your voice',
+        text: 'Replies are written the way your team writes and sent from your team’s accounts. Anything complex goes to a person.',
       },
       {
-        title: 'Leads to the right person',
-        text: 'Every lead is routed by rules you set, like service, size or location, so the right person picks it up the first time.',
-      },
-      {
-        title: 'A pipeline you can trust',
-        text: 'Duplicates merged, stages that mean something and unused fields cleared out, so your numbers are finally real.',
+        title: 'Every lead accounted for',
+        text: 'One clear view of every lead, where it came from and what happened next. Nothing lost in a shared inbox.',
       },
     ],
     flow: {
@@ -327,114 +167,110 @@ export const services: Service[] = [
         'CRM updated, team notified',
       ],
     },
-    tools: ['HubSpot', 'Pipedrive', 'GoHighLevel', 'Salesforce', 'Cal.com', 'Gmail', 'n8n', 'Make'],
+    tools: ['HubSpot', 'Pipedrive', 'GoHighLevel', 'Salesforce', 'Calendly', 'Gmail', 'WhatsApp'],
     faqs: [
       {
+        q: 'Do we need more leads first?',
+        a: 'No. Most businesses lose more clients to slow replies than to a lack of leads. We start with the leads you already get, and if you want more, our outbound lead generation adds them.',
+      },
+      {
+        q: 'Who do our leads hear from?',
+        a: 'From you. Replies are written in your voice and sent from your team’s accounts. Anything complex is handed to a person on your team.',
+      },
+      {
         q: 'Which CRMs do you work with?',
-        a: 'HubSpot, Pipedrive, GoHighLevel, Salesforce, Close and most others with an API. If your team lives in spreadsheets, we can work with that too, or help you move.',
+        a: 'HubSpot, Pipedrive, GoHighLevel, Salesforce, Close and most others. If your team lives in spreadsheets, we can work with that too.',
       },
       {
-        q: 'Will leads know it’s automated?',
-        a: 'Only if you want them to. Messages are written in your voice and sent from real people’s accounts. Anything complex is handed to a human.',
-      },
-      {
-        q: 'Can you clean up the CRM we already have?',
-        a: 'Yes. Most projects start there. Duplicates merged, stages simplified and the fields nobody uses cleared out.',
-      },
-      {
-        q: 'How fast does it start working?',
-        a: 'Day one. The first lead that comes in after launch gets its reply in under a minute, because we’ve already run the whole flow on your real leads in testing.',
+        q: 'How soon will we see a difference?',
+        a: 'From the first lead. The first enquiry that comes in after launch gets its reply in under a minute.',
       },
       {
         q: 'What if it doesn’t work?',
-        a: 'Then you don’t pay. We agree in writing what the system will do before we build it. If it doesn’t do that, that’s on us.',
+        a: 'Then you don’t pay. Before we start, we agree in writing what we’ll deliver. If we don’t deliver it, that’s on us.',
       },
     ],
-    metaTitle: 'CRM and Sales Automation | Neurokov',
+    metaTitle: 'Inbound Lead Conversion: Every Lead Answered in 60 Seconds | Neurokov',
     metaDescription:
-      'Speed-to-lead replies in under a minute, follow-ups that never slip, a CRM that updates itself and proposals out the same day.',
+      'Every new lead gets a personal reply in under 60 seconds, day or night, and good-fit leads book a call straight away. One firm closed 31% more. Results, or you don’t pay.',
   },
   {
-    slug: 'marketing-automation',
-    name: 'Marketing Automation',
-    icon: 'megaphone',
-    card: 'Nurture, content and reporting that keep your marketing running while you’re busy with clients.',
-    title: 'Marketing automation.',
-    sub: 'Done-for-you nurture, content and reporting systems that keep your marketing running, even in the months you’re too busy to think about it.',
+    slug: 'lead-reactivation',
+    name: 'Lead Reactivation',
+    icon: 'refresh-ccw',
+    card: 'New clients from the old leads and past clients already sitting in your inbox and CRM.',
+    title: 'New clients from your old leads.',
+    sub: 'Every business has a pile of leads that never bought and past clients who went quiet. We turn them back into booked calls and new work.',
     signs: [
-      'Marketing stops every time you get busy with clients.',
       'Leads who weren’t ready to buy never hear from you again.',
-      'You know you should post more, but there’s never time to write.',
-      'Nobody can say which channel actually brings in clients.',
+      'Past clients go quiet, and you only notice when you check the revenue.',
+      'Your CRM is full of contacts nobody has emailed in a year.',
+      'Your pipeline swings from feast to famine every few months.',
     ],
     intro: [
-      'Most service businesses market in bursts. Busy with clients, marketing stops. Pipeline dries up, marketing starts again. It’s a feast-or-famine loop, and it’s exhausting.',
-      'We build systems that keep marketing moving however busy you get: nurture sequences that warm leads up over months, content workflows that turn one idea into a week of posts, and reports that show what’s actually working.',
-      'You stay in control of everything that goes out. The systems do the writing, the scheduling and the number-crunching. You approve, then get back to your clients.',
+      'The easiest new client is one who already knows you. Most firms have hundreds of them: leads who said “not yet”, proposals that went quiet and past clients who would buy again if someone asked.',
+      'We bring them back. Messages written in your voice reach out with a real reason to talk now, follow up at the right moments and stop the second someone replies. Anyone interested books a call on your calendar.',
+      'You don’t need a single new lead to start. It’s pipeline you’ve already paid for.',
     ],
     included: [
       {
-        title: 'Lead nurture',
-        text: 'Email sequences that keep you top of mind with every lead who isn’t ready yet, triggered by what they actually do.',
+        title: 'Old leads, back in conversation',
+        text: 'Leads who said “not yet” hear from you again, with a reason to talk now instead of a “just checking in”.',
       },
       {
-        title: 'Content workflows',
-        text: 'One call, video or voice note becomes LinkedIn posts, a newsletter and short-form scripts. Your voice stays intact.',
+        title: 'Past clients, buying again',
+        text: 'Clients who went quiet get a timely nudge about what you can do for them next.',
       },
       {
-        title: 'Reporting on autopilot',
-        text: 'Numbers from every channel pulled into one simple report, in your inbox before Monday’s meeting.',
+        title: 'Booked calls, not opens',
+        text: 'Interested contacts pick a time on your calendar. We report replies, booked calls and new clients, not vanity metrics.',
       },
       {
-        title: 'Reactivation campaigns',
-        text: 'Campaigns that wake up past clients and old leads. The cheapest pipeline most firms never touch.',
+        title: 'Follow-ups that know when to stop',
+        text: 'Every follow-up lands at the right moment, and the whole thing stops the second someone replies.',
       },
       {
-        title: 'Emails that fire on cue',
-        text: 'Messages that go out when something happens: a lead downloads a guide, a proposal goes quiet, a client hits a milestone.',
+        title: 'Your voice, your brand',
+        text: 'Every message sounds like you and goes out under your name. You approve the messaging before anything is sent.',
       },
       {
-        title: 'Clean contact lists',
-        text: 'Contacts, lists and tags cleaned up and synced across your tools, so every campaign reaches the right people.',
+        title: 'A clean contact list',
+        text: 'Duplicates merged and dead contacts cleared out, so every message reaches someone who might actually buy.',
       },
     ],
     flow: {
-      title: 'One idea, a week of content',
-      caption: 'Ten minutes of talking becomes a week of posts in your voice. You approve, the system publishes.',
+      title: 'Old leads, back in conversation',
+      caption: 'Leads and clients you already paid for, turned back into booked calls. Nothing new to buy.',
       steps: [
-        'Record a 10-minute voice note',
-        'Transcribed and outlined',
-        'Drafts posts in your voice',
-        'You review and approve',
-        'Scheduled across channels',
+        'Old leads and past clients gathered',
+        'List cleaned and checked',
+        'A reason to talk, in your voice',
+        'Replies sorted by interest',
+        'Call booked on your calendar',
       ],
     },
-    tools: ['HubSpot', 'Mailchimp', 'Claude', 'Notion', 'n8n', 'Make', 'Google Analytics'],
+    tools: ['HubSpot', 'Mailchimp', 'Brevo', 'Gmail', 'Calendly', 'Google Sheets'],
     faqs: [
       {
-        q: 'Will automated posts actually sound like us?',
-        a: 'It will if it’s set up properly. We build from your past posts, calls and emails, and nothing is published without a human reading it first.',
+        q: 'Won’t old leads find this annoying?',
+        a: 'Not when it’s done properly. We only reach out with a real reason to talk, keep it short and stop the moment someone asks.',
       },
       {
-        q: 'Do you run our ads or social accounts?',
-        a: 'No. We build the systems your team or agency uses to run them faster. You keep full control of every account.',
+        q: 'Is it worth it with a small list?',
+        a: 'Usually. A few hundred past leads and clients is plenty to start. We’ll tell you on the free audit whether your list is worth working.',
       },
       {
-        q: 'How do we know it’s working?',
-        a: 'We agree on the numbers upfront, things like booked calls, replies or hours saved, and the reporting tracks them from day one.',
-      },
-      {
-        q: 'How fast does it start working?',
-        a: 'Day one. Sequences, content workflows and reports are all tested before launch, so they’re running the day they go live.',
+        q: 'Do you run our newsletter or ads?',
+        a: 'No. We start conversations that end in booked calls. Your newsletter and ads stay with you.',
       },
       {
         q: 'What if it doesn’t work?',
-        a: 'You don’t pay. We agree in writing what the system will do before we build it, and if it doesn’t do that, the cost is ours.',
+        a: 'You don’t pay. Before we start, we agree in writing what we’ll deliver, and if we don’t deliver it, the cost is ours.',
       },
     ],
-    metaTitle: 'Marketing Automation for Service Businesses | Neurokov',
+    metaTitle: 'Lead Reactivation: New Clients From Your Old Leads | Neurokov',
     metaDescription:
-      'Lead nurture, content workflows, reactivation campaigns and automatic reporting that keep your marketing running while you serve clients.',
+      'We turn the leads that never bought and the past clients who went quiet into booked calls and new work. No new leads needed. Results, or you don’t pay.',
   },
 ];
 

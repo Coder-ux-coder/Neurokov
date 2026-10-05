@@ -8,8 +8,8 @@ import { site, unconfirmed } from '../data/site';
 import Base from '../layouts/Base.astro';
 
 const expect = [
-  'Where your team’s hours and leads are leaking',
-  'The two or three automations with the biggest payoff',
+  'Where your leads go cold today',
+  'Where your next clients will come from',
   'A straight answer on what it would cost',
   'No pitch deck, no pressure, and a clear “not a fit” if we aren’t',
 ];
@@ -23,48 +23,48 @@ const next: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'calendar-check',
     title: 'On the call',
-    text: 'We map how work and leads move through your business, find where hours and deals leak, and show you the two or three systems with the biggest payoff.',
+    text: 'We look at where your clients come from, how fast your leads hear back and what happens to the ones who don’t buy, then show you the fastest route to more booked calls.',
   },
   {
     icon: 'file-signature',
     title: 'After the call',
-    text: 'If there’s a fit, you get a written scope with one fixed price. If there isn’t, we’ll say so, and the plan is still yours to keep.',
+    text: 'If there’s a fit, you get a written plan with one fixed price. If there isn’t, we’ll say so, and the advice is still yours to keep.',
   },
 ];
 
 const forYou = [
-  'You run a service business and your team is buried in admin',
+  'You run a B2B service business and want more clients',
+  'Your pipeline runs on referrals, so some months go quiet',
   'Leads wait hours for a reply, or slip through entirely',
-  'You’re the bottleneck, and you know it',
-  'You want a system that works, not another tool to manage',
+  'You want booked calls, not another report or tool to manage',
 ];
 
 const notForYou = [
   'You need a website, an app or someone to run your ads',
-  'You want to “try some automation” without a problem to solve',
-  'You’re shopping for the cheapest quote, not a system that works',
+  'You want “more traffic” without wanting more clients',
+  'You’re shopping for the cheapest quote, not results',
 ];
 
 const bookingReady = !unconfirmed.has('booking');
 ---
 
 <Base
-  title={`Book a Free Systems Audit | ${site.name}`}
-  description="Book a 100% free, 30-minute systems audit. We’ll map where your team’s hours go and show you exactly what we’d automate first."
+  title={`Book a Free Growth Audit | ${site.name}`}
+  description="Book a 100% free, 30-minute growth audit. We’ll find where your leads go cold and show you exactly where your next clients will come from."
 >
   <section class="page-hero" data-hold>
     <div class="gridlines" aria-hidden="true"></div>
     <div class="container">
       <div class="runhead" data-reveal>
-        <span class="label label--signal"><span data-decode>Free systems audit</span></span>
+        <span class="label label--signal"><span data-decode>Free growth audit</span></span>
         <span class="runhead__line draw" aria-hidden="true"></span>
         <span class="label runhead__meta">30 minutes · 100% free</span>
       </div>
       <div class="book">
         <div class="book__copy">
-          <h1 class="h1" data-reveal data-split>Find out what to automate first.</h1>
+          <h1 class="h1" data-reveal data-split>Find out where your next clients are.</h1>
           <p class="lead" data-reveal style="--d: 200ms">
-            A 100% free, 30-minute systems audit. Tell us about your business, pick a time, and we’ll come prepared.
+            A 100% free, 30-minute growth audit. Tell us about your business, pick a time, and we’ll come prepared.
           </p>
           <div data-reveal style="--d: 280ms">
             <span class="label">On the call</span>
@@ -80,7 +80,7 @@ const bookingReady = !unconfirmed.has('booking');
             </ul>
           </div>
           <p class="cta__note" data-reveal style="--d: 340ms">
-            <Icon name="shield-check" size={18} /> If what we build doesn’t work, you don’t pay.
+            <Icon name="shield-check" size={18} /> If we don’t deliver, you don’t pay.
           </p>
         </div>
         <div class="book__cal marks" data-reveal style="--d: 160ms">

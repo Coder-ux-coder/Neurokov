@@ -17,7 +17,7 @@
     <script src="story.js"></script>
     <script>
       // Case 03, told as a story: a lead writes in at 11:47 PM. The old way, the
-      // first reply took 19 hours; with the system it goes out in under 60
+      // first reply took 19 hours; with Neurokov it goes out in under 60
       // seconds and the call is booked by morning. Real numbers only (case 03).
       //
       // Layout: the headline owns the top left of the frame (x < 1100, y < 360),
@@ -173,7 +173,7 @@
         });
         headline(1, 'Fig. 2 · The old way', 'The first reply<br />took <em>19 hours</em>.', 5.35, 8.85);
 
-        // ---------- Act 3: with the system ----------
+        // ---------- Act 3: with Neurokov ----------
         const g3 = act(2);
         // the action starts once the wipe has cleared
         const LATE = 0.5;
@@ -195,69 +195,31 @@
           tagNew.style.visibility = t < 12.9 ? '' : 'hidden';
           tagDone.style.visibility = t >= 12.9 ? '' : 'hidden';
         });
-        const bot = CAST.robot(g3);
-        const env3 = CAST.envelope(g3, { w: 100, h: 68 });
-        const beam = S.svg('path', { fill: ORANGE, opacity: 0.25 }, g3);
-        // (none of its lines points at NK-01, beside it: they would cross its name)
-        const burst3 = CAST.burst(g3, { color: ORANGE, r0: 60, r1: 110, keep: (a) => a < 45 || a > 135 });
+        // the reply, written while the stopwatch runs: personal, with a way to book
+        const reply = S.g(g3);
+        CAST.bubble(reply, { w: 640, h: 210, tail: 'left' });
+        const replyLines = ['Hi! Thanks for reaching out.', 'Happy to help. Pick a time', 'that suits you here →'];
+        const replyTexts = replyLines.map((_, i) => S.svg('text', { x: -290, y: -38 + i * 46, 'font-family': 'Archivo Variable', 'font-size': 34, 'font-weight': 650, fill: INK }, reply));
+        const replyLength = replyLines.join('').length;
+        late((t) => {
+          const p = S.spring(t, 10.4, { freq: 2.2, damp: 0.5 });
+          const out = ramp(t, 12.75, 0.25, E.backIn);
+          S.put(reply, { x: 1120, y: 620, s: Math.max(0.001, Math.min(1, p) * (1 - out)), o: t > 10.4 && out < 1 ? 1 : 0 });
+          let left = Math.floor(ramp(t, 10.6, 1.9, E.linear) * replyLength);
+          replyTexts.forEach((tx, i) => {
+            tx.textContent = replyLines[i].slice(0, Math.max(0, left));
+            left -= replyLines[i].length;
+          });
+        });
+        // the reply leaves the laptop as the stopwatch stops: off to the right,
+        // where her phone comes up (never back across the headline)
         const plane = S.svg('path', { d: 'M -40 0 L 44 -26 L 10 30 L 0 6 Z M 0 6 L 44 -26', fill: ORANGE, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g3);
         late((t) => {
-          const hx = 930;
-          const bob = 10 * Math.sin(t * 2.6);
-          const drop = S.spring(t, 9.5, { freq: 1.6, damp: 0.45 });
-          // (its antenna stays clear of the headline's last line)
-          const by0 = 620 + bob - 700 * (1 - drop);
-          const arrive = ramp(t, 9.95, 0.7, E.out);
-          const caught = t >= 10.62;
-          const reading = env(t, 10.9, 12.5, 0.2);
-          const throwP = ramp(t, 12.9, 0.35, E.backIn);
-          const rest = ramp(t, 13.4, 0.3);
-          bot.set({
-            x: hx, y: by0, t, ground: 240 - bob, glow: 0.5 + 0.5 * S.wave(t, 0.8), flame: 0.5,
-            // an overhand throw, over the top and forward: its arm never sweeps across its name
-            arm: [[40 - 90 * reading, -40], caught && t < 12.9 ? [-110, -30] : t < 13.4 ? [220 - 130 * throwP, 20] : [90 - 60 * rest, 20 - 40 * rest]],
-            eyes: t > 13.2 ? 'happy' : t > 10.5 && t < 10.9 ? 'wide' : 'normal',
-            look: t < 10.6 ? [-1, 0.2] : reading > 0.5 ? [-0.6, 0.5] : [0, 0],
-            squash: hit(t, 10.62, 0.35) + 0.8 * hit(t, 9.78, 0.3), blink: blinkAt(t, [9.9, 14.6]), tilt: -6 * reading,
-          });
-          const [bx, by] = bot.hand;
-          if (!caught) S.put(env3.g, { x: 420 + (hx - 90 - 420) * arrive, y: 560 + (by0 - 560) * arrive - 40 * Math.sin(Math.PI * arrive), r: -20 * Math.sin(Math.PI * arrive), s: (0.45 + 0.55 * E.out(ramp(t, 9.95, 0.25))) * K.pop(t, 9.95), o: t > 9.95 ? 1 : 0 });
-          else S.put(env3.g, { x: hx + bx - 10, y: by0 + by - 20, r: -8, o: t < 12.95 ? 1 : 0, s: (1 - 0.2 * reading) * K.pop(t, -1, 12.95, 0.15) });
-          burst3.set(ramp(t, 10.62, 0.45, E.linear));
-          S.put(burst3.g, { x: hx - 110, y: by0 - 10 });
-          if (reading > 0.01) {
-            const ex = hx + bx - 10, ey = by0 + by - 20;
-            const sw = 26 * Math.sin(t * 9);
-            beam.setAttribute('d', `M ${hx - 40} ${by0 - 10} L ${ex - 60} ${ey - 40 + sw} L ${ex + 40} ${ey + 40 + sw} Z`);
-            beam.setAttribute('opacity', (0.28 * reading).toFixed(3));
-            beam.style.visibility = '';
-          } else beam.style.visibility = 'hidden';
-          // the reply, let go at the end of the throw: forward and off to the right,
-          // where her phone comes up (never back across the headline)
-          const fly = ramp(t, 13.2, 0.8, E.in);
-          S.put(plane, { x: hx + 70 + 1250 * fly, y: 640 - 150 * Math.sin(Math.PI * 0.6 * fly) - 40 * fly, r: 16 + 12 * fly, s: 1.1 * K.pop(t, 13.2), o: t > 13.2 && fly < 1 ? 1 : 0 });
+          const fly = ramp(t, 12.9, 1.0, E.in);
+          S.put(plane, { x: 560 + 1350 * fly, y: 560 - 180 * Math.sin(Math.PI * 0.6 * fly) - 40 * fly, r: 16 + 12 * fly, s: 1.1 * K.pop(t, 12.9), o: t > 12.9 && fly < 1 ? 1 : 0 });
         });
-        [
-          ['Real enquiry, not spam', 11.15],
-          ['Fits your ideal client', 11.7],
-          ['Reply written and sent', 12.3],
-        ].forEach(([label, at], i) => {
-          const g = S.g(g3);
-          S.svg('rect', { x: 8, y: 10, width: 540, height: 92, rx: 18, fill: INK }, g);
-          S.svg('rect', { x: 0, y: 0, width: 540, height: 92, rx: 18, fill: PAPER, stroke: INK, 'stroke-width': 5 }, g);
-          const ck = CAST.check(g, { r: 24 });
-          S.put(ck.g, { x: 50, y: 46 });
-          const txt = S.svg('text', { x: 94, y: 57, 'font-family': 'Archivo Variable', 'font-size': 31, 'font-weight': 650, fill: INK }, g);
-          txt.textContent = label;
-          late((t) => {
-            const p = S.spring(t, at, { freq: 2.2, damp: 0.5 });
-            const out = ramp(t, 13.3, 0.35, E.in);
-            S.put(g, { x: 1180 + 60 * (1 - Math.min(1, p)) + 900 * out, y: 490 + i * 124, o: ramp(t, at, 0.15, E.linear) });
-            ck.set(ramp(t, at + 0.25, 0.3, E.out));
-          });
-        });
-        // a stopwatch (in screen space, over the set) runs while it works, and
-        // stops well inside a minute
+        // a stopwatch (in screen space, over the set) runs until the reply goes,
+        // and stops well inside a minute
         const watch = S.g(S.art);
         S.svg('rect', { x: -14, y: -108, width: 28, height: 26, rx: 6, fill: INK }, watch);
         S.svg('circle', { r: 86, fill: PAPER, stroke: INK, 'stroke-width': 7 }, watch);
@@ -334,7 +296,6 @@
         const note = CAST.bubble(g4, { w: 470, h: 100, tail: 'left' });
         const noteTxt = S.svg('text', { 'text-anchor': 'middle', y: 11, 'font-family': 'Archivo Variable', 'font-size': 33, 'font-weight': 650, fill: INK }, note);
         noteTxt.innerHTML = '<tspan fill="#ff4f00">●</tspan> Call booked · Tue 10:00';
-        const bot4 = CAST.robot(g4);
         S.track((t) => {
           const rise = ramp(t, 16.3, 1.3, E.out);
           S.put(sun4.g, { x: 1560, y: 540 - 210 * rise, r: t * 12 });
@@ -346,14 +307,13 @@
           S.put(mug.g, { x: 800 + hx * 1.12 + 10, y: 870 + hy * 1.12 + 20, s: 1 });
           mug.set(t);
           S.put(note, { x: 1150, y: 540, s: Math.max(0.001, Math.min(S.spring(t, 16.95), 1.2)) });
-          bot4.set({ x: 1420, y: 700 + 10 * Math.sin(t * 2.6), t, ground: 170 - 10 * Math.sin(t * 2.6), eyes: 'happy', arm: [[30, -20], [-150 + 20 * Math.sin(t * 12), -30]], flame: 0.4, glow: 0.8 });
         });
         headline(3, 'Fig. 4 · 7:30 AM', 'Booked while<br />you <em>slept</em>.', 16.7, 99, { dark: false });
 
         // the case in numbers, to close
         K.endCard({
           at: 18.25,
-          kicker: 'Case 03 · Speed-to-lead system · Management consulting firm',
+          kicker: 'Case 03 · Speed-to-lead · Management consulting firm',
           was: '19 hrs',
           now: 'under <em>60 s</em>',
           label: 'First reply to a new lead',
@@ -365,8 +325,7 @@
         ]);
         K.note('Illustrated story · Real numbers from case 03', (t) => t < 16.2);
 
-        // the camera: framed on the set, with a slow push through each act, and
-        // a jolt when the robot lands and when it catches the enquiry
+        // the camera: framed on the set, with a slow push through each act
         K.camera(
           [
             [0, [960, 652, 1.24]],
@@ -377,10 +336,6 @@
             [16.2, [960, 626, 1.2], E.sine],
             [16.21, [930, 625, 1.3], E.linear],
             [20, [940, 625, 1.22], E.sine],
-          ],
-          [
-            [11.12, 0.4, 1],
-            [10.28, 0.3, 0.6],
           ],
         );
       });

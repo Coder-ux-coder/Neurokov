@@ -235,100 +235,100 @@
   <body>
     <div class="screen">
       <aside class="sidebar">
-        <div class="ws"><span><i data-i="zap"></i></span>Operations</div>
+        <div class="ws"><span><i data-i="target"></i></span>Growth</div>
         <a class="nav-item on"><i data-i="layout-dashboard"></i>Overview</a>
-        <a class="nav-item"><i data-i="workflow"></i>Workflows</a>
-        <a class="nav-item"><i data-i="history"></i>Runs</a>
-        <a class="nav-item"><i data-i="bell"></i>Alerts<span class="count">2</span></a>
-        <a class="nav-item"><i data-i="timer"></i>Time saved</a>
-        <div class="side-label">Teams</div>
-        <a class="nav-item"><i data-i="handshake"></i>Sales</a>
-        <a class="nav-item"><i data-i="briefcase-business"></i>Delivery</a>
-        <a class="nav-item"><i data-i="receipt"></i>Finance</a>
+        <a class="nav-item"><i data-i="send"></i>Campaigns</a>
+        <a class="nav-item"><i data-i="inbox"></i>Replies<span class="count">3</span></a>
+        <a class="nav-item"><i data-i="calendar-check"></i>Booked calls</a>
+        <a class="nav-item"><i data-i="trending-up"></i>Pipeline</a>
+        <div class="side-label">Channels</div>
+        <a class="nav-item"><i data-i="mail"></i>Outbound</a>
+        <a class="nav-item"><i data-i="timer"></i>Inbound</a>
+        <a class="nav-item"><i data-i="refresh-ccw"></i>Reactivation</a>
         <a class="nav-item" style="margin-top: auto"><i data-i="settings"></i>Settings</a>
       </aside>
       <main>
         <div class="head">
-          <h1>Automation overview</h1>
-          <span class="sub">All workflows · September</span>
+          <h1>Pipeline overview</h1>
+          <span class="sub">All channels · First 30 days</span>
           <div class="right">
-            <span class="btn"><i data-i="calendar"></i>This month<i data-i="chevron-down"></i></span>
+            <span class="btn"><i data-i="calendar"></i>Last 30 days<i data-i="chevron-down"></i></span>
             <span class="btn"><i data-i="share-2"></i>Share report</span>
           </div>
         </div>
         <div class="kpis">
           <div class="panel kpi">
-            <div class="label">Hours saved</div>
-            <div class="value">318<small>hrs</small></div>
-            <div class="delta">+14% vs August</div>
+            <div class="label">Calls booked</div>
+            <div class="value">46</div>
+            <div class="delta">Qualified, zero sales hires</div>
           </div>
           <div class="panel kpi">
-            <div class="label">Workflow runs</div>
-            <div class="value">24,806</div>
-            <div class="delta">+3,912 vs August</div>
+            <div class="label">Inbox placement</div>
+            <div class="value">92<small>%</small></div>
+            <div class="delta">Main domain untouched</div>
           </div>
           <div class="panel kpi">
-            <div class="label">Success rate</div>
-            <div class="value">99.7<small>%</small></div>
-            <div class="delta">71 retried, 0 lost</div>
+            <div class="label">First reply</div>
+            <div class="value">41<small>s</small></div>
+            <div class="delta">Median, inbound leads</div>
           </div>
           <div class="panel kpi">
-            <div class="label">Leads routed</div>
-            <div class="value">1,146</div>
-            <div class="delta">Median 41s to first reply</div>
+            <div class="label">Close rate</div>
+            <div class="value">+31<small>%</small></div>
+            <div class="delta">vs last quarter</div>
           </div>
         </div>
         <div class="grid">
           <div class="panel">
-            <div class="card-head"><span class="section-title">Runs per day</span><span class="muted">Last 30 days</span></div>
+            <div class="card-head"><span class="section-title">Replies per day</span><span class="muted">Last 30 days</span></div>
             <div class="chart-wrap">
               <svg
                 class="chart"
-                data-bars="610,640,580,700,720,690,760,540,520,780,820,800,860,840,610,590,880,910,890,940,960,700,660,980,1010,990,1040,1080,1060,1120"
-                data-y="0,400,800,1200"
-                data-max="1250"
+                data-bars="4,6,5,8,9,3,2,7,9,11,10,12,4,3,10,12,13,12,14,5,4,13,15,14,16,17,6,5,16,18"
+                data-y="0,5,10,15"
+                data-max="20"
                 data-hi="last"
-                data-x="Aug 25,,,,,,,Sep 1,,,,,,,Sep 8,,,,,,,Sep 15,,,,,,,,Sep 23"
+                data-x="Day 1,,,,,,,Day 8,,,,,,,Day 15,,,,,,,Day 22,,,,,,,,Day 30"
                 data-bw="16"
               ></svg>
             </div>
           </div>
           <div class="panel">
-            <div class="card-head"><span class="section-title">Time saved by team</span><span class="muted">September</span></div>
+            <div class="card-head"><span class="section-title">Where calls came from</span><span class="muted">30 days</span></div>
             <div class="donut">
               <div class="ring">
-                <svg data-donut="42,33,25" data-colors="--brand,#ff9a6b,#4b4b63" data-w="16"></svg>
-                <div><b>318</b><small>hours</small></div>
+                <svg data-donut="52,33,15" data-colors="--brand,#ff9a6b,#4b4b63" data-w="16"></svg>
+                <div><b>46</b><small>calls</small></div>
               </div>
               <div class="legend">
-                <div><span style="background: var(--brand)"></span>Sales<em>134 hrs</em></div>
-                <div><span style="background: #ff9a6b"></span>Delivery<em>105 hrs</em></div>
-                <div><span style="background: #4b4b63"></span>Finance<em>79 hrs</em></div>
+                <div><span style="background: var(--brand)"></span>Outbound<em>24</em></div>
+                <div><span style="background: #ff9a6b"></span>Inbound<em>15</em></div>
+                <div><span style="background: #4b4b63"></span>Reactivated<em>7</em></div>
               </div>
             </div>
           </div>
           <div class="panel">
-            <div class="card-head"><span class="section-title">Hours saved per week</span><span class="muted">Since launch</span></div>
+            <div class="card-head"><span class="section-title">Calls booked</span><span class="muted">Since launch</span></div>
             <div class="chart-wrap">
               <svg
                 class="chart"
-                data-line="8,14,19,26,31,38,44,49,55,58,63,67,71,74,78"
-                data-y="0,25,50,75"
-                data-max="84"
-                data-x="Jun 8,Jul 6,Aug 3,Aug 31,Sep 21"
+                data-line="2,4,6,9,11,13,16,18,20,23,26,28,31,33,35,38,40,42,44,46"
+                data-y="0,15,30,45"
+                data-max="50"
+                data-x="Day 1,Day 8,Day 15,Day 22,Day 30"
                 data-area
                 data-dot
               ></svg>
             </div>
           </div>
           <div class="panel">
-            <div class="card-head"><span class="section-title">Busiest workflows</span><span class="muted">Runs</span></div>
+            <div class="card-head"><span class="section-title">Top sources</span><span class="muted">Calls</span></div>
             <div class="flows">
-              <div class="flow"><span>Inbound lead to booked call</span><em>9,412</em><span class="meter"><span style="width: 100%"></span></span></div>
-              <div class="flow"><span>Invoice chasing</span><em>5,236</em><span class="meter"><span style="width: 56%"></span></span></div>
-              <div class="flow"><span>Client onboarding</span><em>3,870</em><span class="meter"><span style="width: 41%"></span></span></div>
-              <div class="flow"><span>Weekly client report</span><em>2,118</em><span class="meter"><span style="width: 23%"></span></span></div>
-              <div class="flow"><span>Proposal from call notes</span><em>1,402</em><span class="meter"><span style="width: 15%"></span></span></div>
+              <div class="flow"><span>Inbound lead to booked call</span><em>15</em><span class="meter"><span style="width: 100%"></span></span></div>
+              <div class="flow"><span>Agency founders, US</span><em>14</em><span class="meter"><span style="width: 93%"></span></span></div>
+              <div class="flow"><span>Marketing directors, UK</span><em>10</em><span class="meter"><span style="width: 67%"></span></span></div>
+              <div class="flow"><span>Old leads, last year</span><em>4</em><span class="meter"><span style="width: 27%"></span></span></div>
+              <div class="flow"><span>Past clients</span><em>3</em><span class="meter"><span style="width: 20%"></span></span></div>
             </div>
           </div>
         </div>
@@ -338,18 +338,9 @@
     <script src="app.js"></script>
     <script src="anim.js"></script>
     <script>
-      // Runs keep landing all day: the counters tick, the busiest workflows count up,
-      // and a lead-to-call run reports in.
+      // Replies keep landing: today's bar breathes and the latest booking reports in.
       ANIM.setup(() => {
         const A = ANIM;
-        const [, runs, , leads] = A.$$('.kpi');
-        let total = 24806;
-        const beats = [[0.5, 1], [1.1, 2], [1.6, 1], [2.4, 1], [3.0, 2], [3.5, 1], [4.2, 1], [4.8, 2], [5.3, 1], [6.0, 1], [6.6, 2], [7.2, 1]];
-        A.counter(A.$('.value', runs), beats.map(([t, n]) => [t, (total += n)]), null);
-        A.counter(A.$('.value', leads), [[3.0, 1147]], leads);
-        const flows = A.$$('.flow');
-        const ticks = [[0, [[3.0, 9413]]], [1, [[1.6, 5237], [5.3, 5238]]], [2, [[4.8, 3871]]], [3, [[6.6, 2119]]]];
-        ticks.forEach(([i, steps]) => A.counter(A.$('em', flows[i]), steps, flows[i]));
         A.ring(A.$('svg[data-dot]'));
         const today = A.$$('svg[data-bars] path').at(-1);
         A.breathe(today, 2, 0.55);
@@ -360,8 +351,8 @@
             box-shadow: 0 18px 44px rgb(0 0 0 / 0.55); font-size: 13px">
             <span style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px;
               background: rgb(52 211 153 / 0.16); color: var(--green)"><i data-i="circle-check"></i></span>
-            <div><b style="display: block; font-size: 14px">Inbound lead to booked call</b>
-              <span class="muted" style="font-size: 12px">Run complete · first reply in 41s · just now</span></div>
+            <div><b style="display: block; font-size: 14px">Call booked · Inbound lead</b>
+              <span class="muted" style="font-size: 12px">First reply in 41s · just now</span></div>
           </div>`);
         A.$('.screen').append(toast);
         A.toast(toast, 3.1, 6.7);

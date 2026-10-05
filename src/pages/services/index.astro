@@ -15,14 +15,14 @@ import Base from '../../layouts/Base.astro';
 
 const promises: { icon: IconName; title: string; text: string }[] = [
   {
-    icon: 'rocket',
-    title: 'Works from day one',
-    text: 'Tested on your real data before launch, so it’s doing the job the day it goes live. No ramp-up period.',
+    icon: 'calendar-check',
+    title: 'Booked calls, not reports',
+    text: 'We’re judged on calls on your calendar and new clients, not opens, impressions or activity.',
   },
   {
     icon: 'shield-check',
-    title: 'It works, or you don’t pay',
-    text: 'We agree in writing what the system will do. If what we deliver doesn’t do that, you don’t pay.',
+    title: 'Results, or you don’t pay',
+    text: 'We agree in writing what we’ll deliver. If we don’t deliver it, you don’t pay.',
   },
   {
     icon: 'receipt',
@@ -32,17 +32,17 @@ const promises: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'key-round',
     title: 'Yours to keep',
-    text: 'Every workflow, prompt and account is yours, documented and handed over. If we part ways, it all keeps running.',
+    text: 'Your contact lists, messages, domains and accounts are yours. If we part ways, you keep all of it.',
   },
   {
-    icon: 'bell-ring',
-    title: 'Error alerts built in',
-    text: 'If anything looks off, we hear about it straight away, usually before your team would notice.',
+    icon: 'mail',
+    title: 'Your reputation, protected',
+    text: 'Separate sending domains and messages you approve, so your main domain and your name are never on the line.',
   },
   {
-    icon: 'graduation-cap',
-    title: 'A team that can use it',
-    text: 'A walkthrough and a plain-English handbook, so everyone who touches the system knows exactly what it does.',
+    icon: 'trending-up',
+    title: 'Numbers you can see',
+    text: 'A simple report on replies, booked calls and new clients, so you always know exactly what you’re getting.',
   },
 ];
 const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${String(of).padStart(2, '0')}`;
@@ -50,14 +50,14 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
 
 <Base
   title={`Services | ${site.name}`}
-  description="Workflow automation, lead generation, custom automation agents, CRM and marketing automation for service businesses. Fixed price, works from day one, or you don’t pay."
+  description="Outbound lead generation, inbound lead conversion and lead reactivation for B2B service businesses. Booked calls and new clients. Results, or you don’t pay."
 >
   <PageHero
     label="Services"
-    meta={`${String(services.length).padStart(2, '0')} systems`}
-    title="Automation for every part of a service business."
-    lead="Sales, marketing, delivery, admin. If your team does it the same way every week, we can automate it."
-    cta="Find what to automate first"
+    meta={`${String(services.length).padStart(2, '0')} services`}
+    title="New clients, from every direction."
+    lead="New buyers found for you, every lead you already get answered in under a minute, and old leads turned back into deals."
+    cta="Find your fastest route to clients"
     promise="And the audit is 100% free."
   />
 
@@ -66,10 +66,10 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
   <section class="section">
     <div class="container">
       <SectionHead
-        label="The systems"
+        label="What we do"
         index="01 / 03"
-        title="Five ways we give your team its week back."
-        lead="Each one starts with a free audit and ends with a system your team owns, understands and actually uses."
+        title="Three ways we bring you clients."
+        lead="Each one starts with a free audit and is judged on one thing: booked calls that turn into new clients."
       />
       <ServiceRows />
     </div>
@@ -82,10 +82,10 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
   <section class="section section--deep">
     <div class="container">
       <SectionHead
-        label="Every build"
+        label="Every client"
         index="02 / 03"
-        title="What every build comes with."
-        lead="Whichever system you start with, you get the same six things. They’re why our systems keep working long after we hand them over."
+        title="What every client gets."
+        lead="Whichever service you start with, you get the same six things."
       />
       <div class="grid-3 specs">
         {
@@ -112,7 +112,7 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
         label="Industries"
         index="03 / 03"
         title="Built for service businesses."
-        lead="Different industries, same problem: skilled people stuck doing admin. Here’s what we automate where you work."
+        lead="Different industries, same problem: great work, and not enough clients to do it for. Here’s what we deliver where you work."
       />
       <ol class="ledger">
         {

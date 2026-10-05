@@ -16,14 +16,14 @@ export const site = {
   // Not registered yet, so the footer and legal pages use the trading name. Put the registered name here once it exists.
   legalName: 'Neurokov',
   url: 'https://neurokov.com',
-  title: 'Neurokov | Automation for service businesses',
+  title: 'Neurokov | We get B2B service businesses new clients',
   description:
-    'Neurokov builds automated systems that find your leads, answer them in seconds and run your back office. n8n certified, 150+ automations shipped. It works, or you don’t pay.',
+    'Neurokov is a lead generation agency. We find your buyers, book qualified sales calls on your calendar and make sure no lead goes cold. Results, or you don’t pay.',
   email: 'mohid@neurokov.com',
   // The booking form's answers are emailed to `email` the moment the form is sent, booked or not,
   // through Web3Forms. Its access key is public by design: it only ever sends to the address it was made for.
   web3forms: '3ed13961-19b3-492c-a6be-b5909e134f64',
-  // The free audit is booked on a Google Calendar appointment schedule (Google Workspace). Its ID is the
+  // The free growth audit is booked on a Google Calendar appointment schedule (Google Workspace). Its ID is the
   // last part of the booking page's address: calendar.google.com/calendar/appointments/schedules/<ID>
   booking: {
     schedule: 'AcZssZ3pI7O33Aq8IlyifoRBJcP6u_FKp3ImGevO7x6z9r_QXEWnnoSvS-2z8XROD3jsGPXhe1kb_bYP',

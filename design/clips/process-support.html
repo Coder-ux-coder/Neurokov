@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="clip" content="1920x1080 12s" />
     <meta name="poster" content="10.4" />
-    <title>Step 04, support and improve</title>
+    <title>Step 04, scale what works</title>
     <link rel="stylesheet" href="clip.css" />
   </head>
   <body>
@@ -49,7 +49,7 @@
         // the chart
         S.svg('rect', { x: 28, y: 26, width: 400, height: 252, rx: 12, fill: PAPER, stroke: INK, 'stroke-width': 4 }, ui);
         const ct = S.svg('text', { x: 48, y: 58, 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 16, 'letter-spacing': 2, fill: INK }, ui);
-        ct.textContent = 'HOURS SAVED';
+        ct.textContent = 'CALLS BOOKED';
         S.svg('path', { d: 'M 52 90 L 52 254 L 408 254', fill: 'none', stroke: INK, 'stroke-width': 3, opacity: 0.4 }, ui);
         const area = S.svg('path', { fill: ORANGE, opacity: 0.15 }, ui);
         const line = S.svg('path', { fill: 'none', stroke: ORANGE, 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, ui);
@@ -70,8 +70,8 @@
           ck.set(1);
           return { r, dot, ck };
         };
-        const rows = ['LEADS', 'BILLING', 'REPORTS'].map((l, i) => row(i, l));
-        const fresh = row(3, 'NEW FLOW');
+        const rows = ['LEADS', 'REPLIES', 'CALLS'].map((l, i) => row(i, l));
+        const fresh = row(3, 'NEW CAMPAIGN');
         const alertBadge = S.g(ui);
         S.svg('circle', { cx: 218, cy: 24, r: 15, fill: ORANGE, stroke: INK, 'stroke-width': 3 }, alertBadge);
         const ex = S.svg('text', { x: 218, y: 32, 'text-anchor': 'middle', 'font-family': 'Archivo Variable', 'font-weight': 800, 'font-size': 22, fill: INK }, alertBadge);
@@ -192,8 +192,8 @@
           S.put(plug, { x: x + (hx + 30) * flip - 60 * inserted, y: y + hy, s: Math.max(0.001, 0.8 * (1 - inserted) * K.pop(t, 6.3)), r: 8 * Math.sin(t * 5), o: plugging && inserted < 1 ? 1 : 0 });
         });
 
-        headline(0, 'Step 04 · Optional', 'Watched,<br /><em>and improved</em>.', 0.3, 99, { dark: false });
-        K.note('Illustrated story · How a project works', () => false);
+        headline(0, 'Step 04 · Optional', 'Watched,<br /><em>and scaled</em>.', 0.3, 99, { dark: false });
+        K.note('Illustrated story · How working with us goes', () => false);
         K.camera([
           [0, [1010, 540, 1]],
           [12, [1030, 540, 1.04], E.linear],

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="clip" content="1920x1080 12s" />
     <meta name="poster" content="10.4" />
-    <title>Step 02, scope and fixed price</title>
+    <title>Step 02, plan and fixed price</title>
     <link rel="stylesheet" href="clip.css" />
   </head>
   <body>
@@ -38,7 +38,7 @@
         S.svg('rect', { x: -DW / 2 + 12, y: -DH / 2 + 14, width: DW, height: DH, rx: 14, fill: INK }, doc);
         S.svg('rect', { x: -DW / 2, y: -DH / 2, width: DW, height: DH, rx: 14, fill: PAPER, stroke: INK, 'stroke-width': 6 }, doc);
         const title = S.svg('text', { x: -DW / 2 + 30, y: -DH / 2 + 52, 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 28, 'letter-spacing': 4, fill: INK }, doc);
-        title.textContent = 'SCOPE';
+        title.textContent = 'PLAN';
         S.svg('rect', { x: -DW / 2 + 30, y: -DH / 2 + 66, width: 90, height: 7, rx: 3.5, fill: ORANGE }, doc);
         const ROWS = 6;
         const rows = Array.from({ length: ROWS }, (_, i) => {
@@ -136,8 +136,8 @@
           });
         });
 
-        headline(0, 'Step 02 · One fixed price', 'One scope,<br /><em>one price</em>.', 0.3, 99, { dark: false });
-        K.note('Illustrated story · How a project works', () => false);
+        headline(0, 'Step 02 · One fixed price', 'One plan,<br /><em>one price</em>.', 0.3, 99, { dark: false });
+        K.note('Illustrated story · How working with us goes', () => false);
         K.camera(
           [
             [0, [1000, 560, 1.06]],

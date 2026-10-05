@@ -7,23 +7,23 @@ export interface Faq {
 export const homeFaqs: Faq[] = [
   {
     q: 'Is the audit really free?',
-    a: 'Yes. 100% free, 30 minutes, no strings. You leave with a clear list of what to automate first, whether you work with us or not.',
+    a: 'Yes. 100% free, 30 minutes, no strings. You leave knowing where your next clients can come from and what we’d do first, whether you work with us or not.',
   },
   {
     q: 'Why should we trust you?',
-    a: 'Fair question. We’ve shipped 150+ automations over six years, we’re n8n certified, and we scaled a psychology platform our CEO co-founded by over 100% in a single month, using the same systems we’d build for you. And every build comes with our guarantee: it works, or you don’t pay. The risk sits with us.',
+    a: 'Fair question. We booked a growth agency 46 qualified calls in its first 30 days, cut a consulting firm’s first reply from 19 hours to under 60 seconds, and grew a psychology platform our CEO co-founded by over 100% in a single month. And everything we do comes with our guarantee: results, or you don’t pay. The risk sits with us.',
   },
   {
-    q: 'How fast will it start working?',
-    a: 'Day one. We test every system on your real data before it goes live, so the day we switch it on, it’s already doing the job: answering leads, building the reports, booking the calls. No ramp-up, no “give it a few months”.',
+    q: 'How soon will we see results?',
+    a: 'Fast. Inbound leads get a reply in under a minute from the day we launch, and outbound starts sending on day one, because the slow setup work happens before launch. One agency had 46 qualified calls in its first 30 days.',
   },
   {
     q: 'What’s your guarantee?',
-    a: 'It works, or you don’t pay. Before we build anything, we agree in writing exactly what your system will do. If what we deliver doesn’t do that, you don’t pay for it.',
+    a: 'Results, or you don’t pay. Before we start, we agree in writing exactly what we’ll deliver. If we don’t deliver it, you don’t pay for it.',
   },
   {
     q: 'How much does it cost?',
-    a: 'Every project gets one fixed price after the free audit, based on what we’re building. No hourly billing, no surprise invoices. You know the number before any work starts.',
+    a: 'One fixed price, agreed after the free audit, based on what we’re delivering. No hourly billing, no surprise invoices. You know the number before any work starts.',
   },
 ];
 
@@ -32,44 +32,44 @@ export const faqGroups: { title: string; items: Faq[] }[] = [
     title: 'Working with us',
     items: [
       {
-        q: 'How does a project start?',
-        a: 'With a free 30-minute systems audit. We look at how your business runs today, find where the hours and leads leak, and point out the two or three automations with the biggest payoff. If it makes sense to work together, you get a written scope and one fixed price.',
+        q: 'How does it start?',
+        a: 'With a free 30-minute growth audit. We look at where your clients come from today, where leads go cold and which of our services would bring you the most new business. If it makes sense to work together, you get a written plan and one fixed price.',
       },
       {
         q: 'Is the audit really free?',
-        a: 'Yes. 100% free, no strings. You leave with a clear list of what to automate first, whether you work with us or not.',
+        a: 'Yes. 100% free, no strings. You leave knowing where your next clients can come from, whether you work with us or not.',
       },
       {
         q: 'Why should we trust you?',
-        a: 'We’ve shipped 150+ automations over six years and handed 50,000+ hours back to the teams that use them. We’re n8n certified and Claude experts, and we scaled a psychology platform our CEO co-founded by over 100% in a single month, using the same systems we’d build for you. And every build is guaranteed: it works, or you don’t pay.',
+        a: 'Look at the numbers. 46 qualified calls in 30 days for a growth agency. A consulting firm’s first reply cut from 19 hours to under 60 seconds, and its close rate up 31% in a quarter. A psychology platform our CEO co-founded grown by over 100% in a single month. And everything we do is guaranteed: results, or you don’t pay.',
       },
       {
-        q: 'How fast will it start working?',
-        a: 'From day one. Every system is tested on your real data before launch, so it’s doing real work the day it goes live. The launch date is in your scope, so you know exactly when day one is.',
+        q: 'How soon will we see results?',
+        a: 'From launch. Inbound leads get a reply in under a minute from day one, and outbound starts sending the day we go live. The launch date is in your plan, so you know exactly when day one is.',
       },
       {
-        q: 'Will this replace my team?',
-        a: 'No. It replaces the busywork your team hates: copying data between tools, chasing documents, writing the same email for the hundredth time. Your people get their week back for the work you actually hired them to do.',
+        q: 'Who do you work with?',
+        a: 'B2B service businesses that sell expertise: agencies, consulting firms, IT companies, healthcare businesses and more. If you’re great at the work and want more of it, we’re built for you.',
       },
       {
-        q: 'We’re not technical. Is that a problem?',
-        a: 'Not at all. You tell us how the work gets done today, in plain English. We handle everything technical, then hand it over with a walkthrough and a handbook written for people, not engineers.',
+        q: 'Do we need a sales team?',
+        a: 'No. We find the buyers and book the calls. You show up and close. One growth agency got 46 qualified calls in its first 30 days with zero sales hires.',
       },
       {
         q: 'Do you work with healthcare businesses?',
-        a: 'Yes. We automated an online psychology platform end to end, from the first enquiry to billing, and the business grew by over 100% in a single month. Anything that touches client data is scoped with you in writing before we build it.',
+        a: 'Yes. We grew an online psychology platform by over 100% in a single month, bringing new clients in and turning every enquiry into a booked session. Anything that touches client data is agreed with you in writing first.',
       },
       {
         q: 'Do you work with companies in other countries?',
         a: 'Yes. We work remotely with businesses in any time zone. Calls happen on Google Meet or Zoom, and most of the work happens without needing meetings at all.',
       },
       {
-        q: 'What do you need from our team?',
-        a: 'A few hours at the start to walk us through how things work, access to the tools involved, and one person who can make decisions. We handle the rest.',
+        q: 'What do you need from us?',
+        a: 'A short call to learn who you sell to and what makes you different, a say in the messaging before it goes out, and someone to take the calls. We handle the rest.',
       },
       {
         q: 'Do you build websites or run ads?',
-        a: 'No. We only build automation: systems that bring in leads, follow up on them and run the admin. Doing one thing is how we got good enough at it to guarantee it.',
+        a: 'No. We do one thing: get you new clients, through outbound, fast replies to the leads you already get, and winning back old ones. Doing one thing is how we got good enough at it to guarantee it.',
       },
     ],
   },
@@ -78,48 +78,44 @@ export const faqGroups: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: 'How much does it cost?',
-        a: 'Every project gets a fixed price after the free audit, based on what we’re building. No hourly billing, no surprise invoices. You’ll know the number before any work starts.',
+        a: 'One fixed price, agreed after the free audit, based on what we’re delivering. No hourly billing, no surprise invoices. You’ll know the number before any work starts.',
       },
       {
         q: 'What’s your guarantee?',
-        a: 'It works, or you don’t pay. Before we start, we agree in writing exactly what your system will do. If what we deliver doesn’t do that, you don’t pay. No fine print, no arguing.',
+        a: 'Results, or you don’t pay. Before we start, we agree in writing exactly what we’ll deliver. If we don’t deliver it, you don’t pay. No fine print, no arguing.',
       },
       {
         q: 'Why would you offer that?',
-        a: 'Because we’ve built more than 150 of these. We know what will work before we write the scope, and we only take on projects we’re sure we can deliver. If we’re not sure, we’ll tell you on the audit.',
+        a: 'Because we know what works before we write the plan, and we only take on businesses we’re sure we can help. If we’re not sure, we’ll tell you on the audit.',
       },
       {
         q: 'Are there ongoing costs?',
-        a: 'Usually small ones. The software your system runs on is billed to you directly, at cost. We estimate those upfront so there are no surprises.',
+        a: 'Usually small ones. The tools and sending inboxes your campaigns run on are billed to you directly, at cost. We estimate them upfront so there are no surprises.',
       },
       {
-        q: 'Do you offer ongoing support?',
-        a: 'Yes, as an optional monthly plan. We monitor your systems, fix anything that breaks and keep improving them as your business changes.',
+        q: 'Do you keep improving it?',
+        a: 'Yes, on an optional monthly plan. We do more of what books calls and drop what doesn’t, and you get a simple report on replies, booked calls and new clients.',
       },
     ],
   },
   {
-    title: 'Tech and security',
+    title: 'Data and trust',
     items: [
       {
-        q: 'Which tools do you build with?',
-        a: 'Mostly n8n (we’re certified), Make and Zapier, plus Claude for the steps that read or write. On top of that, whatever your team already uses: HubSpot, Google Workspace, Slack, Notion, Airtable and so on.',
-      },
-      {
-        q: 'Do we own what you build?',
-        a: 'Yes, all of it. Every workflow, prompt and account is yours, documented and handed over. If we ever part ways, everything keeps running.',
+        q: 'Do we own everything?',
+        a: 'Yes. Your contact lists, messages, domains and accounts are yours. If we ever part ways, you keep all of it.',
       },
       {
         q: 'Is our data safe?',
-        a: 'Systems only get access to the data they need. We use business-grade APIs that don’t train on your data, keep credentials in secure vaults and document where every piece of information flows.',
+        a: 'We only get access to the data we need, keep logins in secure vaults and document where every piece of information goes.',
       },
       {
-        q: 'What happens if something breaks?',
-        a: 'Every system has error alerts built in, so problems surface fast, usually before anyone on your team notices. On a support plan, fixes are included. Without one, your handbook covers the common fixes, and you can always bring us back in.',
+        q: 'Will cold email hurt our reputation?',
+        a: 'Not the way we do it. Every message is relevant, short and easy to opt out of, and we send from separate domains, so your main domain is never at risk.',
       },
       {
-        q: 'We already have some automations. Can you work with them?',
-        a: 'Yes. We often start by auditing what’s already there, fixing what’s fragile and building on what works.',
+        q: 'We already do some outreach. Can you work with it?',
+        a: 'Yes. We often start by looking at what you’re already doing, keeping what works and fixing what isn’t booking calls.',
       },
     ],
   },

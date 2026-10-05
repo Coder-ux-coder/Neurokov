@@ -10,12 +10,12 @@ interface Props {
 }
 
 const {
-  title = 'Ready to scale without hiring?',
-  lead = 'Book a 100% free, 30-minute systems audit. We’ll map where your hours go, find the bottlenecks and show you exactly what we’d automate first.',
+  title = 'Ready for more clients?',
+  lead = 'Book a 100% free, 30-minute growth audit. We’ll look at where your clients come from, find where your leads go cold and show you exactly where the next ones will come from.',
   label = cta.final,
 } = Astro.props;
 
-const ticker = ['Free systems audit', 'Works from day one', 'It works or you don’t pay'];
+const ticker = ['Free growth audit', 'Booked calls, not reports', 'Results or you don’t pay'];
 ---
 
 <section class="cta">
@@ -36,12 +36,12 @@ const ticker = ['Free systems audit', 'Works from day one', 'It works or you don
     </div>
   </div>
   <div class="container cta__inner">
-    <span class="label label--signal" data-reveal><span data-decode>Free systems audit</span></span>
+    <span class="label label--signal" data-reveal><span data-decode>Free growth audit</span></span>
     <h2 class="cta__title" data-reveal data-split>{title}</h2>
     <p class="lead" data-reveal style="--d: 140ms">{lead}</p>
     <div data-reveal style="--d: 220ms"><Button size="lg" label={label} /></div>
     <p class="cta__note" data-reveal style="--d: 280ms">
-      <Icon name="shield-check" size={18} /> If what we build doesn’t work, you don’t pay.
+      <Icon name="shield-check" size={18} /> If we don’t deliver, you don’t pay.
     </p>
   </div>
 </section>

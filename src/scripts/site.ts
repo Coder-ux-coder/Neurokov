@@ -3,12 +3,10 @@
  * booking and each effect live in their own modules, imported below.
  */
 import { currentTheme, root, store, type Theme } from './lib';
-import './intro';
 import './reveal';
 import './flap';
 import './slides';
 import './clips';
-import './guide';
 import './booking';
 import './machine';
 import './dither';
@@ -16,7 +14,6 @@ import './live';
 import './circuit';
 import './studies';
 import './scroll';
-import './cursor';
 
 /* ---------- Nav: solid background once scrolled, mobile menu ---------- */
 

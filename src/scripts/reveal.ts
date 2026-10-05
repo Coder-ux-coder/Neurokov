@@ -1,11 +1,10 @@
 /**
  * Everything that animates in on scroll:
  * - [data-reveal] gets .is-in when it enters the viewport (CSS does the rest).
- *   Inside [data-hold] (the hero) it waits for the boot intro to open.
  * - [data-split] headlines are cut into words that rise one after another.
  * - [data-decode] labels scramble through glyphs and resolve, left to right.
  */
-import { afterIntro, calm } from './lib';
+import { calm } from './lib';
 
 /* ---------- Split headlines into words ---------- */
 
@@ -98,8 +97,5 @@ if (calm || !('IntersectionObserver' in window)) {
     // Any part in view counts: a share of a block taller than a short screen might never be.
     { rootMargin: '0px 0px -8% 0px', threshold: 0 },
   );
-  const all = [...new Set([...reveals, ...decodes])];
-  const held = all.filter((el) => el.closest('[data-hold]'));
-  all.filter((el) => !el.closest('[data-hold]')).forEach((el) => io.observe(el));
-  afterIntro(() => held.forEach((el) => io.observe(el)));
+  new Set([...reveals, ...decodes]).forEach((el) => io.observe(el));
 }

@@ -1,7 +1,7 @@
 # Netlify sends these with every page and file (the build copies this file into dist/).
 # npm run build stops if the Content-Security-Policy would block one of the site's own scripts.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-g9+euv0tMei4Y7AbqQIxo3kguyg0OhP4xByAP4s+89U=' 'sha256-t8cVQSbfkoQS+YSgIUq8snACL4tRGVkl43PrkVi7Op4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://api.web3forms.com; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com https://calendar.google.com; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-k5WKT+HTVLin8h9v1Qm64SvcloOOYV/Fg7wIVWH/zWQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://api.web3forms.com; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com https://calendar.google.com; frame-ancestors 'none'
   Strict-Transport-Security: max-age=63072000
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   X-Frame-Options: DENY

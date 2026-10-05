@@ -16,46 +16,41 @@ import Base from '../layouts/Base.astro';
 
 const options = [
   {
-    title: 'Hiring in-house',
+    title: 'Hiring a sales rep',
     points: [
       'Months to find, hire and train the right person',
-      'A full salary before a single system ships',
-      'Good automation people are hard to find and harder to keep',
-      'One person holds all the know-how. If they leave, it leaves with them',
+      'A full salary before a single call is booked',
+      'Good reps are hard to find and harder to keep',
+      'When they leave, the pipeline leaves with them',
     ],
   },
   {
     title: 'Freelancers and DIY',
     points: [
-      'Cheap, until something breaks at 9pm on a Friday',
-      'You end up as the project manager and the tester',
-      'Little or no documentation to fall back on',
-      'Gone when you need a change',
+      'Cheap, until a bought list burns your domain',
+      'You end up writing the messages and chasing the replies',
+      'Nobody accountable for whether calls get booked',
+      'Gone when the results dry up',
     ],
   },
   {
     title: site.name,
     us: true,
     points: [
-      'A team with 150+ automations shipped since 2020',
-      'Works from day one, tested on your real data',
-      'One fixed price. If it doesn’t work, you don’t pay',
-      'Documented, handed over and yours to keep',
+      '46 qualified calls in 30 days for one agency',
+      'Every lead answered in under 60 seconds',
+      'One fixed price. If we don’t deliver, you don’t pay',
+      'Your lists, domains and accounts stay yours',
     ],
   },
 ];
 
-const wontDo = [
-  'Websites, apps or branding',
-  'Running your ads or social accounts',
-  'Billing by the hour',
-  'Black boxes only we understand',
-];
+const wontDo = ['Websites, apps or branding', 'Running your ads or social accounts', 'Billing by the hour', 'Reports full of vanity metrics'];
 ---
 
 <Base
   title={`About | ${site.name}`}
-  description="Neurokov is an automation agency for service businesses. n8n certified, 150+ automations shipped, and every build works or you don’t pay."
+  description="Neurokov is a lead generation agency for B2B service businesses. We find your buyers, answer every lead in under a minute and book the calls. Results, or you don’t pay."
 >
   <section class="page-hero" data-hold>
     <div class="gridlines" aria-hidden="true"></div>
@@ -67,17 +62,17 @@ const wontDo = [
       </div>
       <div class="split">
         <div class="split__copy">
-          <h1 class="h1" data-reveal data-split>We automate the work that slows good teams down.</h1>
+          <h1 class="h1" data-reveal data-split>We get good businesses the clients they deserve.</h1>
           <p class="lead" data-reveal style="--d: 220ms">
-            {site.name} is an automation agency for service businesses. n8n certified, 150+ automations shipped and one
-            simple guarantee: it works, or you don’t pay.
+            {site.name} is a lead generation agency for B2B service businesses. We find your buyers, answer every lead in
+            under a minute and put the calls on your calendar. One simple guarantee: results, or you don’t pay.
           </p>
-          <div data-reveal style="--d: 320ms"><Button size="lg" label="See what we’d automate" /></div>
+          <div data-reveal style="--d: 320ms"><Button size="lg" label="See where your next clients are" /></div>
         </div>
         <div class="split__media" data-reveal style="--d: 160ms">
-          <Figure n="01" caption={`${clips.about.title}. Illustrated, with our real numbers.`}>
+          <Figure n="01" caption={`${clips['outbound-engine'].title}. Illustrated, with real numbers from case 02.`}>
             <div class="marks">
-              <Clip name="about" sizes="(max-width: 900px) 100vw, 620px" eager />
+              <Clip name="outbound-engine" sizes="(max-width: 900px) 100vw, 620px" eager />
             </div>
           </Figure>
         </div>
@@ -90,9 +85,9 @@ const wontDo = [
   <section class="section">
     <div class="container">
       <SectionHead
-        label="Who builds it"
-        title="Building automations since 2020."
-        lead="Long before every agency started selling automation."
+        label="Who’s behind it"
+        title="Growth we delivered for ourselves first."
+        lead="Before we grew anyone else’s business, our founder grew his own."
       />
       <Founder film="02" />
     </div>
@@ -101,22 +96,20 @@ const wontDo = [
   <section class="section section--deep">
     <div class="container split split--top">
       <div class="split__copy">
-        <SectionHead label="The problem" title="Good people, stuck doing busywork." />
+        <SectionHead label="The problem" title="Great at the work. Short on clients." />
       </div>
       <div class="prose prose--lead" data-reveal style="--d: 120ms">
         <p>
-          Every service business we talk to tells a version of the same story. Smart, expensive people spending a third
-          of their week on work that doesn’t need a human: updating the CRM, chasing documents, building reports and
-          writing the same email again.
+          Every service business we talk to tells a version of the same story. The work is excellent, the clients who find
+          them love them, and the pipeline still runs on referrals and luck.
         </p>
         <p>
-          Nobody ever had the time to stop and build the thing that would save the time. So the busywork stays, and the
-          best people burn out doing it.
+          Some months are packed. Others are silent. New leads wait hours for a reply and book with someone faster. Old
+          leads never hear from anyone again.
         </p>
-        <p>Hiring more people doesn’t fix it. It just spreads the same busywork across a bigger payroll.</p>
+        <p>Working harder on the delivery doesn’t fix it. The clients have to come from somewhere.</p>
         <p>
-          That’s the part we fix. We build the systems, and your team gets back to the work they were hired for: serving
-          clients, closing deals and growing the business.
+          That’s the part we fix. We bring the clients in, so you can get back to doing the work you’re great at.
         </p>
       </div>
     </div>
@@ -127,7 +120,7 @@ const wontDo = [
       <SectionHead
         label="The options"
         title="Why the usual options fall short."
-        lead="When the busywork piles up, most teams hire, grab a freelancer or try to build it themselves. Here’s how that usually goes."
+        lead="When the pipeline runs dry, most businesses hire a rep, try a freelancer or do the outreach themselves. Here’s how that usually goes."
       />
       <div class="grid-3 compare">
         {
@@ -161,10 +154,10 @@ const wontDo = [
     <div class="container grid-2">
       <article class="card fit-card" data-reveal>
         <span class="label label--signal">Fit</span>
-        <h2 class="h3">Who we build for.</h2>
+        <h2 class="h3">Who we work with.</h2>
         <p>
-          Service businesses that sell expertise: agencies, consulting firms, IT companies and healthcare businesses. If
-          your people are brilliant at the work and buried in the admin around it, we built {site.name} for you.
+          B2B service businesses that sell expertise: agencies, consulting firms, IT companies and healthcare businesses. If
+          you’re brilliant at the work and want more clients to do it for, we built {site.name} for you.
         </p>
         <ul class="tags">
           {industries.map((ind) => <li class="tag">{ind.title}</li>)}
@@ -173,7 +166,7 @@ const wontDo = [
       <article class="card fit-card" data-reveal style="--d: 90ms">
         <span class="label label--signal">Out of scope</span>
         <h2 class="h3">What we don’t do.</h2>
-        <p>We build automation. That’s it, and it’s why we can guarantee it. So you won’t get these from us:</p>
+        <p>We bring you clients. That’s it, and it’s why we can guarantee it. So you won’t get these from us:</p>
         <ul class="checks checks--x">
           {
             wontDo.map((w) => (
