@@ -6,7 +6,7 @@
  * outlines them on the page, and `npm run build` refuses to finish while any
  * are left. Delete a key once the real value is in.
  */
-export const unconfirmed = new Set<string>(['booking']);
+export const unconfirmed = new Set<string>([]);
 
 /** The data-ph value for a key that is still a placeholder, else undefined (attribute omitted). */
 export const ph = (key: string) => (unconfirmed.has(key) ? key : undefined);
@@ -26,7 +26,7 @@ export const site = {
   // The free audit is booked on a Google Calendar appointment schedule (Google Workspace). Its ID is the
   // last part of the booking page's address: calendar.google.com/calendar/appointments/schedules/<ID>
   booking: {
-    schedule: 'REPLACE-WITH-SCHEDULE-ID',
+    schedule: 'AcZssZ3pI7O33Aq8IlyifoRBJcP6u_FKp3ImGevO7x6z9r_QXEWnnoSvS-2z8XROD3jsGPXhe1kb_bYP',
   },
   founder: {
     name: 'Mohid Zeeshan',
