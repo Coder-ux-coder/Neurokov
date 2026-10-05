@@ -1,0 +1,33 @@
+---
+/**
+ * Step 2 for a visitor without JavaScript: the booking form posts its answers to Web3Forms,
+ * which emails them to us and sends the visitor here to pick a time. With JavaScript, the
+ * booking page takes the form's place instead (booking.ts). Kept out of search and the sitemap.
+ */
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import { bookingEmbedUrl, bookingUrl, ph, site } from '../../data/site';
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title={`Pick a time | ${site.name}`} description="Pick a time for your free systems audit." noindex>
+  <PageHero
+    label="Step 2 of 2 · Pick a time"
+    meta="30 minutes · 100% free"
+    title="Thanks. Now pick a time."
+    lead="Your answers are with us. Choose a time for your free systems audit, and the invite comes to you by email."
+  />
+  <section class="section section--tight">
+    <div class="container">
+      <div class="book__cal booking-time booking-time--page" data-ph={ph('booking')}>
+        <div class="booking-time__frame">
+          <iframe src={bookingEmbedUrl} title="Pick a time for your free systems audit"></iframe>
+        </div>
+        <p class="cta__note booking__note">
+          <Icon name="calendar-check" size={16} />
+          <a class="text-link" href={bookingUrl} target="_blank" rel="noopener">Open the booking page in a new tab</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

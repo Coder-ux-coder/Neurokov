@@ -1,11 +1,11 @@
 ---
 /**
  * The pill button. With no href it books a call: every such button on the site
- * opens the booking form (BookingForm.astro, booking.ts), whose answers go with
- * the booking to the same Cal.com event. On the book page it brings that page's
- * own form into view. Without JavaScript it's a link to the book page.
+ * opens the booking form (BookingForm.astro, booking.ts), then the free audit's
+ * booking page. On the book page it brings that page's own form into view.
+ * Without JavaScript it's a link to the book page.
  */
-import { cta, ph, site } from '../data/site';
+import { cta, ph } from '../data/site';
 
 interface Props {
   label?: string;
@@ -18,9 +18,7 @@ interface Props {
 const { label = cta.label, href, size = 'md', variant = 'solid', class: cls } = Astro.props;
 const books = !href;
 
-// Not Cal's own data-cal-link hook: the form comes first, and booking.ts opens
-// Cal.com's popup itself once it has the answers.
-const bookingAttrs = books ? { href: '/book/', 'data-book': site.cal.link, 'data-ph': ph('cal') } : { href };
+const bookingAttrs = books ? { href: '/book/', 'data-book': '', 'data-ph': ph('booking') } : { href };
 ---
 
 <a class:list={['btn', size !== 'md' && `btn--${size}`, variant === 'ghost' && 'btn--ghost', cls]} {...bookingAttrs}>

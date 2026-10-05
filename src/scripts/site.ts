@@ -85,7 +85,6 @@ const applyTheme = (theme: Theme) => {
   if (theme === 'dark') root.dataset.theme = 'dark';
   else delete root.dataset.theme;
   themeMeta?.setAttribute('content', theme === 'dark' ? '#0f0f0e' : '#f2efe8');
-  document.dispatchEvent(new CustomEvent('nk:theme', { detail: theme }));
 };
 document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
   const next: Theme = currentTheme() === 'dark' ? 'light' : 'dark';

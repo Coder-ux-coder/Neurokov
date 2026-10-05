@@ -111,7 +111,7 @@ function guide(host: HTMLElement) {
     pressedOutside = false;
   });
   $('[data-guide-close]').addEventListener('click', () => dialog.close());
-  // Cal.com's booking popup can't sit above a modal dialog, so the dialog steps aside.
+  // A booking button in the film opens the booking form in a dialog of its own, so this one steps aside.
   dialog.querySelectorAll('[data-book]').forEach((b) => b.addEventListener('click', () => dialog.close()));
   $('[data-guide-tour]').addEventListener('click', () => {
     handingOver = true;

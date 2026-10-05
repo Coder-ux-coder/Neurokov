@@ -6,7 +6,7 @@
  * outlines them on the page, and `npm run build` refuses to finish while any
  * are left. Delete a key once the real value is in.
  */
-export const unconfirmed = new Set<string>([]);
+export const unconfirmed = new Set<string>(['booking']);
 
 /** The data-ph value for a key that is still a placeholder, else undefined (attribute omitted). */
 export const ph = (key: string) => (unconfirmed.has(key) ? key : undefined);
@@ -23,8 +23,10 @@ export const site = {
   // The booking form's answers are emailed to `email` the moment the form is sent, booked or not,
   // through Web3Forms. Its access key is public by design: it only ever sends to the address it was made for.
   web3forms: '3ed13961-19b3-492c-a6be-b5909e134f64',
-  cal: {
-    link: 'neurokov/free-systems-audit', // cal.com/<link>
+  // The free audit is booked on a Google Calendar appointment schedule (Google Workspace). Its ID is the
+  // last part of the booking page's address: calendar.google.com/calendar/appointments/schedules/<ID>
+  booking: {
+    schedule: 'REPLACE-WITH-SCHEDULE-ID',
   },
   founder: {
     name: 'Mohid Zeeshan',
@@ -32,7 +34,10 @@ export const site = {
   },
 };
 
-export const calUrl = `https://cal.com/${site.cal.link}`;
+/** The audit's booking page on Google Calendar. */
+export const bookingUrl = `https://calendar.google.com/calendar/appointments/schedules/${site.booking.schedule}`;
+/** The same page made to sit inside one of this site's (Google's own "website embed"). */
+export const bookingEmbedUrl = `${bookingUrl}?gv=true`;
 
 /**
  * Every booking button opens the same free audit. The default label is below;

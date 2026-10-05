@@ -4,7 +4,7 @@ import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/icons';
 import SectionHead from '../components/SectionHead.astro';
-import { calUrl, ph, site, unconfirmed } from '../data/site';
+import { site, unconfirmed } from '../data/site';
 import Base from '../layouts/Base.astro';
 
 const expect = [
@@ -45,7 +45,7 @@ const notForYou = [
   'You’re shopping for the cheapest quote, not a system that works',
 ];
 
-const calReady = !unconfirmed.has('cal');
+const bookingReady = !unconfirmed.has('booking');
 ---
 
 <Base
@@ -86,31 +86,9 @@ const calReady = !unconfirmed.has('cal');
         <div class="book__cal marks" data-reveal style="--d: 160ms">
           <div class="book__bar label" aria-hidden="true">
             <span>Fig. 01 · Book your audit</span>
-            <span class:list={[{ 'is-off': !calReady }]}>{calReady ? 'Live' : 'Not connected'}</span>
+            <span class:list={[{ 'is-off': !bookingReady }]}>{bookingReady ? 'Live' : 'Not connected'}</span>
           </div>
           <BookingForm mode="inline" />
-          {/* Step 2, once the form is sent (booking.ts): Cal.com's calendar, with the answers attached. */}
-          <div
-            class="booking-cal"
-            data-booking-cal
-            role="group"
-            aria-labelledby="booking-cal-title"
-            tabindex="-1"
-            hidden
-          >
-            <p class="label label--signal booking-cal__head" id="booking-cal-title">Step 2 of 2 · Pick a time</p>
-            <div data-cal-inline data-ph={ph('cal')} style="width: 100%; min-height: 640px"></div>
-          </div>
-          {/* Stands in for the calendar when Cal.com can't load (booking.ts). */}
-          <div class="book__fallback" data-cal-fallback>
-            <span class="card__icon" style="margin: 0">
-              <Icon name="calendar-check" />
-            </span>
-            <p>The calendar couldn’t load here.</p>
-            <p>
-              <a class="text-link" href={calUrl}>Pick a time on Cal.com</a>
-            </p>
-          </div>
         </div>
       </div>
     </div>

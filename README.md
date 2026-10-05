@@ -6,8 +6,8 @@ The site explains what it builds, shows the results in case studies and asks for
 a free systems audit.
 
 It is a static site built with [Astro](https://astro.build), with no server, database or logins.
-Every page is plain HTML, CSS and a little TypeScript. The calendar is Cal.com, and booking answers
-are emailed through Web3Forms.
+Every page is plain HTML, CSS and a little TypeScript. Calls are booked on a Google Calendar
+booking page (Google Workspace), and booking answers are emailed through Web3Forms.
 
 ## Pages
 
@@ -19,7 +19,7 @@ are emailed through Web3Forms.
 | `/process/` | The four steps from the free audit to launch and support, and what Neurokov needs from the client |
 | `/about/` | Who builds the systems, the problem they solve and how Neurokov works |
 | `/faq/` | Questions on pricing, the guarantee, security and more |
-| `/book/` | The booking form with the calendar |
+| `/book/` | The booking form, then the booking page to pick a time |
 | `/privacy/`, `/terms/` | Privacy policy and terms of service |
 
 Any other address shows the 404 page, which has its own short film.
@@ -27,14 +27,17 @@ Any other address shows the 404 page, which has its own short film.
 ## Booking
 
 Every booking button on the site opens the same form, and the book page has it built in. It asks
-four questions: business name, niche, monthly revenue and a few words about the business. Then
-Cal.com's calendar for the free audit (`cal.com/neurokov/free-systems-audit`) opens, with the
-answers attached to the booking.
+for the visitor's name and email, then the business name, niche, monthly revenue and a few words
+about the business. Then the free audit's booking page on Google Calendar takes the form's place,
+and the visitor picks a time there. Google adds the call, with a Google Meet link, to
+mohid@neurokov.com's calendar and emails the visitor the invite.
 
-The answers are also emailed to Neurokov through Web3Forms as soon as the form is sent, so a
-visitor who leaves without picking a time is not lost. The same answers are sent once a day at
-most, however many times the form goes in (a second try, a reload, another tab), and a failed
-send is retried the next time. Cal.com's code only loads once someone starts booking.
+The answers are emailed to Neurokov through Web3Forms as soon as the form is sent, so a visitor who
+leaves without picking a time is not lost, and replying to that email writes to the visitor. The
+same answers are sent once a day at most, however many times the form goes in (a second try, a
+reload, another tab), and a failed send is retried the next time. Google's booking page only loads
+once the form is sent. Without JavaScript the form posts straight to Web3Forms, which sends the
+visitor on to `/book/pick-a-time/`, the booking page on a page of its own.
 
 ## What moves
 
@@ -72,8 +75,9 @@ dark theme.
 ## Security
 
 `public/_headers` sets the headers sent with every page: a Content-Security-Policy that allows
-only this site, Cal.com and Web3Forms, HTTPS only (HSTS), no framing by other sites, and no
-access to the camera, microphone or location. The site sets no cookies and runs no analytics.
+only this site, Google Calendar's booking page and Web3Forms, HTTPS only (HSTS), no framing by
+other sites, and no access to the camera, microphone or location. The site sets no cookies and runs
+no analytics.
 
 Netlify adds a "Powered by Netlify" badge script (`/.netlify/scripts/hud`) to every page it serves.
 The Content-Security-Policy would block the badge and log an error on every page (Lighthouse best
@@ -102,7 +106,7 @@ design/           the sources the films, photo and icons are made from (not part
 netlify.toml      how Netlify builds the site
 ```
 
-To change contact details, the Cal.com link or the Web3Forms key, edit `src/data/site.ts`. Other
+To change contact details, the booking page or the Web3Forms key, edit `src/data/site.ts`. Other
 text is in `src/data/`, or in the page or component it appears in.
 
 ## Work on it

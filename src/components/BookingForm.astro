@@ -1,17 +1,17 @@
 ---
 /**
- * The four questions asked before the calendar (booking.ts): business name, niche,
- * monthly revenue and a few lines about the business. Then Cal.com opens on the time
- * picker with the answers attached to the booking. Each field's name is also the
- * identifier of a hidden booking question on the Cal.com event (Event type → Advanced →
- * Booking questions: business, niche and revenue as short text, about as long text, each
- * switched to hidden), so the answers land on the booking itself and the site keeps none.
- * They're also emailed to us the moment the form is sent, booked or not (data-notify, the
- * Web3Forms key). `dialog` is the popup every booking button opens; `inline` sits on the
- * book page. Without JavaScript the form still works: it sends the answers to the event's
- * page on cal.com, which reads them from the address the same way.
+ * The booking form, in two steps (booking.ts). Step 1 asks who's booking (name and email, which
+ * also makes a reply to the email go to them) and about the business: its name, niche, monthly
+ * revenue and a few lines on what it does. The answers are emailed to us the moment the form is
+ * sent, booked or not (Web3Forms, through the access key below). Step 2 takes the
+ * form's place with the audit's booking page on Google Calendar, where the visitor picks a time.
+ * `dialog` is the popup every booking button opens; `inline` sits on the book page.
+ *
+ * Without JavaScript the form still works: it posts the answers to Web3Forms itself, which
+ * emails them to us and sends the visitor on to /book/pick-a-time/, the booking page on a page
+ * of its own (Web3Forms' free plan only sends visitors on to pages on this site).
  */
-import { calUrl, ph, site, unconfirmed } from '../data/site';
+import { bookingEmbedUrl, bookingUrl, ph, site, unconfirmed } from '../data/site';
 import Icon from './Icon.astro';
 
 interface Props {
@@ -23,8 +23,10 @@ const id = (name: string) => `booking-${mode}-${name}`;
 const revenues = ['Under $10k', '$10k–$50k', '$50k–$100k', '$100k–$500k', 'Over $500k', 'Prefer not to say'];
 const Wrap = mode === 'dialog' ? 'dialog' : 'div';
 const submitLabel = 'See available times';
-// No key yet, no email: the form carries a placeholder marker instead, which stops the build.
+// No key yet, no email: the form carries a placeholder marker instead, which stops the build, and
+// without JavaScript it goes straight to the booking page.
 const notifyKey = unconfirmed.has('web3forms') ? undefined : site.web3forms;
+const pickATime = new URL('/book/pick-a-time/', site.url).href;
 ---
 
 <Wrap
@@ -34,12 +36,21 @@ const notifyKey = unconfirmed.has('web3forms') ? undefined : site.web3forms;
 >
   <form
     class="booking"
-    action={calUrl}
-    method="get"
-    data-notify={notifyKey}
+    action={notifyKey ? 'https://api.web3forms.com/submit' : bookingUrl}
+    method={notifyKey ? 'post' : 'get'}
     data-ph={ph('web3forms')}
     aria-labelledby={mode === 'inline' ? id('title') : undefined}
   >
+    {
+      notifyKey && (
+        <>
+          <input type="hidden" name="access_key" value={notifyKey} />
+          <input type="hidden" name="subject" value="New audit form" />
+          <input type="hidden" name="from_name" value="Neurokov website" />
+          <input type="hidden" name="redirect" value={pickATime} />
+        </>
+      )
+    }
     <div class="booking__head">
       <span class="label label--signal">Step 1 of 2 · The basics</span>
       {
@@ -52,9 +63,17 @@ const notifyKey = unconfirmed.has('web3forms') ? undefined : site.web3forms;
     </div>
     <h2 class="h3 booking__title" id={id('title')} tabindex="-1">Tell us about your business.</h2>
     <p class="booking__lead">
-      Four quick questions, then you pick a time. Your answers let us do our homework before the call.
+      A few quick questions, then you pick a time. Your answers let us do our homework before the call.
     </p>
     <div class="booking__fields">
+      <div class="field">
+        <label for={id('name')}>Your name</label>
+        <input id={id('name')} name="name" type="text" required maxlength="120" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for={id('email')}>Email</label>
+        <input id={id('email')} name="email" type="email" required maxlength="200" autocomplete="email" />
+      </div>
       <div class="field field--wide">
         <label for={id('business')}>Business name</label>
         <input id={id('business')} name="business" type="text" required maxlength="120" autocomplete="organization" />
@@ -92,9 +111,27 @@ const notifyKey = unconfirmed.has('web3forms') ? undefined : site.web3forms;
         </span>
       </button>
       <p class="cta__note booking__note">
-        <Icon name="shield-check" size={16} /> Your answers reach us by email when you press the button, and again with
-        your booking.
+        <Icon name="shield-check" size={16} /> Your answers reach us by email when you press the button.
       </p>
     </div>
   </form>
+  {/* Step 2: the booking page, loaded once the answers are sent (booking.ts). */}
+  <div class="booking-time" data-booking-time role="group" aria-labelledby={id('time')} tabindex="-1" hidden>
+    <div class="booking__head">
+      <span class="label label--signal">Step 2 of 2 · Pick a time</span>
+      {
+        mode === 'dialog' && (
+          <button class="guide__x" type="button" data-booking-close aria-label="Close">
+            <Icon name="x" size={16} />
+          </button>
+        )
+      }
+    </div>
+    <h2 class="h3 booking__title" id={id('time')}>Pick a time that suits you.</h2>
+    <div class="booking-time__frame" data-booking-frame data-src={bookingEmbedUrl} data-ph={ph('booking')}></div>
+    <p class="cta__note booking__note">
+      <Icon name="calendar-check" size={16} />
+      <a class="text-link" href={bookingUrl} target="_blank" rel="noopener">Open the booking page in a new tab</a>
+    </p>
+  </div>
 </Wrap>

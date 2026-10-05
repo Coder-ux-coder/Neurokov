@@ -9,7 +9,8 @@ export default defineConfig({
   site: SITE,
   integrations: [
     sitemap({
-      filter: (page) => !page.endsWith('/404/'),
+      // Not the 404, nor the step a visitor without JavaScript reaches after the booking form.
+      filter: (page) => !page.endsWith('/404/') && !page.endsWith('/book/pick-a-time/'),
     }),
   ],
   prefetch: {

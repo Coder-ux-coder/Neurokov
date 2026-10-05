@@ -658,15 +658,6 @@ button {
   transform: translateY(1px);
 }
 
-/* Clicked while the booking popup is still on its way (site.ts): the arrow blinks until it opens. */
-.btn[aria-busy='true'] {
-  cursor: progress;
-}
-
-.btn[aria-busy='true'] .btn__dot {
-  animation: led 0.9s steps(1) infinite;
-}
-
 .btn__label {
   display: grid;
   align-self: center;
@@ -4634,24 +4625,6 @@ html:not(.js) .clip__full {
   animation: none;
 }
 
-.book__fallback {
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 18px;
-  min-height: 620px;
-  padding: 40px;
-  text-align: center;
-  color: var(--text-2);
-  background: radial-gradient(var(--line) 1px, transparent 1px) 0 0 / 16px 16px;
-}
-
-/* The link to cal.com stands in for the calendar only when Cal.com can't load (booking.ts). Without
-   JavaScript there's no calendar to stand in for: the form itself goes to cal.com. */
-[data-cal-fallback]:not(.is-shown) {
-  display: none;
-}
-
 @media (max-width: 960px) {
   .book {
     grid-template-columns: minmax(0, 1fr);
@@ -4663,7 +4636,7 @@ html:not(.js) .clip__full {
 }
 
 /* ---------- Booking form (BookingForm.astro, booking.ts) ----------
-   Four questions before the calendar. Every booking button opens it as a
+   A few questions before the booking page. Every booking button opens it as a
    dialog, pinned over the page like the guide's welcome clip but in the
    page's own theme; the book page has it in its panel. */
 
@@ -4718,7 +4691,7 @@ html:not(.js) .clip__full {
 
 /* Focus lands on these only so reading starts there (booking.ts), not to be typed in. */
 .booking__title:focus,
-.booking-cal:focus {
+.booking-time:focus {
   outline: none;
 }
 
@@ -4853,16 +4826,67 @@ html:not(.js) .clip__full {
 
 /* A short screen (a laptop at 1280×620, say): a tighter dialog, so the form fits without scrolling. */
 @media (max-height: 700px) {
-  .booking-dialog .booking {
-    gap: 10px;
-    padding: 24px;
+  .booking-dialog .booking,
+  .booking-dialog .booking-time {
+    gap: 8px;
+    padding: 20px 24px;
+  }
+
+  .booking-dialog .booking__fields {
+    gap: 10px 16px;
+  }
+
+  .booking-dialog .field {
+    gap: 6px;
+  }
+
+  .booking-dialog .field input,
+  .booking-dialog .field select {
+    min-height: 44px;
+    padding-block: 9px;
+  }
+
+  /* Two lines showing rather than three; it still grows, and scrolls, for a longer answer. */
+  .booking-dialog .field textarea {
+    height: calc(2lh + 22px);
   }
 }
 
-/* Step 2 on the book page: the calendar, under its own label. */
-.booking-cal__head {
-  display: flex;
-  padding: 18px 20px 4px;
+/* Step 2: the booking page on Google Calendar, in the form's place. Google's page keeps its own
+   light colours, whichever theme the site is in. */
+.booking-time {
+  display: grid;
+  gap: 12px;
+  padding: clamp(20px, 3.2vw, 32px);
+}
+
+.booking-inline .booking-time {
+  padding: clamp(20px, 3.6vw, 40px);
+}
+
+.booking[hidden],
+.booking-time[hidden] {
+  display: none;
+}
+
+.booking-time__frame iframe {
+  display: block;
+  width: 100%;
+  /* As tall as the screen leaves room for in the dialog, so its own scrolling is all there is. */
+  height: max(360px, min(700px, calc(100dvh - 214px)));
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+.booking-inline .booking-time__frame iframe,
+.booking-time--page iframe {
+  height: 700px;
+}
+
+/* Picking a time takes more room than the questions. */
+.booking-dialog.is-picking {
+  width: min(960px, calc(100vw - 32px));
 }
 
 /* ---------- 404 ---------- */
@@ -5887,7 +5911,6 @@ html:not(.js) .clip__full {
   .marquee__track,
   .cta__track,
   .book__bar span:last-child::before,
-  .btn[aria-busy='true'] .btn__dot,
   .js .guarantee.is-in .banner,
   .js .guarantee.is-in .stamp,
   .nk *,
