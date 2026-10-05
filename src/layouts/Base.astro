@@ -146,6 +146,12 @@ const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? 
     <div class="cursor" data-pointer-tag aria-hidden="true">
       <span class="cursor__read" data-pointer-read></span>
     </div>
+    {/* Netlify adds a "Powered by Netlify" badge script to every page it serves (/.netlify/scripts/hud).
+        It builds the badge in a frame whose inline script the Content-Security-Policy blocks, which
+        logs an error on every page. The script stands down when a frame by this name is already on
+        the page, so this empty one keeps it from trying. Switching the badge off in Netlify (Project
+        configuration > General) stops the script being sent at all. */}
+    <template id="nl-badge-frame"></template>
     <script>
       import '../scripts/site.ts';
     </script>
