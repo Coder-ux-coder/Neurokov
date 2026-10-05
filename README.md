@@ -64,6 +64,8 @@ dark theme.
   the questions answered (FAQ and service pages).
 - Photos are served as AVIF or WebP at the size the screen needs, films and photos load as they
   come into view, fonts are served by the site itself, and links start loading on hover.
+- On phones and tablets, sections below the first screen are laid out and painted only as they come
+  near it, so the first screen paints sooner.
 - Pages work by keyboard, with a skip link, labelled controls, visible focus and text versions of
   every film.
 
@@ -72,6 +74,12 @@ dark theme.
 `public/_headers` sets the headers sent with every page: a Content-Security-Policy that allows
 only this site, Cal.com and Web3Forms, HTTPS only (HSTS), no framing by other sites, and no
 access to the camera, microphone or location. The site sets no cookies and runs no analytics.
+
+Netlify adds a "Powered by Netlify" badge script (`/.netlify/scripts/hud`) to every page it serves.
+The Content-Security-Policy would block the badge and log an error on every page (Lighthouse best
+practices 92), so each page carries an empty placeholder that makes the script stand down
+(`Base.astro`). Turning the badge off in Netlify's project settings, where the plan allows it, stops
+the script being sent at all.
 The visitor's browser keeps a few small notes for them: the chosen theme, that the intro and the
 welcome guide have been seen, and which booking answers were already emailed.
 
