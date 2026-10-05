@@ -27,13 +27,13 @@ Any other address shows the 404 page, which has its own short film.
 ## Booking
 
 Every booking button on the site opens the same form, and the book page has it built in. It asks
-for the visitor's name and email, then the business name, niche, monthly revenue and a few words
-about the business. Then the free audit's booking page on Google Calendar takes the form's place,
-and the visitor picks a time there. Google adds the call, with a Google Meet link, to
-mohid@neurokov.com's calendar and emails the visitor the invite.
+four questions: business name, niche, monthly revenue and a few words about the business. Then the
+free audit's booking page on Google Calendar takes the form's place, and the visitor gives their
+name and email and picks a time there (in US English, so times read 5:00pm). Google adds the call,
+with a Google Meet link, to mohid@neurokov.com's calendar and emails the visitor the invite.
 
 The answers are emailed to Neurokov through Web3Forms as soon as the form is sent, so a visitor who
-leaves without picking a time is not lost, and replying to that email writes to the visitor. The
+leaves without picking a time is not lost. The
 same answers are sent once a day at most, however many times the form goes in (a second try, a
 reload, another tab), and a failed send is retried the next time. Google's booking page only loads
 once the form is sent. Without JavaScript the form posts straight to Web3Forms, which sends the

@@ -4826,29 +4826,14 @@ html:not(.js) .clip__full {
 
 /* A short screen (a laptop at 1280×620, say): a tighter dialog, so the form fits without scrolling. */
 @media (max-height: 700px) {
-  .booking-dialog .booking,
+  .booking-dialog .booking {
+    gap: 10px;
+    padding: 24px;
+  }
+
   .booking-dialog .booking-time {
     gap: 8px;
     padding: 20px 24px;
-  }
-
-  .booking-dialog .booking__fields {
-    gap: 10px 16px;
-  }
-
-  .booking-dialog .field {
-    gap: 6px;
-  }
-
-  .booking-dialog .field input,
-  .booking-dialog .field select {
-    min-height: 44px;
-    padding-block: 9px;
-  }
-
-  /* Two lines showing rather than three; it still grows, and scrolls, for a longer answer. */
-  .booking-dialog .field textarea {
-    height: calc(2lh + 22px);
   }
 }
 

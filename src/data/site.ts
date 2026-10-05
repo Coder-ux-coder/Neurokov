@@ -34,10 +34,10 @@ export const site = {
   },
 };
 
-/** The audit's booking page on Google Calendar. */
-export const bookingUrl = `https://calendar.google.com/calendar/appointments/schedules/${site.booking.schedule}`;
+/** The audit's booking page on Google Calendar, in US English: times read 5:00pm, not 17:00. */
+export const bookingUrl = `https://calendar.google.com/calendar/appointments/schedules/${site.booking.schedule}?hl=en`;
 /** The same page made to sit inside one of this site's (Google's own "website embed"). */
-export const bookingEmbedUrl = `${bookingUrl}?gv=true`;
+export const bookingEmbedUrl = `${bookingUrl}&gv=true`;
 
 /**
  * Every booking button opens the same free audit. The default label is below;

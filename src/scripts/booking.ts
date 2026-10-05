@@ -1,6 +1,6 @@
 /**
  * Booking. Every booking button ([data-book], Button.astro) opens the booking form
- * (BookingForm.astro): who's booking and a few questions about the business. Sending it
+ * (BookingForm.astro): four questions about the business. Sending it
  * emails us the answers (notify) and puts the free audit's booking page on Google Calendar
  * in the form's place, where the visitor picks a time. On the book page the form is already
  * in the page, so the buttons bring it into view instead.
@@ -119,8 +119,6 @@ function notify(form: HTMLFormElement, answers: Answers) {
   body.set('access_key', key);
   body.set('subject', `New audit form: ${answers.business} (${answers.niche})`);
   body.set('from_name', 'Neurokov website');
-  // A reply to the email goes to the visitor.
-  body.set('replyto', answers.email);
   // Each answer under its question, as the visitor read it.
   for (const [name, value] of Object.entries(answers)) {
     const field = form.elements.namedItem(name) as HTMLInputElement | null;

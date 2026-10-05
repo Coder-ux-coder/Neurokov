@@ -1,9 +1,9 @@
 ---
 /**
- * The booking form, in two steps (booking.ts). Step 1 asks who's booking (name and email, which
- * also makes a reply to the email go to them) and about the business: its name, niche, monthly
- * revenue and a few lines on what it does. The answers are emailed to us the moment the form is
- * sent, booked or not (Web3Forms, through the access key below). Step 2 takes the
+ * The booking form, in two steps (booking.ts). Step 1 asks four questions: business name, niche,
+ * monthly revenue and a few lines about the business. The answers are emailed to us the moment the
+ * form is sent, booked or not (Web3Forms, through the access key below). Name and email are asked
+ * once, by the booking page, which no other site can fill in for it. Step 2 takes the
  * form's place with the audit's booking page on Google Calendar, where the visitor picks a time.
  * `dialog` is the popup every booking button opens; `inline` sits on the book page.
  *
@@ -63,17 +63,9 @@ const pickATime = new URL('/book/pick-a-time/', site.url).href;
     </div>
     <h2 class="h3 booking__title" id={id('title')} tabindex="-1">Tell us about your business.</h2>
     <p class="booking__lead">
-      A few quick questions, then you pick a time. Your answers let us do our homework before the call.
+      Four quick questions, then you pick a time. Your answers let us do our homework before the call.
     </p>
     <div class="booking__fields">
-      <div class="field">
-        <label for={id('name')}>Your name</label>
-        <input id={id('name')} name="name" type="text" required maxlength="120" autocomplete="name" />
-      </div>
-      <div class="field">
-        <label for={id('email')}>Email</label>
-        <input id={id('email')} name="email" type="email" required maxlength="200" autocomplete="email" />
-      </div>
       <div class="field field--wide">
         <label for={id('business')}>Business name</label>
         <input id={id('business')} name="business" type="text" required maxlength="120" autocomplete="organization" />
