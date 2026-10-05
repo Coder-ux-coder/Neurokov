@@ -280,15 +280,10 @@ button {
    across the screen (a contained section would hold it inside), nor during the welcome tour, which
    measures where each stop sits on the page. */
 @media (max-width: 1100px) {
-  main > section:not(:first-child):not(:has([data-studies])),
-  body > .footer {
+  :root:not(.touring) main > section:not(:first-child):not(:has([data-studies])),
+  :root:not(.touring) body > .footer {
     content-visibility: auto;
     contain-intrinsic-size: auto 1000px;
-  }
-
-  .touring main > section,
-  .touring body > .footer {
-    content-visibility: visible;
   }
 }
 
