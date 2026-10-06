@@ -6,7 +6,7 @@ renderers write into `src/assets/` and `public/`, and the site uses those files.
 | Folder | Makes |
 | --- | --- |
 | `clips/` | The story films. Each is an HTML page run by `engine.js`; `render.mjs <name> --install` renders it into `src/assets/clips/` |
-| `qa/` | Frame-by-frame checks of the films: text cut off or covered, things that flicker or pop |
+| `qa/` | Frame-by-frame checks of the films: text cut off or covered, things that flicker or pop. `qa/site/` checks the built site in a browser: every page and control, booking, accessibility and speed |
 | `screens/`, `composite/` | The home page photo (`src/assets/images/home-feature.jpg`) and its loop (`src/assets/video/home-feature.mp4`) |
 | `brand/` | `public/og.png`, `public/apple-touch-icon.png` and `public/favicon.ico` |
 

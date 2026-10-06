@@ -1,0 +1,12 @@
+{
+  "name": "neurokov-site-qa",
+  "private": true,
+  "type": "module",
+  "description": "Checks the built site in a browser: every page and control, booking, accessibility and speed. Not part of the site.",
+  "dependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "chrome-launcher": "^1.2.1",
+    "lighthouse": "13.5.0",
+    "playwright": "1.56.1"
+  }
+}
