@@ -3,6 +3,7 @@ import Board from '../../components/Board.astro';
 import Cta from '../../components/Cta.astro';
 import Guarantee from '../../components/Guarantee.astro';
 import Icon from '../../components/Icon.astro';
+import Machine from '../../components/Machine.astro';
 import Marquee from '../../components/Marquee.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
@@ -67,7 +68,7 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
     <div class="container">
       <SectionHead
         label="What we do"
-        index="01 / 03"
+        index="01 / 04"
         title="Three ways we bring you clients."
         lead="Each one starts with a free audit and is judged on one thing: booked calls that turn into new clients."
       />
@@ -82,8 +83,20 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
   <section class="section section--deep">
     <div class="container">
       <SectionHead
+        label="How it works"
+        index="02 / 04"
+        title="Every lead answered in under 60 seconds."
+        lead="Here’s how we handle the leads you already get, as a working model. Leads land from every channel, get checked against your ideal client, answered and booked while your team gets on with the day."
+      />
+      <div data-reveal><Machine /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead
         label="Every client"
-        index="02 / 03"
+        index="03 / 04"
         title="What every client gets."
         lead="Whichever service you start with, you get the same six things."
       />
@@ -106,11 +119,11 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--deep">
     <div class="container">
       <SectionHead
         label="Industries"
-        index="03 / 03"
+        index="04 / 04"
         title="Built for service businesses."
         lead="Different industries, same problem: great work, and not enough clients to do it for. Here’s what we deliver where you work."
       />

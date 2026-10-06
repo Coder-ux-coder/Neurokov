@@ -1,0 +1,44 @@
+---
+/**
+ * The video at the top of the home page: Mohid, talking for under a minute, about what Neurokov
+ * does for you (the script is in design/vsl/script.md). Put the recording in src/assets/video/ as
+ * vsl.mp4, with vsl.jpg (its cover) and, if you have them, vsl.vtt (its captions), and it plays
+ * here. Until vsl.mp4 is there, the case study reel takes its place.
+ *
+ * Nothing loads until it's played. The big button starts it with sound and hands over to the
+ * player's own controls (vsl.ts); without JavaScript the player's controls are there from the start.
+ */
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import Slides from './Slides.astro';
+
+function one<T>(files: Record<string, T>): T | undefined {
+  return Object.values(files)[0];
+}
+const film = one(import.meta.glob<string>('/src/assets/video/vsl.mp4', { eager: true, query: '?url', import: 'default' }));
+// (never inlined as a data: address, however small: the Content-Security-Policy only lets media come from the site)
+const captions = one(import.meta.glob<string>('/src/assets/video/vsl.vtt', { eager: true, query: '?url&no-inline', import: 'default' }));
+const cover = one(import.meta.glob<{ default: ImageMetadata }>('/src/assets/video/vsl.jpg', { eager: true }))?.default;
+const poster = cover && (await getImage({ src: cover, width: 1280, format: 'webp' })).src;
+const label = 'Watch: what we do for you, in a minute';
+---
+
+{
+  film ? (
+    <div class="vsl" data-vsl>
+      <video src={film} poster={poster} controls preload="none" playsinline aria-label={label}>
+        {captions && <track kind="captions" src={captions} srclang="en" label="English" default />}
+      </video>
+      <button class="vsl__play" type="button" data-vsl-play hidden>
+        <span class="vsl__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28">
+            <path d="M8 5.5v13l11-6.5z" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="vsl__label">{label}</span>
+      </button>
+    </div>
+  ) : (
+    <Slides />
+  )
+}

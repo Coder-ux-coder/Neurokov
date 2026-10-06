@@ -16,7 +16,7 @@
     "duration": 8
   },
   "outbound-engine": {
-    "poster": 11.3,
+    "poster": 10.8,
     "duration": 13
   },
   "process-audit": {
@@ -40,7 +40,7 @@
     "duration": 20
   },
   "speed-to-lead": {
-    "poster": 12.4,
+    "poster": 17.8,
     "duration": 20
   }
 }

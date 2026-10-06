@@ -1,16 +1,27 @@
 ---
+import Button from '../../components/Button.astro';
 import CaseCard from '../../components/CaseCard.astro';
 import Cta from '../../components/Cta.astro';
+import Figure from '../../components/Figure.astro';
 import Guarantee from '../../components/Guarantee.astro';
 import Marquee from '../../components/Marquee.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import Steps from '../../components/Steps.astro';
+import Visual from '../../components/Visual.astro';
 import { cases } from '../../data/cases';
 import { site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
 
 const anyPlaceholder = cases.some((c) => c.placeholder);
+
+// Callouts on the photo, placed on the dashboard on its screen (percent of the frame).
+// A callout near the right edge flips, its label reading leftward so it stays in the frame.
+const callouts = [
+  { x: 33.6, y: 30.4, w: 64, text: '01 Calls booked', delay: 1.5 },
+  { x: 47, y: 47, w: 54, text: '02 Replies per day', delay: 1.7 },
+  { x: 63.5, y: 57.6, w: 40, text: '03 Lead to booked call', delay: 1.9, flip: true },
+];
 ---
 
 <Base
@@ -30,6 +41,56 @@ const anyPlaceholder = cases.some((c) => c.placeholder);
     <div class="container">
       <div class="cases cases--2">
         {cases.map((c, i) => <CaseCard study={c} delay={(i % 2) * 120} level={2} eager={i === 0} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- The record: what the numbers add up to -->
+  <section class="section section--deep">
+    <div class="container split">
+      <div class="split__copy">
+        <div class="section-head__rule" data-reveal>
+          <span class="label label--signal"><span data-decode>The record</span></span>
+        </div>
+        <h2 class="h2" data-reveal data-split>Booked calls, not vanity metrics.</h2>
+        <p class="lead" data-reveal style="--d: 120ms">
+          We booked a growth agency 46 qualified calls in its first 30 days, cut a consulting firm’s first reply from 19
+          hours to under 60 seconds, and grew a psychology platform our CEO co-founded by over 100% in a single month.
+        </p>
+        <p class="lead" data-reveal style="--d: 180ms">
+          We don’t sell software, impressions or slide decks. We find your buyers, start the conversations and hand you the
+          calls.
+        </p>
+        <div data-reveal style="--d: 240ms"><Button label="Get the same results" /></div>
+      </div>
+      <div class="split__media" data-reveal style="--d: 120ms">
+        <Figure n="01" caption="Pipeline overview: calls booked, replies per day and where new clients come from.">
+          <div class="marks">
+            <Visual
+              name="home-feature"
+              alt="A monitor on a desk showing a pipeline dashboard: calls booked, replies per day and leads turned into booked calls"
+              icon="target"
+              ratio="3 / 2"
+              sizes="(max-width: 900px) 100vw, 620px"
+              dither
+              live
+            >
+              <div class="callouts" aria-hidden="true">
+                {
+                  callouts.map((c) => (
+                    <span
+                      class:list={['callout', c.flip && 'callout--flip']}
+                      style={`--x: ${c.x}%; --y: ${c.y}%; --w: ${c.w}px; --cd: ${c.delay}s`}
+                    >
+                      <span class="callout__line" />
+                      <span class="callout__text">{c.text}</span>
+                    </span>
+                  ))
+                }
+              </div>
+            </Visual>
+          </div>
+        </Figure>
       </div>
     </div>
   </section>

@@ -13,3 +13,30 @@
 # links: /about answers with a redirect to /about/.
 [build.processing.html]
   pretty_urls = true
+
+# Pages from before Neurokov became a lead generation agency (October 2026): each old address goes
+# to the page that took its place, so links and search results keep working.
+[[redirects]]
+  from = "/services/crm-sales-automation/"
+  to = "/services/lead-conversion/"
+  status = 301
+
+[[redirects]]
+  from = "/services/marketing-automation/"
+  to = "/services/lead-reactivation/"
+  status = 301
+
+[[redirects]]
+  from = "/services/workflow-automation/"
+  to = "/services/"
+  status = 301
+
+[[redirects]]
+  from = "/services/automation-agents/"
+  to = "/services/"
+  status = 301
+
+[[redirects]]
+  from = "/case-studies/back-office-autopilot/"
+  to = "/case-studies/"
+  status = 301

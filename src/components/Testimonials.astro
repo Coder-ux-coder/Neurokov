@@ -1,0 +1,29 @@
+---
+/** Client quotes (testimonials.ts), each on a card under a big opening quote mark. */
+import { testimonials } from '../data/testimonials';
+---
+
+<ul class="quotes">
+  {
+    testimonials.map((t, i) => (
+      <li class="card quote" data-reveal style={`--d: ${(i % 3) * 90}ms`}>
+        <figure>
+          <blockquote>
+            <p>{t.quote}</p>
+          </blockquote>
+          <figcaption>
+            <b>{t.name}</b>
+            <span>
+              {t.role}, {t.company}
+            </span>
+            {t.caseSlug && (
+              <a class="text-link" href={`/case-studies/${t.caseSlug}/`}>
+                Read the case →
+              </a>
+            )}
+          </figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>

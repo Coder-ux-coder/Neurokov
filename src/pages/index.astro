@@ -1,40 +1,34 @@
 ---
+/**
+ * The landing page, kept short on purpose: the video (or the case reel until it's recorded), the
+ * process at a glance, the work we've done (and what clients say, once there are quotes), the
+ * guarantee and one thing to do: book the free audit.
+ */
 import Board from '../components/Board.astro';
 import Button from '../components/Button.astro';
-import Credentials from '../components/Credentials.astro';
+import CaseCard from '../components/CaseCard.astro';
 import Cta from '../components/Cta.astro';
 import Faq from '../components/Faq.astro';
-import Figure from '../components/Figure.astro';
-import Founder from '../components/Founder.astro';
 import Guarantee from '../components/Guarantee.astro';
 import Icon from '../components/Icon.astro';
-import Machine from '../components/Machine.astro';
-import Marquee from '../components/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
-import ServiceRows from '../components/ServiceRows.astro';
-import Slides from '../components/Slides.astro';
 import Steps from '../components/Steps.astro';
-import Studies from '../components/Studies.astro';
-import Values from '../components/Values.astro';
-import Visual from '../components/Visual.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Vsl from '../components/Vsl.astro';
+import { cases } from '../data/cases';
 import { homeFaqs } from '../data/faqs';
 import { site } from '../data/site';
+import { testimonials } from '../data/testimonials';
 import Base from '../layouts/Base.astro';
 
 // On the homepage only: the name Google shows for the site in its results.
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: `${site.url}/` };
-
-// Callouts on Fig. 02, placed on the dashboard in the photo (percent of the frame).
-// A callout near the right edge flips, its label reading leftward so it stays in the frame.
-const callouts = [
-  { x: 33.6, y: 30.4, w: 64, text: '01 Calls booked', delay: 1.5 },
-  { x: 47, y: 47, w: 54, text: '02 Replies per day', delay: 1.7 },
-  { x: 63.5, y: 57.6, w: 40, text: '03 Lead to booked call', delay: 1.9, flip: true },
-];
+const total = testimonials.length ? 4 : 3;
+const at = (n: number) => `${String(n).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
 ---
 
 <Base jsonLd={website}>
-  <!-- Hero: the promise, then the proof flipping past on the right -->
+  <!-- Hero: the promise, the video and the one thing to do -->
   <section class="hero" data-hold>
     <div class="gridlines" aria-hidden="true"></div>
     <div class="container">
@@ -59,153 +53,70 @@ const callouts = [
             </p>
             <div class="hero__cta" data-reveal style="--d: 360ms">
               <Button size="lg" label="Book your free audit" />
+              <p class="cta__note">
+                <Icon name="calendar-check" size={16} /> 30 minutes, free. You leave knowing where your next clients are.
+              </p>
             </div>
           </div>
-          <div data-reveal style="--d: 460ms"><Credentials /></div>
         </div>
-        <div class="hero__media" data-reveal="clip" style="--d: 200ms"><Slides /></div>
+        <div class="hero__media" data-reveal="clip" style="--d: 200ms"><Vsl /></div>
       </div>
       <div class="hero__board"><Board /></div>
     </div>
   </section>
 
-  <Marquee />
-
-  <!-- 01 The record -->
-  <section class="section">
-    <div class="container split">
-      <div class="split__copy">
-        <div class="section-head__rule" data-reveal>
-          <span class="label label--signal"><span data-decode>The record</span></span>
-          <span class="label">01 / 07</span>
-        </div>
-        <h2 class="h2" data-reveal data-split>Booked calls, not vanity metrics.</h2>
-        <p class="lead" data-reveal style="--d: 120ms">
-          We booked a growth agency 46 qualified calls in its first 30 days, cut a consulting firm’s first reply from 19
-          hours to under 60 seconds, and grew a psychology platform our CEO co-founded by over 100% in a single month.
-        </p>
-        <p class="lead" data-reveal style="--d: 180ms">
-          We don’t sell software, impressions or slide decks. We find your buyers, start the conversations and hand you the
-          calls.
-        </p>
-        <div data-reveal style="--d: 240ms"><Button label="Get the same results" /></div>
-      </div>
-      <div class="split__media" data-reveal style="--d: 120ms">
-        <Figure n="02" caption="Pipeline overview: calls booked, replies per day and where new clients come from.">
-          <div class="marks">
-            <Visual
-              name="home-feature"
-              alt="A monitor on a desk showing a pipeline dashboard: calls booked, replies per day and leads turned into booked calls"
-              icon="target"
-              ratio="3 / 2"
-              sizes="(max-width: 900px) 100vw, 620px"
-              dither
-              live
-            >
-              <div class="callouts" aria-hidden="true">
-                {
-                  callouts.map((c) => (
-                    <span
-                      class:list={['callout', c.flip && 'callout--flip']}
-                      style={`--x: ${c.x}%; --y: ${c.y}%; --w: ${c.w}px; --cd: ${c.delay}s`}
-                    >
-                      <span class="callout__line" />
-                      <span class="callout__text">{c.text}</span>
-                    </span>
-                  ))
-                }
-              </div>
-            </Visual>
-          </div>
-        </Figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- 02 How it works -->
+  <!-- 01 How it works -->
   <section class="section section--deep">
     <div class="container">
       <SectionHead
         label="How it works"
-        index="02 / 08"
-        title="Every lead answered in under 60 seconds."
-        lead="Here’s how we handle the leads you already get, as a working model. Leads land from every channel, get checked against your ideal client, answered and booked while your team gets on with the day."
-      />
-      <div data-reveal><Machine /></div>
-    </div>
-  </section>
-
-  <!-- 03 Work -->
-  <section class="section">
-    <div class="container">
-      <SectionHead
-        label="Selected work"
-        index="03 / 08"
-        title="Results, not promises."
-        lead="Every result below was delivered by us. Here’s what changed for each business."
+        index={at(1)}
+        title="Four steps to a full calendar."
+        lead="One free call, one fixed price and booked calls from day one. Here’s the whole thing."
       >
-        <a slot="after-lead" class="text-link" href="/case-studies/"> See all case studies →</a>
+        <a slot="after-lead" class="text-link" href="/process/"> See the process in detail →</a>
       </SectionHead>
-      <Studies />
-    </div>
-  </section>
-
-  <!-- 04 Founder -->
-  <section class="section section--deep">
-    <div class="container">
-      <SectionHead
-        label="Who’s behind it"
-        index="04 / 08"
-        title="Growth we delivered for ourselves first."
-        lead="Before we grew anyone else’s business, our founder grew his own."
-      />
-      <Founder film="04" />
-    </div>
-  </section>
-
-  <!-- 05 Why us -->
-  <section class="section section--ink" data-dark>
-    <div class="container">
-      <SectionHead label="Why us" index="05 / 08" title="We don’t sell hours. We sell results." />
-      <Values />
-    </div>
-  </section>
-
-  <!-- 06 Services -->
-  <section class="section">
-    <div class="container">
-      <SectionHead
-        label="What we do"
-        index="06 / 08"
-        title="Three ways we bring you clients."
-        lead="Find new buyers, win the leads you already get and bring back the ones that went cold. Each one is judged on one thing: new clients."
-      />
-      <ServiceRows />
-    </div>
-  </section>
-
-  <!-- 07 Process -->
-  <section class="section section--deep">
-    <div class="container">
-      <SectionHead
-        label="The process"
-        index="07 / 08"
-        title="From first call to booked calls."
-        lead="Four steps, one fixed price and results from day one."
-      />
       <Steps />
     </div>
   </section>
+
+  <!-- 02 Work -->
+  <section class="section">
+    <div class="container">
+      <SectionHead
+        label="Our work"
+        index={at(2)}
+        title="Projects we’ve delivered."
+        lead="Real businesses, real numbers. Every result here was delivered by us."
+      >
+        <a slot="after-lead" class="text-link" href="/case-studies/"> Read the case studies →</a>
+      </SectionHead>
+      <div class="cases">
+        {cases.map((c, i) => <CaseCard study={c} delay={i * 100} />)}
+      </div>
+    </div>
+  </section>
+
+  {
+    testimonials.length > 0 && (
+      <section class="section section--deep">
+        <div class="container">
+          <SectionHead label="In their words" index={at(3)} title="What clients say." />
+          <Testimonials />
+        </div>
+      </section>
+    )
+  }
 
   <section class="section section--tight">
     <div class="container"><Guarantee /></div>
   </section>
 
-  <!-- 08 FAQ -->
+  <!-- FAQ -->
   <section class="section">
     <div class="container faq-layout">
       <div class="faq-layout__head">
-        <SectionHead label="Questions" index="08 / 08" title="Questions, answered." />
+        <SectionHead label="Questions" index={at(total)} title="Questions, answered." />
         <p class="muted" data-reveal>
           More on pricing, the guarantee and your data in the <a class="text-link" href="/faq/">full FAQ</a>.
         </p>

@@ -1,9 +1,10 @@
 # Neurokov
 
-The website of Neurokov, an automation agency for B2B service businesses: [neurokov.com](https://neurokov.com).
-Neurokov builds automated systems that find leads, answer them in seconds and run the back office.
-The site explains what it builds, shows the results in case studies and asks for one thing: booking
-a free systems audit.
+The website of Neurokov, a lead generation agency for B2B service businesses:
+[neurokov.com](https://neurokov.com). Neurokov gets its clients new clients: it finds their buyers,
+answers every lead in under a minute and books the sales calls. The site sells the result, shows it
+in case studies and asks for one thing: booking a free growth audit. The guarantee: results, or you
+don't pay.
 
 It is a static site built with [Astro](https://astro.build), with no server, database or logins.
 Every page is plain HTML, CSS and a little TypeScript. Calls are booked on a Google Calendar
@@ -13,22 +14,36 @@ booking page (Google Workspace), and booking answers are emailed through Web3For
 
 | Address | Page |
 | --- | --- |
-| `/` | Home: the promise and free audit, a reel of the case study films, the track record, a working model of the lead system, selected work, the founder, why Neurokov, the five services, the process, the guarantee and FAQs |
-| `/services/` | The five services, each with its own page: `workflow-automation`, `lead-generation`, `automation-agents`, `crm-sales-automation`, `marketing-automation` |
-| `/case-studies/` | Four case studies, each with its own page: `psychology-platform`, `outbound-engine`, `speed-to-lead`, `back-office-autopilot` |
-| `/process/` | The four steps from the free audit to launch and support, and what Neurokov needs from the client |
-| `/about/` | Who builds the systems, the problem they solve and how Neurokov works |
+| `/` | Home, kept short: the promise and the video (the case study reel until the video is recorded), the process in four steps, the projects, the guarantee, FAQs and the booking button |
+| `/services/` | The three services, each with its own page: `lead-generation` (outbound), `lead-conversion` (every lead answered in under 60 seconds), `lead-reactivation` (old leads, new clients), and a working model of how leads get answered |
+| `/case-studies/` | Three case studies, each with its own page: `psychology-platform`, `outbound-engine`, `speed-to-lead`, and the record: the photo of a pipeline dashboard |
+| `/process/` | The four steps from the free audit to launch and scaling what works, and what Neurokov needs from the client |
+| `/about/` | Who's behind Neurokov, the problem it solves and how it works |
 | `/faq/` | Questions on pricing, the guarantee, security and more |
 | `/book/` | The booking form, then the booking page to pick a time |
 | `/privacy/`, `/terms/` | Privacy policy and terms of service |
 
-Any other address shows the 404 page, which has its own short film.
+Any other address shows the 404 page, which has its own short film. The addresses of the services
+and case study retired in October 2026 redirect to the pages that replaced them (`netlify.toml`).
+
+## The home page
+
+Built on feedback that a landing page should say what you do in a minute and then get out of the
+way: a short video of Mohid at the top, the process at a glance, the work, the guarantee and one
+thing to do. Nothing on it makes you wait.
+
+- **The video.** The script, recording tips and where the files go are in `design/vsl/script.md`.
+  Drop `vsl.mp4` (with `vsl.jpg`, its cover, and `vsl.vtt`, its captions) into `src/assets/video/`
+  and it replaces the case study reel at the top. It loads nothing until it's played, and plays with
+  sound.
+- **Testimonials.** Add real client quotes, with permission, to `src/data/testimonials.ts` and a
+  "What clients say" section appears under the projects. With none, there is no section.
 
 ## Booking
 
 Every booking button on the site opens the same form, and the book page has it built in. It asks
 four questions: business name, niche, monthly revenue and a few words about the business. Then the
-free audit's booking page on Google Calendar takes the form's place, and the visitor gives their
+free growth audit's booking page on Google Calendar takes the form's place, and the visitor gives their
 name and email and picks a time there (in US English, so times read 5:00pm). Google adds the call,
 with a Google Meet link, to mohid@neurokov.com's calendar and emails the visitor the invite.
 
@@ -41,23 +56,19 @@ visitor on to `/book/pick-a-time/`, the booking page on a page of its own.
 
 ## What moves
 
-- **Story films.** Seventeen short illustrated films tell the case studies, the services, the
-  process steps, the founder's story, the welcome and the 404. Each has a written version for
-  screen readers in `src/data/clips.ts`. Most play while on screen and pause when scrolled away;
-  on the case study cards they play under the pointer.
-- **Home page.** A boot intro (once per visit, skipped by any key or click), a reel that plays
-  each case study's film in turn with a split-flap counter, the lead system model with simulated
-  leads running through it, a case list that previews each film beside the pointer, and a photo
-  that develops out of a dot pattern with its screens moving.
-- **Welcome guide.** On a first visit, NK-01, the Neurokov robot, offers a tour: the welcome film,
-  then a spotlight that walks the home page stop by stop.
-- **Everywhere.** Sections and headlines animate in on scroll, labels decode, a ruler tracks the
-  scroll, and a small tag beside the pointer says what a click will do. Service pages run their
-  workflow as a live circuit.
+- **Story films.** Eleven short illustrated films tell the case studies, the services, the process
+  steps and the 404. Each has a written version for screen readers in `src/data/clips.ts`. Most play
+  while on screen and pause when scrolled away; on the case study cards they play under the pointer.
+- **Home page.** Until the video is recorded, a reel plays each case study's film in turn, with a
+  split-flap counter for its number.
+- **Elsewhere.** The services page runs simulated leads through a working model of how leads get
+  answered; each service page runs its steps as a live circuit; the case studies page has a photo
+  that develops out of a dot pattern, with the dashboard on its screen moving.
+- **Everywhere.** Sections and headlines animate in on scroll, labels decode and a ruler tracks the
+  scroll.
 
-Visitors whose device asks for reduced motion get no intro and no scroll animations, and the
-films wait for their play button, as they also do in data-saver mode. There is a light and a
-dark theme.
+Visitors whose device asks for reduced motion get no scroll animations, and the films wait for
+their play button, as they also do in data-saver mode. There is a light and a dark theme.
 
 ## Search, speed and accessibility
 
@@ -84,8 +95,8 @@ The Content-Security-Policy would block the badge and log an error on every page
 practices 92), so each page carries an empty placeholder that makes the script stand down
 (`Base.astro`). Turning the badge off in Netlify's project settings, where the plan allows it, stops
 the script being sent at all.
-The visitor's browser keeps a few small notes for them: the chosen theme, that the intro and the
-welcome guide have been seen, and which booking answers were already emailed.
+The visitor's browser keeps a few small notes for them: the chosen theme and which booking answers
+were already emailed.
 
 The Web3Forms access key in `src/data/site.ts` is public by design: it can only send email to the
 address it was made for.
@@ -102,7 +113,7 @@ src/data/         the words and numbers: site details, services, cases, process,
 src/assets/       the films (clips/), the home page photo (images/) and its loop (video/)
 public/           copied into the site as is: icons, share image, robots.txt, _headers
 scripts/          checks that run after every build
-design/           the sources the films, photo and icons are made from (not part of the site)
+design/           the sources the films, photo and icons are made from, and the video script (not part of the site)
 netlify.toml      how Netlify builds the site
 ```
 
@@ -123,7 +134,8 @@ npm run preview     # serve dist/ locally
 `npm run build` fails, with a message saying what to fix, when:
 
 - the Content-Security-Policy in `public/_headers` would block one of the site's own inline
-  scripts (`scripts/check-headers.mjs` gives the hash to add), or
+  scripts (`scripts/check-headers.mjs` gives the hash to add),
+- a page links to a page or file on the site that doesn't exist (`scripts/check-links.mjs`), or
 - a page still shows a placeholder (`scripts/check-placeholders.mjs`). A value listed in
   `unconfirmed` in `src/data/site.ts` is marked on every page that uses it, and adding `?review`
   to any address outlines it. `npm run build:draft` builds without this check.

@@ -12,7 +12,7 @@ import './machine';
 import './dither';
 import './live';
 import './circuit';
-import './studies';
+import './vsl';
 import './scroll';
 
 /* ---------- Nav: solid background once scrolled, mobile menu ---------- */

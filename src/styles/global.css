@@ -272,10 +272,9 @@ button {
    the screen, so the first screen paints without first setting every line of text on the page in its
    fonts: most of a phone's work before that first paint. Until then each holds a placeholder height,
    and its real one once it has been shown. Up to the width where the scroll ruler appears, which
-   reads the page's full height. Not the case study list, whose preview frame follows the pointer
-   across the screen (a contained section would hold it inside). */
+   reads the page's full height. */
 @media (max-width: 1100px) {
-  main > section:not(:first-child):not(:has([data-studies])),
+  main > section:not(:first-child),
   body > .footer {
     content-visibility: auto;
     contain-intrinsic-size: auto 1000px;
@@ -1096,12 +1095,11 @@ button {
   align-items: start;
 }
 
-/* Pitch at the top, credentials at the foot, spanning the slideshow's height. */
+/* The pitch, centred against the video beside it. */
 .hero__copy {
-  align-self: stretch;
+  align-self: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 36px;
 }
 
@@ -1148,71 +1146,6 @@ button {
   .hero__row {
     grid-template-columns: minmax(0, 1fr);
   }
-}
-
-/* Credentials as the lines of a system check, with dotted leaders. */
-.creds-block {
-  display: grid;
-  gap: 10px;
-  max-width: 34rem;
-}
-
-.creds {
-  display: grid;
-  border-top: 1px solid var(--line-strong);
-  list-style: none;
-}
-
-.creds li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  line-height: 1.3;
-  text-transform: uppercase;
-}
-
-.creds li::after {
-  content: '';
-  order: 1;
-  flex: 1;
-  min-width: 16px;
-  border-bottom: 1px dotted var(--line-strong);
-}
-
-.creds__k {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.creds__v {
-  order: 2;
-  display: inline-flex;
-  color: var(--accent-ink);
-  font-weight: 600;
-  text-align: right;
-}
-
-.creds svg {
-  width: 15px;
-  height: 15px;
-  flex: none;
-  fill: currentColor;
-}
-
-.creds .icon {
-  fill: none;
-}
-
-.creds__k .icon {
-  color: var(--accent-ink);
 }
 
 /* ---------- Inner page hero ---------- */
@@ -1554,15 +1487,16 @@ button {
   display: grid;
   grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
   gap: 6px;
-  margin-top: 10px;
+  margin-top: 6px;
   list-style: none;
 }
 
+/* A 24px tall target round a 2px line: big enough to tap without hitting the link under it. */
 .slides__progress button {
   position: relative;
   display: block;
   width: 100%;
-  height: 16px;
+  height: 24px;
   padding: 0;
   border: 0;
   background: none;
@@ -1575,7 +1509,7 @@ button {
   position: absolute;
   left: 0;
   right: 0;
-  top: 7px;
+  top: 11px;
   height: 2px;
   background: var(--line-strong);
 }
@@ -1592,10 +1526,13 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 6px 16px;
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 .slides__read {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   padding-right: 14px;
   color: var(--text);
   text-decoration: none;
@@ -1620,6 +1557,132 @@ button {
   .slides__name {
     display: none;
   }
+}
+
+/* ---------- The video (home): Mohid, in a minute (Vsl.astro) ---------- */
+
+.vsl {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #121212;
+  border-radius: var(--radius);
+  background: var(--board);
+  box-shadow: 10px 10px 0 var(--accent);
+}
+
+.vsl video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--board);
+}
+
+/* The play button covers the whole frame, so a click anywhere on the cover starts it. */
+.vsl__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 0;
+  background: linear-gradient(to top, rgb(18 18 18 / 0.6), rgb(18 18 18 / 0.08) 65%);
+  color: #f2efe8;
+  cursor: pointer;
+}
+
+.vsl__play[hidden] {
+  display: none;
+}
+
+.vsl__play:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.vsl__icon {
+  display: grid;
+  place-items: center;
+  width: clamp(64px, 7vw, 88px);
+  aspect-ratio: 1;
+  border: 1px solid #121212;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #121212;
+  box-shadow: 5px 5px 0 #121212;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.vsl__play:hover .vsl__icon,
+.vsl__play:focus-visible .vsl__icon {
+  transform: scale(1.06);
+}
+
+/* On a dark backing: the cover under it can be any colour. */
+.vsl__label {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  background: rgb(18 18 18 / 0.8);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- What clients say (home, Testimonials.astro) ---------- */
+
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  list-style: none;
+}
+
+.quote figure {
+  display: grid;
+  align-content: space-between;
+  gap: 24px;
+  height: 100%;
+  margin: 0;
+}
+
+.quote blockquote {
+  margin: 0;
+}
+
+.quote blockquote p {
+  font-size: clamp(1.02rem, 0.95rem + 0.3vw, 1.18rem);
+  line-height: 1.55;
+}
+
+.quote blockquote p::before {
+  content: '“';
+  display: block;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: 3.6rem;
+  font-weight: 800;
+  line-height: 0.6;
+}
+
+.quote figcaption {
+  display: grid;
+  gap: 4px;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.quote figcaption b {
+  color: var(--text);
+}
+
+.quote figcaption .text-link {
+  justify-self: start;
+  margin-top: 6px;
 }
 
 /* ---------- Ticker (the tools we build on) ---------- */
@@ -2225,7 +2288,7 @@ html:not(.js) .clip__full {
   justify-items: start;
 }
 
-/* ---------- Row lists (services, studies) ---------- */
+/* ---------- Row lists (services) ---------- */
 
 .rows {
   border-top: 1px solid var(--line-strong);
@@ -2278,12 +2341,6 @@ html:not(.js) .clip__full {
   color: var(--text-3);
 }
 
-.row__main {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-}
-
 .row__name {
   font-size: clamp(1.4rem, 1.05rem + 1.1vw, 2.3rem);
   font-weight: 720;
@@ -2320,38 +2377,6 @@ html:not(.js) .clip__full {
   border-color: #121212;
   color: var(--accent);
   transform: rotate(45deg);
-}
-
-.row__stat {
-  display: grid;
-  gap: 4px;
-}
-
-.row__stat b {
-  font-size: clamp(1.4rem, 1.1rem + 0.9vw, 2rem);
-  font-weight: 800;
-  font-stretch: 125%;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-
-.row__stat span {
-  color: var(--text-2);
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.row__meta {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
-  line-height: 1.4;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
-.row__thumb {
-  display: none;
 }
 
 .rows__foot {
@@ -2397,92 +2422,6 @@ html:not(.js) .clip__full {
 
   .row::before {
     inset: 0 -8px;
-  }
-}
-
-/* The story clip that follows the cursor down the case study rows. */
-.studies {
-  position: relative;
-}
-
-.studies__preview {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 30;
-  width: clamp(260px, 25vw, 380px);
-  pointer-events: none;
-  opacity: 0;
-  transform: translate3d(-9999px, 0, 0);
-  transition: opacity 0.3s var(--ease);
-}
-
-.studies__preview.is-on {
-  opacity: 1;
-}
-
-.studies__frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 1px solid #121212;
-  background: var(--board);
-  box-shadow: 10px 10px 0 var(--accent);
-  transform: rotate(var(--tilt, 0deg)) scale(0.9);
-  transition: transform 0.45s var(--ease-out);
-}
-
-.studies__preview.is-on .studies__frame {
-  transform: rotate(var(--tilt, 0deg)) scale(1);
-}
-
-.studies__frame .media {
-  position: absolute;
-  inset: 0;
-  height: 100%;
-  aspect-ratio: auto;
-  border-radius: 0;
-  opacity: 0;
-  transition: opacity 0.35s var(--ease);
-}
-
-.studies__frame .media.is-on {
-  opacity: 1;
-}
-
-/* Bottom right: the clips keep their headline top left and their label bottom left. */
-.studies__label {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  z-index: 2;
-  padding: 4px 8px;
-  background: var(--accent);
-  color: #121212;
-}
-
-@media (hover: none), (max-width: 900px) {
-  .studies__preview {
-    display: none;
-  }
-
-  .studies .row {
-    grid-template-columns: 34px minmax(0, 1fr) 42px;
-    align-items: start;
-    row-gap: 12px;
-  }
-
-  .studies .row > :not(.row__n):not(.row__go) {
-    grid-column: 2;
-  }
-
-  .studies .row__go {
-    grid-row: 1;
-    grid-column: 3;
-  }
-
-  .studies .row__thumb {
-    display: block;
   }
 }
 
@@ -5049,7 +4988,6 @@ html:not(.js) .clip__full {
   .clip__full,
   .clip__bar,
   .media__video,
-  .studies__preview,
   .dither,
   .slides__controls,
   .slides__progress,
