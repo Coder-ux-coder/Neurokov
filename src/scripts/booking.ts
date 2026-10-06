@@ -18,10 +18,11 @@ const NOTIFY_URL = 'https://api.web3forms.com/submit';
 
 /* ---------- The form ---------- */
 
-/** What the visitor fills in. The hidden fields are for Web3Forms, when the form posts without JavaScript. */
+/** What the visitor fills in. The hidden fields are for Web3Forms, when the form posts without
+ *  JavaScript; botcheck is the spam trap no person sees. */
 const questions = (form: HTMLFormElement) => [
   ...form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
-    'input:not([type="hidden"]), select, textarea',
+    'input:not([type="hidden"]):not([name="botcheck"]), select, textarea',
   ),
 ];
 
@@ -112,6 +113,8 @@ function logSent(id: string, sent: boolean) {
 function notify(form: HTMLFormElement, answers: Answers) {
   const key = (form.elements.namedItem('access_key') as HTMLInputElement | null)?.value;
   if (!key) return;
+  // A bot ticked the trap no person can see: nothing is sent.
+  if ((form.elements.namedItem('botcheck') as HTMLInputElement | null)?.checked) return;
   const id = hash(JSON.stringify(answers));
   if (id in sentLog()) return;
   logSent(id, true);

@@ -1,0 +1,286 @@
+/* Written by design/fonts/fallback.py: edit that, then run it again. Fonts the visitor already
+   has, sized to take the same room as Archivo and Plex Mono, so nothing moves when those arrive. */
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 450;
+  font-stretch: 100%;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'), local('Arimo'), local('Roboto');
+  size-adjust: 98.08%;
+  ascent-override: 89.52%;
+  descent-override: 21.41%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 451 525;
+  font-stretch: 100%;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'), local('Arimo'), local('Roboto');
+  size-adjust: 99.90%;
+  ascent-override: 87.89%;
+  descent-override: 21.02%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 526 575;
+  font-stretch: 100%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 93.74%;
+  ascent-override: 93.66%;
+  descent-override: 22.40%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 576 625;
+  font-stretch: 100%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 94.72%;
+  ascent-override: 92.70%;
+  descent-override: 22.17%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 626 675;
+  font-stretch: 100%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 96.27%;
+  ascent-override: 91.20%;
+  descent-override: 21.81%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 676 900;
+  font-stretch: 100%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 97.79%;
+  ascent-override: 89.79%;
+  descent-override: 21.48%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 625;
+  font-stretch: 104%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 98.94%;
+  ascent-override: 88.74%;
+  descent-override: 21.23%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 626 900;
+  font-stretch: 104%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 100.46%;
+  ascent-override: 87.40%;
+  descent-override: 20.90%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 605;
+  font-stretch: 106%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 100.24%;
+  ascent-override: 87.59%;
+  descent-override: 20.95%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 606 685;
+  font-stretch: 106%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 102.53%;
+  ascent-override: 85.63%;
+  descent-override: 20.48%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 686 900;
+  font-stretch: 106%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 104.86%;
+  ascent-override: 83.73%;
+  descent-override: 20.03%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 900;
+  font-stretch: 108%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 102.34%;
+  ascent-override: 85.79%;
+  descent-override: 20.52%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 725;
+  font-stretch: 110%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 106.71%;
+  ascent-override: 82.28%;
+  descent-override: 19.68%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 726 900;
+  font-stretch: 110%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 112.44%;
+  ascent-override: 78.09%;
+  descent-override: 18.68%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 685;
+  font-stretch: 112%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 108.84%;
+  ascent-override: 80.67%;
+  descent-override: 19.29%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 686 785;
+  font-stretch: 112%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 111.11%;
+  ascent-override: 79.02%;
+  descent-override: 18.90%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 786 900;
+  font-stretch: 112%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 117.35%;
+  ascent-override: 74.82%;
+  descent-override: 17.90%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 735;
+  font-stretch: 115%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 114.20%;
+  ascent-override: 76.88%;
+  descent-override: 18.39%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 736 900;
+  font-stretch: 115%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 115.41%;
+  ascent-override: 76.08%;
+  descent-override: 18.20%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 900;
+  font-stretch: 118%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 118.47%;
+  ascent-override: 74.11%;
+  descent-override: 17.73%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 900;
+  font-stretch: 120%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 122.49%;
+  ascent-override: 71.68%;
+  descent-override: 17.14%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 900;
+  font-stretch: 122%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 124.49%;
+  ascent-override: 70.53%;
+  descent-override: 16.87%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 100 825;
+  font-stretch: 125%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 127.51%;
+  ascent-override: 68.86%;
+  descent-override: 16.47%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  font-weight: 826 900;
+  font-stretch: 125%;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Arimo-Bold'), local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 130.15%;
+  ascent-override: 67.46%;
+  descent-override: 16.14%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plex Mono Fallback';
+  font-weight: 100 549;
+  src: local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'), local('LiberationMono'), local('Cousine');
+  size-adjust: 100%;
+  ascent-override: 102.50%;
+  descent-override: 27.50%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plex Mono Fallback';
+  font-weight: 550 900;
+  src: local('Courier New Bold'), local('CourierNewPS-BoldMT'), local('Liberation Mono Bold'), local('LiberationMono-Bold'), local('Cousine Bold'), local('Cousine-Bold');
+  size-adjust: 100%;
+  ascent-override: 102.50%;
+  descent-override: 27.50%;
+  line-gap-override: 0%;
+}

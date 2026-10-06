@@ -7,6 +7,15 @@
  */
 import { calm, fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
 
+// A first-screen poster came in the page at one size (Clip.astro). A screen with more pixels to
+// fill than that gets the full set now; one it already suits doesn't fetch the same size again.
+document.querySelectorAll<HTMLSourceElement>('.clip source[data-srcset]').forEach((source) => {
+  const width = source.parentElement?.querySelector('img')?.getBoundingClientRect().width ?? 0;
+  if (width * devicePixelRatio <= 800) return;
+  source.sizes = source.dataset.sizes ?? '';
+  source.srcset = source.dataset.srcset ?? '';
+});
+
 document.querySelectorAll<HTMLElement>('[data-clip="auto"]').forEach((host) => {
   const film = player(host);
   settled.then(() => watchVisible(host, film.want, { threshold: 0.4 }));

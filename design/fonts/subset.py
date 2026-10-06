@@ -1,26 +1,26 @@
 """
-Split the site's two fonts so a page downloads only the characters it shows (the full font files
-were most of what a phone fetched before its first screen was ready), and write the @font-face
-rules for the pieces to src/styles/fonts.css.
+Cut the site's two fonts down to the characters the site's copy uses (the full font files were most
+of what a phone fetched before its first screen was ready), and write the @font-face rules for the
+pieces to src/styles/fonts.css.
 
 - The core of each font holds what the copy uses: plain ASCII (also everything typed into the
   booking form), a few Latin-1 signs (§ © · × and the no-break space) and typographic punctuation.
   Every page needs it, so Base.astro preloads it.
-- "rest" is the remainder of Fontsource's Latin file: accented letters and the like, say in a name
-  typed with an accent. A browser fetches it only when a page shows one of its characters.
 - "signs" holds Archivo's symbols from 62% to 100% wide, for the narrow signs on the split-flap
   tiles. It is a family of its own, 'Archivo Signs', so its narrow symbols never stand in for normal
   ones.
-- Fontsource's other subsets (Latin Extended, Vietnamese, Cyrillic) are copied as they are, fetched
-  on demand like before.
+- Nothing else. Fontsource's other pieces (accented letters, Latin Extended, Vietnamese, Cyrillic)
+  used to be declared too, fetched only when a page showed one of their characters, which the copy
+  never does. But every piece a family declares makes the browser's first layout of each page check
+  it, character by character: they cost a phone more time before its first paint than anything else
+  on the page. A character outside the core (an accented letter typed into the form, say) shows in
+  the fallback font, which is sized to match (fallback.py).
 
 Archivo keeps all its weights and the widths the site sets in text, 100% to 125%. Its width axis
 has a master at 100%, so dropping the narrower end leaves every glyph exactly as it was (cutting a
 range at a point between masters would round the outlines a little, and the text would no longer
-render pixel for pixel the same). Every Archivo piece declares that same range: Chrome serves a
-family from one set of pieces whose declared ranges match, so a piece declaring a different range
-would leave the others unused. Nothing a visitor can see changes: every character the fonts covered
-before still comes from them, drawn the same.
+render pixel for pixel the same). Nothing a visitor can see changes: every character the copy uses
+comes from the fonts, drawn the same.
 
 The sources are the Fontsource packages in node_modules, so run `npm ci` first.
 
@@ -28,7 +28,6 @@ usage: python design/fonts/subset.py      (needs fonttools and brotli: pip insta
        writes src/assets/fonts/*.woff2 and src/styles/fonts.css
 """
 import re
-import shutil
 from pathlib import Path
 
 from fontTools import subset
@@ -102,24 +101,15 @@ def rule(family, file, unicode_range, weight, stretch=None):
 
 
 def split(family, src_css, prefix, weight, axes, stretch):
-    """The rules for one font, Fontsource's subsets first so the Latin pieces win where ranges overlap."""
+    """The rules for one font: the core of its Latin file (and, for Archivo, the signs)."""
     rules = []
     for src, unicode_range in faces(src_css):
         if '-latin-' in src.name and '-latin-ext-' not in src.name:
-            latin = chars(unicode_range)
-            rest = [c for c in latin if c not in CORE and c >= 0x20 and not 0x7F <= c <= 0x9F]  # no control codes
-            cut(src, rest, f'{prefix}-rest.woff2', axes)
             cut(src, CORE, f'{prefix}.woff2', axes)
-            rules.append(rule(family, f'{prefix}-rest.woff2', ranges(rest), weight, stretch))
             rules.append(rule(family, f'{prefix}.woff2', ranges(CORE), weight, stretch))
             if family == 'Archivo Variable':
                 cut(src, SIGNS, f'{prefix}-signs.woff2', {'wdth': (62, 100)})
                 rules.append(rule('Archivo Signs', f'{prefix}-signs.woff2', ranges(SIGNS), weight, '62% 100%'))
-        else:
-            name = prefix + '-' + re.search(r'-(latin-ext|vietnamese|cyrillic-ext|cyrillic|greek-ext|greek)-', src.name).group(1) + '.woff2'
-            shutil.copyfile(src, OUT / name)
-            # Declared with the same ranges as the pieces cut above (the file itself covers more).
-            rules.insert(0, rule(family, name, unicode_range, weight, stretch))
     return rules
 
 
@@ -129,8 +119,8 @@ def main():
     for w in (400, 500, 600):
         rules += split('IBM Plex Mono', PLEX / f'{w}.css', f'plex-mono-{w}', str(w), None, None)
     CSS.write_text(
-        '/* Written by design/fonts/subset.py: edit that, then run it again. Each font is split by\n'
-        '   character, and a page downloads a piece only when it shows one of its characters. */\n\n'
+        '/* Written by design/fonts/subset.py: edit that, then run it again. Each font holds just the\n'
+        '   characters the site\'s copy uses; anything else shows in the fallback font (fallback.css). */\n\n'
         + '\n'.join(rules)
     )
     print(f'-> {CSS.relative_to(ROOT)}')

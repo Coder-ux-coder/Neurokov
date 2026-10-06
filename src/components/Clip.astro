@@ -10,8 +10,10 @@
  * motion without a jump; stories start from the beginning. Clips with controls
  * also get a full-screen button.
  */
+import { join } from 'node:path';
 import type { ImageMetadata } from 'astro';
-import { Picture } from 'astro:assets';
+import { getImage, Picture } from 'astro:assets';
+import sharp from 'sharp';
 import facts from '../assets/clips/clips.json';
 import { clips } from '../data/clips';
 
@@ -19,6 +21,7 @@ interface Props {
   name: string;
   mode?: 'auto' | 'hover' | 'manual';
   sizes?: string;
+  /** On the first screen: the poster comes in the page itself (below) and shows in its first paint. */
   eager?: boolean;
   loop?: boolean;
   /** A pause button and a progress line. On by default for auto clips. */
@@ -48,18 +51,39 @@ const at = (facts as Record<string, { poster: number }>)[name]?.poster ?? 0;
 if (!film || !still || !info) {
   throw new Error(`Clip "${name}" is missing: run design/clips/render.mjs ${name} --install and describe it in src/data/clips.ts`);
 }
+
+// A first-screen poster is written into the page (an AVIF 768px wide, encoded as the build encodes
+// the others), so it's there in the very first paint instead of a request later: on a phone, the
+// page's biggest paint lands with its first. That size suits a phone and a 1x screen; a sharper
+// screen gets the full set once the page has loaded (clips.ts). Browsers without AVIF fetch a JPEG.
+const inline = eager
+  ? {
+      avif: `data:image/avif;base64,${(await sharp(join(process.cwd(), 'src/assets/clips', `${name}.jpg`)).resize(768).avif().toBuffer()).toString('base64')}`,
+      jpeg: (await getImage({ src: still, width: 768, format: 'jpg' })).src,
+      full: (await getImage({ src: still, widths: [480, 768, 1080, 1440, 1920], format: 'avif' })).srcSet.attribute,
+    }
+  : undefined;
 ---
 
 <div class:list={['media', 'clip', cls]} data-clip={mode} aria-hidden={decorative ? 'true' : undefined}>
-  <Picture
-    src={still}
-    alt=""
-    formats={['avif', 'webp']}
-    widths={[480, 768, 1080, 1440, 1920]}
-    sizes={sizes}
-    loading={eager ? 'eager' : 'lazy'}
-    fetchpriority={eager ? 'high' : 'auto'}
-  />
+  {
+    inline ? (
+      <picture>
+        <source type="image/avif" srcset={inline.avif} data-srcset={inline.full} data-sizes={sizes} />
+        <img src={inline.jpeg} alt="" width={still.width} height={still.height} fetchpriority="high" decoding="sync" />
+      </picture>
+    ) : (
+      <Picture
+        src={still}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={[480, 768, 1080, 1440, 1920]}
+        sizes={sizes}
+        loading="lazy"
+        decoding="async"
+      />
+    )
+  }
   <video class="media__video" src={film} data-at={at} muted playsinline loop={loop} preload="none" aria-hidden="true"></video>
   {!decorative && <p class="sr-only">{info.text}</p>}
   {

@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { label = 'We work with the tools you already use' } = Astro.props;
-const items = marqueeTools.map((name) => ({ name, path: toolMark(name) }));
+const items = marqueeTools.map((name) => ({ name, mark: toolMark(name) }));
 ---
 
 <section class="marquee" aria-label={label}>
@@ -18,9 +18,9 @@ const items = marqueeTools.map((name) => ({ name, path: toolMark(name) }));
           <ul class="marquee__list" aria-hidden={copy === 1 ? 'true' : undefined}>
             {items.map((t) => (
               <li class="marquee__item">
-                {t.path && (
+                {t.mark && (
                   <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                    <path d={t.path} />
+                    <use data-href={t.mark} />
                   </svg>
                 )}
                 {t.name}

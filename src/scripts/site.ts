@@ -74,6 +74,12 @@ if (fitEls.length) {
   fitEls.forEach((el) => el.parentElement && ro.observe(el.parentElement));
 }
 
+/* ---------- Tool marks ---------- */
+
+// The tools' logos come from one file (data/tools.ts), fetched only now that the first screen is up:
+// they're all further down the page, and it shouldn't share the connection with that first screen.
+document.querySelectorAll<SVGUseElement>('use[data-href]').forEach((use) => use.setAttribute('href', use.dataset.href!));
+
 /* ---------- Theme toggle ---------- */
 
 const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
@@ -115,6 +121,3 @@ if (reviewing) {
     : 'Review mode: no placeholders on this page';
   document.body.append(badge);
 }
-
-// Everything above ran: the head script's no-JavaScript fallback can stand down (Base.astro).
-root.dataset.ready = '';

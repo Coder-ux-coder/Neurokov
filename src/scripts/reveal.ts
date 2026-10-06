@@ -46,7 +46,8 @@ function split(el: HTMLElement) {
   el.classList.add('is-split'); // the CSS kept it hidden until now
 }
 
-if (!calm) document.querySelectorAll<HTMLElement>('[data-split]').forEach(split);
+// Not on the first screen ([data-hold]): its headline is there from the first frame (global.css).
+if (!calm) document.querySelectorAll<HTMLElement>('[data-split]:not([data-hold] *)').forEach(split);
 
 /* ---------- Decode: scramble, then resolve ---------- */
 

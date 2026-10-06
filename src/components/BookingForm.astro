@@ -48,6 +48,9 @@ const pickATime = new URL('/book/pick-a-time/', site.url).href;
           <input type="hidden" name="subject" value="New audit form" />
           <input type="hidden" name="from_name" value="Neurokov website" />
           <input type="hidden" name="redirect" value={pickATime} />
+          {/* A trap for spam bots: never shown, so a person never ticks it, and Web3Forms drops any
+              submission that has it ticked. */}
+          <input class="booking__trap" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
         </>
       )
     }

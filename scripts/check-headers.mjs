@@ -48,7 +48,9 @@ for await (const file of htmlFiles(dist)) {
   for (const [, attrs, body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
     if (/\bsrc=/.test(attrs)) continue; // a file, allowed by origin
     const type = attrs.match(/\btype=["']?([^"'\s>]+)/)?.[1];
-    if (type && !['module', 'text/javascript', 'application/javascript'].includes(type)) continue; // data (the JSON-LD): never runs
+    // Data never runs (the JSON-LD), except speculation rules (Base.astro): the browser follows those only
+    // when script-src allows them by hash, like a script.
+    if (type && !['module', 'text/javascript', 'application/javascript', 'speculationrules'].includes(type)) continue;
     scripts++;
     const hash = `sha256-${createHash('sha256').update(body, 'utf8').digest('base64')}`;
     if (!needed.has(hash)) needed.set(hash, []);

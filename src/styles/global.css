@@ -45,8 +45,19 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
 
-  --font: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  /* Fonts the visitor already has, sized to take the same room as the web fonts (fallback.css)... */
+  --font-here: 'Archivo Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --mono-here: 'Plex Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font: var(--font-here);
+  --mono: var(--mono-here);
+}
+
+/* ...and the web fonts ahead of them once the head script (Base.astro) asks for them: right after the
+   first paint on a first visit, from the start once they're cached. A web font is fetched only when
+   some text is set in it, so until then none is. */
+:root.fonts {
+  --font: 'Archivo Variable', var(--font-here);
+  --mono: 'IBM Plex Mono', var(--mono-here);
 }
 
 :root[data-theme='dark'] {
@@ -290,11 +301,16 @@ button {
   margin-inline: auto;
   pointer-events: none;
   border-inline: 1px solid var(--grid);
-  background: repeating-linear-gradient(
-    to right,
-    transparent 0 calc(100% / 6 - 1px),
-    var(--grid) calc(100% / 6 - 1px) calc(100% / 6)
-  );
+  /* Five 1px lines, each ending a sixth of the way across. Solid lines, not a repeating gradient:
+     those take a phone a long time to draw, and this one covers the whole first screen. (A
+     percentage here is of the width less the line's own 1px, which the px part makes up.) */
+  --l: linear-gradient(var(--grid), var(--grid));
+  background:
+    var(--l) calc(100% / 6 - 5px / 6) 0 / 1px 100% no-repeat,
+    var(--l) calc(200% / 6 - 4px / 6) 0 / 1px 100% no-repeat,
+    var(--l) calc(300% / 6 - 3px / 6) 0 / 1px 100% no-repeat,
+    var(--l) calc(400% / 6 - 2px / 6) 0 / 1px 100% no-repeat,
+    var(--l) calc(500% / 6 - 1px / 6) 0 / 1px 100% no-repeat;
 }
 
 /* Corner crop marks around a frame. */
@@ -551,7 +567,7 @@ button {
 }
 
 .section-head .h2 {
-  max-width: 18ch;
+  max-width: 12.294em; /* 18ch in Archivo, in ems so a fallback font sets it the same */
 }
 
 .section-head .lead {
@@ -1169,7 +1185,7 @@ button {
 }
 
 .page-hero h1 {
-  max-width: 17ch;
+  max-width: 12.427em; /* 17ch in Archivo */
 }
 
 .page-hero .lead {
@@ -1363,8 +1379,11 @@ button {
 
 /* A % is wider than a tile, so signs are set narrow and show whole (Archivo Signs: fonts.css). */
 .fc--signal > span > i {
-  font-family: 'Archivo Signs', var(--font);
   font-stretch: 62.5%;
+}
+
+.fonts .fc--signal > span > i {
+  font-family: 'Archivo Signs', var(--font);
 }
 
 /* ---------- The video (home): what we do and how we work (Vsl.astro) ---------- */
@@ -2003,6 +2022,12 @@ html:not(.js) .clip__full {
   width: 13px;
   height: 13px;
   fill: currentColor;
+}
+
+/* Without JavaScript the tools' logos never load (site.ts): their names stand alone. */
+:root:not(.js) .marquee__item svg,
+:root:not(.js) .tag svg {
+  display: none;
 }
 
 /* Spec: a numbered sheet with an orange tab on its top rule. */
@@ -3035,7 +3060,7 @@ html:not(.js) .clip__full {
 }
 
 .banner__copy .h2 {
-  max-width: 13ch;
+  max-width: 8.879em; /* 13ch in Archivo */
 }
 
 .banner .stats {
@@ -3509,7 +3534,7 @@ html:not(.js) .clip__full {
 }
 
 .cta__title {
-  max-width: 14ch;
+  max-width: 10.555em; /* 14ch in Archivo */
   font-size: clamp(2.6rem, 1.2rem + 4.4vw, 6rem);
   font-weight: 800;
   font-stretch: 120%;
@@ -4106,6 +4131,11 @@ html:not(.js) .clip__full {
   min-height: 32px;
 }
 
+/* The spam trap (BookingForm.astro): there for bots, never for people. */
+.booking__trap {
+  display: none;
+}
+
 .booking__x {
   display: grid;
   place-items: center;
@@ -4354,7 +4384,7 @@ html:not(.js) .clip__full {
 }
 
 .footer__pitch p {
-  max-width: 17ch;
+  max-width: 12.087em; /* 17ch in Archivo */
   font-size: clamp(1.8rem, 1.2rem + 1.8vw, 3rem);
   font-weight: 750;
   font-stretch: 115%;
@@ -4602,18 +4632,18 @@ html:not(.js) .clip__full {
   transform: none;
 }
 
-/* The first screen ([data-hold]) doesn't wait for the script: it rises in as soon as the page paints,
-   so what the visitor came for is there at once (and the browser counts it as the page's main paint
-   straight away). It rises without fading, in view from the first frame. Split headlines and wiped
-   media still wait for the script, which runs their animation. */
-.js:not(.calm) [data-hold] [data-reveal]:not([data-reveal='clip'], [data-reveal='none'], [data-split]) {
+/* The first screen ([data-hold]) doesn't wait for the script: it is all there in the first frame the
+   page paints, headline and film included, and rises a little into place. Nothing on it is hidden,
+   cut into words or wiped open, so what the visitor came for shows (and the browser counts the page
+   as painted) as soon as the page arrives, however slowly the script follows. */
+.js:not(.calm) [data-hold] [data-reveal]:not([data-reveal='none']) {
   opacity: 1;
-  animation: rise-in 1s var(--ease-out) var(--d, 0ms) both;
+  animation: rise-in 0.6s var(--ease-out) calc(var(--d, 0ms) / 2) both;
 }
 
 @keyframes rise-in {
   from {
-    transform: translateY(26px);
+    transform: translateY(16px);
   }
 
   to {
@@ -4635,7 +4665,7 @@ html:not(.js) .clip__full {
   transition: none;
 }
 
-.js:not(.calm) [data-split]:not(.is-split) {
+.js:not(.calm) [data-split]:not(.is-split, [data-hold] *) {
   opacity: 0;
 }
 
@@ -4647,13 +4677,13 @@ html:not(.js) .clip__full {
   transform: none;
 }
 
-.js [data-reveal='clip'] > * {
+.js [data-reveal='clip']:not([data-hold] *) > * {
   clip-path: inset(0 0 100% 0);
   transition: clip-path 1.3s var(--ease-in-out);
   transition-delay: var(--d, 0ms);
 }
 
-.js [data-reveal='clip'].is-in > * {
+.js [data-reveal='clip'].is-in:not([data-hold] *) > * {
   clip-path: inset(-20px -20px -20px -20px);
 }
 
