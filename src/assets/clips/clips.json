@@ -1,4 +1,12 @@
 {
+  "founder": {
+    "poster": 9.9,
+    "duration": 20
+  },
+  "intro": {
+    "poster": 11,
+    "duration": 19.6
+  },
   "lead-conversion": {
     "poster": 16.2,
     "duration": 20

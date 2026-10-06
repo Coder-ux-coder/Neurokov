@@ -1367,199 +1367,7 @@ button {
   font-stretch: 62.5%;
 }
 
-/* ---------- Hero reel ---------- */
-
-.slides {
-  position: relative;
-}
-
-/* The films, full frame: nothing sits on top of the story. */
-.slides__viewport {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: var(--radius) var(--radius) 0 0;
-  background: var(--board);
-  touch-action: pan-y;
-  cursor: pointer;
-}
-
-.slide {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.6s var(--ease-in-out), visibility 0.6s;
-}
-
-.slide.is-active {
-  z-index: 1;
-  opacity: 1;
-  visibility: visible;
-}
-
-.slide .media {
-  position: absolute;
-  inset: 0;
-  height: 100%;
-  aspect-ratio: auto;
-  border-radius: 0;
-}
-
-/* Under the film: the story's number on the split-flap board, and the controls. */
-.slides__hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 16px;
-  padding: clamp(12px, 1.4vw, 18px) clamp(14px, 1.8vw, 22px);
-  border-radius: 0 0 var(--radius) var(--radius);
-  background: var(--board);
-  color: #f2efe8;
-}
-
-.slides__readout {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 16px;
-  min-width: 0;
-}
-
-.slides__readout .flap {
-  font-size: clamp(1.3rem, 0.9rem + 1.2vw, 2.1rem);
-}
-
-.slides__statlabel {
-  min-width: 0;
-  max-width: 22rem;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  line-height: 1.45;
-  text-transform: uppercase;
-  color: rgb(242 239 232 / 0.82);
-}
-
-.slides__controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.slides__btn {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 1px solid rgb(242 239 232 / 0.3);
-  border-radius: var(--radius-sm);
-  background: rgb(14 14 13 / 0.5);
-  color: #f2efe8;
-  cursor: pointer;
-  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
-}
-
-.slides__btn:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #121212;
-}
-
-.slides__btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.slides__btn .i-play,
-.slides__btn[aria-pressed='true'] .i-pause {
-  display: none;
-}
-
-.slides__btn[aria-pressed='true'] .i-play {
-  display: block;
-}
-
-/* One segment per story, filled as it plays (slides.ts). */
-.slides__progress {
-  display: grid;
-  grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 6px;
-  list-style: none;
-}
-
-/* A 24px tall target round a 2px line: big enough to tap without hitting the link under it. */
-.slides__progress button {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.slides__progress button::before,
-.slides__progress button span {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 11px;
-  height: 2px;
-  background: var(--line-strong);
-}
-
-.slides__progress button span {
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-}
-
-.slides__caption {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px 16px;
-  margin-top: 2px;
-}
-
-.slides__read {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding-right: 14px;
-  color: var(--text);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.2s;
-}
-
-.slides__read:hover {
-  color: var(--accent-ink);
-}
-
-@media (max-width: 640px) {
-  .slides__statlabel {
-    font-size: 0.66rem;
-  }
-
-  .slides__btn {
-    width: 34px;
-    height: 34px;
-  }
-
-  .slides__name {
-    display: none;
-  }
-}
-
-/* ---------- The video (home): Mohid, in a minute (Vsl.astro) ---------- */
+/* ---------- The video (home): what we do and how we work (Vsl.astro) ---------- */
 
 .vsl {
   position: relative;
@@ -1577,6 +1385,13 @@ button {
   height: 100%;
   object-fit: cover;
   background: var(--board);
+}
+
+/* Until there's a recording: the intro film fills the frame. */
+.vsl--film .media {
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
 }
 
 /* The play button covers the whole frame, so a click anywhere on the cover starts it. */
@@ -1633,40 +1448,16 @@ button {
   text-transform: uppercase;
 }
 
-/* ---------- In their own words (home, Testimonials.astro) ---------- */
+/* ---------- A client's own words (the featured case on home, its case page) ---------- */
 
-.quotes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: clamp(16px, 2vw, 28px);
-  list-style: none;
-}
-
-/* One quote reads as a pull quote, not a card stretched across the page. */
-.quotes:has(> :only-child) {
-  max-width: 52rem;
-}
-
-.quote__draft {
-  display: inline-block;
-  margin-bottom: 16px;
-  padding: 4px 8px;
-  border: 1px dashed var(--accent-ink);
-  color: var(--accent-ink);
-}
-
-/* The quote takes the card's height under the draft tag, if there is one, so the names line up. */
 .quote {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 20px;
+  margin: 0;
 }
 
-.quote figure {
-  flex: 1;
-  display: grid;
-  align-content: space-between;
-  gap: 24px;
-  margin: 0;
+.quote--feature {
+  margin-top: clamp(20px, 2.4vw, 32px);
 }
 
 .quote blockquote {
@@ -1689,19 +1480,12 @@ button {
 }
 
 .quote figcaption {
-  display: grid;
-  gap: 4px;
   color: var(--text-2);
   font-size: 0.9rem;
 }
 
 .quote figcaption b {
   color: var(--text);
-}
-
-.quote figcaption .text-link {
-  justify-self: start;
-  margin-top: 6px;
 }
 
 /* ---------- Ticker (the tools we build on) ---------- */
@@ -5008,8 +4792,6 @@ html:not(.js) .clip__full {
   .clip__bar,
   .media__video,
   .dither,
-  .slides__controls,
-  .slides__progress,
   .review-badge,
   body::after {
     display: none !important;

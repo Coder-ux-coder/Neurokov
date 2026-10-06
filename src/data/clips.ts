@@ -6,6 +6,10 @@
  * names it in `source`. Service clips are named after the service's slug.
  */
 export const clips: Record<string, { title: string; text: string; source?: string }> = {
+  intro: {
+    title: 'Neurokov, an introduction',
+    text: 'Illustrated introduction. A business owner is great at the work, but the calendar is almost empty: short on clients. What we do: we find your buyers, every lead gets an answer in under 60 seconds, and old leads come back into conversation. How we work: a free audit, a plan with one fixed price, launch, then booked calls. Results, or you don’t pay.',
+  },
   'speed-to-lead': {
     title: 'Speed-to-lead, as a story',
     text: 'Illustrated story, with real numbers from case 03. A lead writes in at 11:47 PM. The old way, the first reply took 19 hours. With Neurokov, a personal reply goes out in under 60 seconds and the call is booked by morning.',
@@ -31,6 +35,10 @@ export const clips: Record<string, { title: string; text: string; source?: strin
   'lead-reactivation': {
     title: 'Lead reactivation, as a story',
     text: 'Illustrated story. A wall of old leads nobody has written to in months gathers dust. With Neurokov they hear from the owner again, replies come back, and the ones who answer land on the calendar as booked calls. Old leads, new clients.',
+  },
+  founder: {
+    title: 'Mohid Zeeshan, our founder, as a story',
+    text: 'Illustrated story. Mohid, Neurokov’s founder, grew the online psychology platform he co-founded: steady months, then one more than double the last. He stands in the top 1% in lead generation, and shares what works with the sales and lead generation communities he’s part of. Your clients, found by the top 1%.',
   },
   'process-audit': {
     title: 'Step 01, the free audit, as a story',

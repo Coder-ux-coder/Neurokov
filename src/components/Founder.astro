@@ -2,10 +2,10 @@
 /**
  * The founder, filed like a personnel record. No photo (the user's call):
  * credentials on the left, a third-person bio on the right, the way LeftClick
- * writes its leadership bios. Since 2026-10-05 Neurokov sells new clients, so the
- * record leads with growth; every number is from the confirmed case studies. With
- * `film` (its figure number on the page), the story of the platform he co-founded
- * (case 01) plays above the record.
+ * writes its leadership bios. With `film` (its figure number on the page), his
+ * story film plays above the record. Neurokov itself is new (2026); Mohid has
+ * been doing this since 2020, so the record says when he started, not when the
+ * company did. Every number is from the confirmed case studies or his own account.
  */
 import { clips } from '../data/clips';
 import { site } from '../data/site';
@@ -22,18 +22,19 @@ const { film } = Astro.props;
 
 const creds: { text: string; icon: IconName }[] = [
   { text: `${site.founder.role}, ${site.name}`, icon: 'badge-check' },
+  { text: 'Top 1% in lead generation', icon: 'target' },
   { text: 'Co-founder, online psychology platform', icon: 'heart-pulse' },
   { text: 'Grew it 100%+ in a single month', icon: 'trending-up' },
-  { text: 'Results, or you don’t pay', icon: 'shield-check' },
+  { text: 'Doing this since 2020', icon: 'history' },
 ];
 ---
 
 {
   film && (
     <div class="founder-film" data-reveal>
-      <Figure n={film} class="fig--film" caption={`${clips.psychology.title}: the platform he co-founded. Illustrated, with real numbers from case 01.`}>
+      <Figure n={film} class="fig--film" caption={`${clips.founder.title}. Illustrated, in his own words.`}>
         <div class="marks">
-          <Clip name="psychology" sizes="(max-width: 1320px) 100vw, 1320px" />
+          <Clip name="founder" sizes="(max-width: 1320px) 100vw, 1320px" />
         </div>
       </Figure>
     </div>
@@ -60,21 +61,20 @@ const creds: { text: string; icon: IconName }[] = [
   </div>
   <div class="founder__bio">
     <p>
-      Mohid co-founded an online psychology platform and grew it by over 100% in a single month, by bringing new clients
+      Mohid has been growing businesses since 2020, and he’s in the top 1% in lead generation. He shares what works
+      with the sales and lead generation communities he’s part of.
+    </p>
+    <p>
+      He co-founded an online psychology platform and grew it by over 100% in a single month, by bringing new clients
       in and making sure every enquiry turned into a booked session.
     </p>
     <p>
-      At {site.name} he does the same for other businesses: finds the clients, answers every lead in seconds and puts the
-      calls on the calendar.
-    </p>
-    <p>
-      {site.name} has booked a growth agency 46 qualified calls in its first 30 days and cut a consulting firm’s first
-      reply from 19 hours to under 60 seconds. Every client gets the same promise: results, or you don’t pay.
+      {site.name} is new. The experience behind it isn’t. Every client gets the same promise: results, or you don’t pay.
     </p>
     <dl class="founder__stats">
+      <div><dt>Doing this since</dt><dd>2020</dd></div>
       <div><dt>Growth in one month</dt><dd>100%+</dd></div>
-      <div><dt>Calls in 30 days</dt><dd>46</dd></div>
-      <div><dt>First reply</dt><dd>&lt;60s</dd></div>
+      <div><dt>Lead generation</dt><dd>Top 1%</dd></div>
     </dl>
   </div>
 </div>

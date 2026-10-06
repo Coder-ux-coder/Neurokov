@@ -2,9 +2,8 @@
  * Story clips (Clip.astro). An "auto" clip plays while it's on screen and
  * pauses when it isn't; with reduced motion or save-data it waits for its play
  * button. A "hover" clip plays while the pointer is over its card, and fades
- * back to its poster when the pointer leaves. "manual" clips belong to the hero
- * reel (slides.ts), the case index (studies.ts) and the welcome guide
- * (guide.ts), which run them.
+ * back to its poster when the pointer leaves. A "manual" clip is left to the
+ * script of whatever it sits in.
  */
 import { calm, fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
 

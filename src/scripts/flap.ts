@@ -101,9 +101,9 @@ export class Flap {
 }
 
 // Boards flip in the first time they scroll into view, settling in about a second (the
-// user asked for them a third quicker). The slideshow drives its own readout.
+// user asked for them a third quicker). The process page's counter drives its own readout.
 document.querySelectorAll<HTMLElement>('[data-flap]').forEach((el) => {
-  if (calm || el.closest('[data-slides], [data-scrolly]')) return;
+  if (calm || el.closest('[data-scrolly]')) return;
   const flap = new Flap(el);
   const value = el.dataset.flap ?? '';
   flap.blank();

@@ -5,7 +5,6 @@
 import { currentTheme, root, store, type Theme } from './lib';
 import './reveal';
 import './flap';
-import './slides';
 import './clips';
 import './booking';
 import './machine';

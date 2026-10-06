@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="clip" content="1920x1080 19.6s" />
+    <meta name="poster" content="11.0" />
+    <title>Neurokov, an introduction</title>
+    <link rel="stylesheet" href="clip.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <svg id="art" xmlns="http://www.w3.org/2000/svg"><g id="cam"></g></svg>
+      <div id="hud"><div id="hud-cam"></div></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="cast.js"></script>
+    <script src="story.js"></script>
+    <script>
+      // The introduction at the top of the home page: what Neurokov does and how it works.
+      // Act 1: a business great at the work, with a calendar that's mostly empty. Act 2: what we
+      // do, three panels in turn (we find your buyers, every lead answered in under 60 seconds,
+      // old leads back in conversation). Act 3: how we work, four steps along a line (free
+      // audit, plan and fixed price, launch, booked calls). Then the guarantee. No numbers
+      // beyond the ones every page already states.
+      //
+      // Layout: the headline owns the frame's top left (x < 1100, y < 360). The camera holds
+      // close to 1.0, so on the left everything stays below about y 380.
+      STAGE.setup((S) => {
+        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { E, ramp, env, hit } = S;
+        const K = STORY([
+          [0, 4.4],
+          [4.4, 11.6],
+          [11.6, 16.8],
+        ]);
+        const { blinkAt, headline } = K;
+        const TEAL = '#6f9c95';
+        const label = (x, y, text, act, size = 22) =>
+          K.hudAct(S.html(`<div class="mono" style="left:${x}px;top:${y}px;transform:translateX(-50%);font-size:${size}px;font-weight:600">${text}</div>`, S.hudCam), act);
+
+        // ---------- Act 1: great at the work, short on clients ----------
+        const g1 = K.act(0);
+        K.room(g1, { floor: 870, wall: '#ebe5d9', ground: '#ddd5c6' });
+        CAST.dots(g1, { x0: -600, y0: -600, w: 3200, h: 1470, o: 0.08 });
+        const cal1 = CAST.calendar(g1, { w: 420, h: 360, cols: 7, rows: 4 });
+        S.put(cal1.g, { x: 1480, y: 500 });
+        const month = S.svg('text', { x: 0, y: -180 + 38, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 24, 'letter-spacing': 3, fill: INK }, cal1.g);
+        month.textContent = 'THIS MONTH';
+        // two calls in a whole month
+        [3, 17].forEach((i) => {
+          const c = cal1.cells[i];
+          S.svg('rect', { x: c.cx - c.cw / 2 + 10, y: c.cy - 6, width: c.cw - 20, height: 12, rx: 6, fill: ORANGE, stroke: INK, 'stroke-width': 2.5 }, cal1.g);
+        });
+        const desk = CAST.desk(g1, { w: 560, h: 190 });
+        S.put(desk, { x: 700, y: 870 });
+        const chair = CAST.chair(g1);
+        S.put(chair, { x: 420, y: 870 });
+        const lap = CAST.laptop(g1, { w: 260, h: 170 });
+        S.put(lap.g, { x: 780, y: 680 });
+        // the work on the screen: a document that fills in, line by line, and gets its tick
+        const work = CAST.doc(lap.ui, { w: 120, h: 120, lines: 4 });
+        S.put(work.g, { x: 0, y: -84 });
+        const done = CAST.check(lap.ui, { r: 16 });
+        const sparks = [0, 1].map(() => CAST.sparkle(g1, { r: 20 }));
+        const owner = CAST.person(g1, { shirt: TEAL, hair: 'short', hairColor: '#3a2a1e' });
+        S.track((t) => {
+          work.set(ramp(t, 0.3, 1.2, E.linear));
+          S.put(done.g, { x: 52, y: -136, s: Math.max(0.001, Math.min(1.1, S.spring(t, 1.55, { freq: 3 }))) });
+          done.set(ramp(t, 1.65, 0.25));
+          sparks.forEach((sp, i) => {
+            const a = 1.5 + i * 0.25;
+            S.put(sp, { x: 920 + i * 60, y: 520 - i * 40, s: K.pop(t, a, a + 0.9), r: 20 * Math.sin(t * 3), o: t > a && t < a + 0.9 ? 1 : 0 });
+          });
+          const look = ramp(t, 2.3, 0.4);
+          const tap = t < 1.5 ? Math.sin(t * 32) * 6 : 0;
+          owner.set({
+            x: 500, y: 870, seated: 120, leg: [[70, -70], [76, -74]],
+            lean: 6 * (1 - look), headTilt: -8 * look, headTurn: look,
+            arm: t > 2.6 ? [[40, 60], [62, 40 + Math.sin(t * 30) * 6]] : [[64, 40 + tap], [70, 34 - tap]],
+            mouth: t > 2.7 ? 'frown' : t > 1.6 ? 'grin' : 'smile',
+            look: [0.6 + 0.4 * look, -0.3 * look],
+            blink: blinkAt(t, [1.0, 3.5]),
+          });
+        });
+        headline(0, 'Fig. 1 · Sound familiar?', 'Great at the work.<br />Short on <em>clients</em>.', 0.35, 4.0, { dark: false });
+
+        // ---------- Act 2: what we do, three panels ----------
+        const g2 = K.act(1);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g2);
+        CAST.dots(g2, { x0: -600, y0: -600, w: 3200, h: 2400, o: 0.1 });
+        const PANELS = [380, 960, 1540];
+        const PY = 650;
+        const AT = [4.95, 7.05, 9.15];
+        const panel = (x) => {
+          const p = S.g(g2);
+          S.svg('rect', { x: -242, y: -182, width: 500, height: 380, rx: 22, fill: INK }, p);
+          S.svg('rect', { x: -250, y: -190, width: 500, height: 380, rx: 22, fill: PAPER, stroke: INK, 'stroke-width': 5 }, p);
+          return p;
+        };
+        const pans = PANELS.map((x) => panel(x));
+        const titles = [
+          '01 · We find your buyers',
+          '02 · Every lead answered &lt;60 s',
+          '03 · Old leads, new clients',
+        ].map((txt, i) => label(PANELS[i], PY + 214, txt, 1));
+
+        // 01: the companies that fit light up, and a message flies to one
+        const blds = [
+          [-150, 120],
+          [-50, 90],
+          [50, 150],
+          [150, 100],
+        ].map(([x, h]) => {
+          const b = CAST.building(pans[0], { w: 76, h });
+          S.put(b.g, { x, y: 130 });
+          return b;
+        });
+        const lens = CAST.magnifier(pans[0], { r: 34 });
+        const plane1 = CAST.plane(pans[0]);
+        const ck1 = CAST.check(pans[0], { r: 22 });
+        // 02: the stopwatch runs, the reply goes out well inside the minute
+        const watch = S.g(pans[1]);
+        S.svg('rect', { x: -12, y: -98, width: 24, height: 22, rx: 5, fill: INK }, watch);
+        S.svg('circle', { r: 78, fill: PAPER, stroke: INK, 'stroke-width': 7 }, watch);
+        for (let i = 0; i < 12; i++) {
+          const a = (i * 30 * Math.PI) / 180;
+          S.svg('line', { x1: (Math.sin(a) * 64).toFixed(1), y1: (-Math.cos(a) * 64).toFixed(1), x2: (Math.sin(a) * 54).toFixed(1), y2: (-Math.cos(a) * 54).toFixed(1), stroke: INK, 'stroke-width': 4 }, watch);
+        }
+        const sweep = S.svg('path', { fill: ORANGE, opacity: 0.85 }, watch);
+        const hand = S.svg('line', { x1: 0, y1: 0, x2: 0, y2: -60, stroke: INK, 'stroke-width': 6, 'stroke-linecap': 'round' }, watch);
+        S.svg('circle', { r: 8, fill: INK }, watch);
+        S.put(watch, { x: -105, y: 0 });
+        const reply = CAST.chat(pans[1], { w: 210, side: 1, lines: 2 });
+        const fast = CAST.tag(pans[1], { text: '< 60 S', fill: ORANGE, size: 22 });
+        // 03: old leads, dusty, wake one by one
+        const leads = [];
+        for (let j = 0; j < 2; j++)
+          for (let i = 0; i < 3; i++) {
+            const c = S.g(pans[2]);
+            S.svg('rect', { x: -56, y: -32, width: 112, height: 64, rx: 9, fill: PAPER, stroke: INK, 'stroke-width': 3.5 }, c);
+            S.svg('circle', { cx: -34, cy: -8, r: 11, fill: SHADE, stroke: INK, 'stroke-width': 3 }, c);
+            const tag = S.svg('rect', { x: -16, y: -14, width: 40, height: 11, rx: 5.5, fill: GRAY, stroke: INK, 'stroke-width': 2.5 }, c);
+            S.svg('rect', { x: -40, y: 12, width: 80, height: 6, rx: 3, fill: GRAY }, c);
+            const dust = S.svg('rect', { x: -58, y: -34, width: 116, height: 68, rx: 9, fill: '#ebe5d9', opacity: 0.6 }, c);
+            const x = -135 + i * 135, y = -70 + j * 92;
+            S.put(c, { x, y });
+            leads.push({ c, tag, dust, x, y });
+          }
+        const WAKE = [[0, 0.45], [4, 0.75], [2, 1.05]];
+        const ck3 = CAST.check(pans[2], { r: 22 });
+
+        S.track((t) => {
+          pans.forEach((p, i) => {
+            const k = Math.min(1.06, S.spring(t, AT[i] - 0.1, { freq: 2.2, damp: 0.5 }));
+            S.put(p, { x: PANELS[i], y: PY + 40 * (1 - Math.min(1, k)), s: Math.max(0.001, 0.9 + 0.1 * k), o: t > AT[i] - 0.1 ? 1 : 0 });
+            titles[i].style.opacity = ramp(t, AT[i] + 0.15, 0.3).toFixed(3);
+          });
+          // 01
+          const u1 = t - AT[0];
+          S.put(lens, { x: -170 + 300 * ramp(u1, 0.2, 1.1, E.inOut), y: -40 + 10 * Math.sin(u1 * 6), o: u1 < 1.4 ? 1 : 0 });
+          blds.forEach((b, i) => b.body.setAttribute('fill', (i === 0 && u1 > 0.45) || (i === 2 && u1 > 0.95) ? ORANGE : PAPER));
+          const f1 = ramp(u1, 1.3, 0.55, E.inOut);
+          S.put(plane1, { x: -190 + 240 * f1, y: 120 - 260 * f1 + 0, r: -30 + 20 * f1, s: 0.75 * K.pop(u1, 1.3, 1.85, 0.1), o: u1 > 1.3 && f1 < 1 ? 1 : 0 });
+          S.put(ck1.g, { x: 82, y: -60, s: Math.max(0.001, Math.min(1.1, S.spring(u1, 1.85, { freq: 3 }))) });
+          ck1.set(ramp(u1, 1.95, 0.25));
+          // 02
+          const u2 = t - AT[1];
+          const run = ramp(u2, 0.25, 1.2, E.linear) * 0.68;
+          const a = run * 2 * Math.PI;
+          S.put(hand, { r: run * 360 });
+          sweep.setAttribute('d', run <= 0 ? '' : `M 0 0 L 0 -60 A 60 60 0 ${run > 0.5 ? 1 : 0} 1 ${(Math.sin(a) * 60).toFixed(2)} ${(-Math.cos(a) * 60).toFixed(2)} Z`);
+          S.put(reply, { x: 110, y: -40, s: K.pop(u2, 1.45), o: u2 > 1.45 ? 1 : 0 });
+          S.put(fast, { x: 110, y: 70, r: -6, s: Math.max(0.001, Math.min(1.1, S.spring(u2, 1.7, { freq: 3, damp: 0.35 }))), o: u2 > 1.7 ? 1 : 0 });
+          // 03
+          const u3 = t - AT[2];
+          leads.forEach(({ c, tag, dust, x, y }, k) => {
+            const w = WAKE.find(([i]) => i === k);
+            const on = w && u3 > w[1];
+            tag.setAttribute('fill', on ? ORANGE : GRAY);
+            dust.setAttribute('opacity', on ? (0.6 * (1 - ramp(u3, w[1], 0.25))).toFixed(3) : '0.6');
+            const jolt = w ? hit(u3, w[1], 0.35) : 0;
+            S.put(c, { x, y: y - 10 * jolt });
+          });
+          S.put(ck3.g, { x: 170, y: -128, s: Math.max(0.001, Math.min(1.1, S.spring(u3, 1.45, { freq: 3 }))) });
+          ck3.set(ramp(u3, 1.55, 0.25));
+        });
+        headline(1, 'Fig. 2 · What we do', 'We bring you<br /><em>new clients</em>.', 4.85, 11.2, { dark: false });
+
+        // ---------- Act 3: how we work, four steps ----------
+        const g3 = K.act(2);
+        S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g3);
+        CAST.dots(g3, { x0: -600, y0: -600, w: 3200, h: 2400, o: 0.1 });
+        const LY = 680;
+        const NODES = [300, 760, 1220, 1680];
+        S.svg('line', { x1: 200, y1: LY, x2: 1780, y2: LY, stroke: INK, 'stroke-width': 26, 'stroke-linecap': 'round' }, g3);
+        S.svg('line', { x1: 200, y1: LY, x2: 1780, y2: LY, stroke: SHADE, 'stroke-width': 12, 'stroke-linecap': 'round' }, g3);
+        const lit = S.svg('line', { x1: 200, y1: LY, x2: 200, y2: LY, stroke: ORANGE, 'stroke-width': 12, 'stroke-linecap': 'round' }, g3);
+        const STEP_AT = [12.35, 13.35, 14.35, 15.35];
+        const nodes = NODES.map((x, i) => {
+          const dot = S.svg('circle', { cx: x, cy: LY, r: 34, fill: PAPER, stroke: INK, 'stroke-width': 7 }, g3);
+          const n = S.svg('text', { x, y: LY + 9, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono', 'font-weight': 600, 'font-size': 24, fill: INK }, g3);
+          n.textContent = `0${i + 1}`;
+          return dot;
+        });
+        ['Free audit', 'Plan · fixed price', 'Launch', 'Booked calls'].forEach((txt, i) => label(NODES[i], LY + 66, txt, 2, 24));
+        // what each step stands for, above its stop
+        const props = [
+          (() => {
+            const g = S.g(g3);
+            const m = CAST.magnifier(g, { r: 40 });
+            S.put(m, { x: -14, y: -14 });
+            return g;
+          })(),
+          (() => {
+            const g = S.g(g3);
+            CAST.doc(g, { w: 120, h: 150, lines: 4 });
+            S.put(CAST.tag(g, { text: 'FIXED PRICE', fill: ORANGE, size: 16 }), { x: 10, y: 52, r: -6 });
+            return g;
+          })(),
+          CAST.plane(g3),
+          (() => {
+            const g = S.g(g3);
+            const c = CAST.calendar(g, { w: 170, h: 150, cols: 3, rows: 2 });
+            [1, 3, 5].forEach((k) => c.cells[k].cell.setAttribute('fill', ORANGE));
+            const ck = CAST.check(g, { r: 20 });
+            S.put(ck.g, { x: 80, y: -70 });
+            ck.set(1);
+            return g;
+          })(),
+        ];
+        const runner = S.svg('circle', { r: 16, fill: ORANGE, stroke: INK, 'stroke-width': 5 }, g3);
+        S.track((t) => {
+          const x = S.kf(t, [
+            [12.0, 200],
+            ...STEP_AT.flatMap((a, i) => [
+              [a, NODES[i], E.inOut],
+              [a + 0.45, NODES[i], E.linear],
+            ]),
+            [16.5, 1780, E.inOut],
+          ]);
+          lit.setAttribute('x2', x.toFixed(1));
+          S.put(runner, { x, y: LY, o: t > 12.0 ? 1 : 0 });
+          nodes.forEach((d, i) => d.setAttribute('fill', t >= STEP_AT[i] ? ORANGE : PAPER));
+          props.forEach((p, i) => {
+            const k = Math.min(1.1, S.spring(t, STEP_AT[i] - 0.05, { freq: 2.4, damp: 0.45 }));
+            const fly = i === 2 ? 14 * Math.sin((t - STEP_AT[i]) * 4) : 0;
+            S.put(p, { x: NODES[i] + (i === 2 ? 0 : 0), y: LY - 190 + fly, r: i === 2 ? -18 : 0, s: Math.max(0.001, k) * (i === 2 ? 1.4 : 1), o: t > STEP_AT[i] - 0.05 ? 1 : 0 });
+          });
+        });
+        headline(2, 'Fig. 3 · How we work', 'Four steps to<br />a <em>full calendar</em>.', 12.05, 16.4, { dark: false });
+
+        // ---------- The close ----------
+        K.endCard({
+          at: 16.8,
+          kicker: 'Neurokov · Lead generation for B2B service businesses',
+          big: 'Results, <em>or you don’t pay</em>.',
+          label: 'Free 30-minute growth audit · One fixed price · Booked calls from day one',
+          size: 96,
+        });
+        K.wipes([
+          [4.4, 'What we do →'],
+          [11.6, 'How we work →'],
+        ]);
+        K.note('Illustrated · What we do and how we work', () => false);
+        K.camera([
+          [0, [960, 600, 1.08]],
+          [4.4, [960, 600, 1.12], E.sine],
+          [4.41, [960, 560, 1.0], E.linear],
+          [11.6, [960, 560, 1.02], E.sine],
+          [11.61, [960, 560, 1.0], E.linear],
+          [16.8, [960, 560, 1.02], E.sine],
+        ]);
+      });
+    </script>
+  </body>
+</html>

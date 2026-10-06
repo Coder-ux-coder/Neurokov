@@ -1,7 +1,7 @@
 /**
  * Living photos: the loop over a [data-live] photo plays while the photo is on
  * screen (and, if it develops out of a dither, once it has) and pauses when it
- * isn't. The slideshow runs its own (slides.ts), in step with its slides.
+ * isn't.
  */
 import { liveOk, playLive, settled, watchVisible } from './lib';
 
@@ -9,7 +9,6 @@ if (liveOk) document.querySelectorAll<HTMLVideoElement>('video[data-live]').forE
 
 function live(video: HTMLVideoElement) {
   const media = video.parentElement!;
-  if (media.closest('[data-slides]')) return;
   let visible = false;
   const sync = () => {
     const ready = !media.hasAttribute('data-dither') || media.classList.contains('is-developed');

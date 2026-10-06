@@ -1,16 +1,16 @@
 ---
 /**
- * The video at the top of the home page: Mohid, talking for under a minute, about what Neurokov
- * does for you (the script is in design/vsl/script.md). Put the recording in src/assets/video/ as
- * vsl.mp4, with vsl.jpg (its cover) and, if you have them, vsl.vtt (its captions), and it plays
- * here. Until vsl.mp4 is there, the case study reel takes its place.
+ * The video at the top of the home page: what Neurokov does and how it works. Until there's a
+ * recording of Mohid saying it (the script is in design/vsl/script.md), the illustrated intro film
+ * plays here. Put the recording in src/assets/video/ as vsl.mp4, with vsl.jpg (its cover) and, if
+ * you have them, vsl.vtt (its captions), and it takes the film's place.
  *
  * Nothing loads until it's played. The big button starts it with sound and hands over to the
  * player's own controls (vsl.ts); without JavaScript the player's controls are there from the start.
  */
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
-import Slides from './Slides.astro';
+import Clip from './Clip.astro';
 
 function one<T>(files: Record<string, T>): T | undefined {
   return Object.values(files)[0];
@@ -39,6 +39,8 @@ const label = 'Watch: what we do for you, in a minute';
       </button>
     </div>
   ) : (
-    <Slides />
+    <div class="vsl vsl--film">
+      <Clip name="intro" sizes="(max-width: 960px) 100vw, 760px" eager />
+    </div>
   )
 }

@@ -25,6 +25,8 @@ export interface CaseStudy {
   built: string[];
   /** A walk through how it plays out for the client. Only restates `built`; no new facts or numbers. */
   how: string;
+  /** The client's own words, and who said them as they agreed to be shown. */
+  quote?: { text: string; by: string };
   /** The confirmed tools, sales and marketing ones only. Left out where the user hasn't confirmed them. */
   stack?: string[];
   /** Before/after charts. Only pairs where both ends are stated in the study; `v` is the bar length out of 100. */
@@ -68,6 +70,11 @@ export const cases: CaseStudy[] = [
       'Reminders before every session and follow-ups after it.',
       'Live numbers, so every decision about growth runs on what’s actually happening.',
     ],
+    // The platform's other co-founder (unnamed, their call), as Mohid passed it on (2026-10-06).
+    quote: {
+      text: 'Every enquiry used to need chasing, and our growth hit a ceiling. Once every enquiry got an answer straight away and went on to a booked session, with reminders and follow-ups that never slipped, the business more than doubled in a single month.',
+      by: 'Co-founder, online psychology platform',
+    },
     how: 'A new enquiry gets an answer straight away, with the intake forms attached. When the forms come back, the client picks a session time and it’s booked, with a reminder before the session and a follow-up after it. Meanwhile the marketing keeps new enquiries coming in and warms up anyone who isn’t ready yet. Nobody has to push any of it along.',
     figures: [
       {
