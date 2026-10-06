@@ -14,7 +14,7 @@ booking page (Google Workspace), and booking answers are emailed through Web3For
 
 | Address | Page |
 | --- | --- |
-| `/` | Home, kept short: the promise and the video (the case study reel until the video is recorded), the process in four steps, the projects, the guarantee, FAQs and the booking button |
+| `/` | Home, kept short: the promise and Mohid's intro video (the case study reel until it's recorded), the process in four steps, the projects and what people say, the guarantee, FAQs and the booking button |
 | `/services/` | The three services, each with its own page: `lead-generation` (outbound), `lead-conversion` (every lead answered in under 60 seconds), `lead-reactivation` (old leads, new clients), and a working model of how leads get answered |
 | `/case-studies/` | Three case studies, each with its own page: `psychology-platform`, `outbound-engine`, `speed-to-lead`, and the record: the photo of a pipeline dashboard |
 | `/process/` | The four steps from the free audit to launch and scaling what works, and what Neurokov needs from the client |
@@ -29,15 +29,16 @@ and case study retired in October 2026 redirect to the pages that replaced them 
 ## The home page
 
 Built on feedback that a landing page should say what you do in a minute and then get out of the
-way: a short video of Mohid at the top, the process at a glance, the work, the guarantee and one
-thing to do. Nothing on it makes you wait.
+way: a short intro video of Mohid at the top, the process at a glance, the work, the guarantee and
+one thing to do. Nothing on it makes you wait.
 
-- **The video.** The script, recording tips and where the files go are in `design/vsl/script.md`.
-  Drop `vsl.mp4` (with `vsl.jpg`, its cover, and `vsl.vtt`, its captions) into `src/assets/video/`
-  and it replaces the case study reel at the top. It loads nothing until it's played, and plays with
-  sound.
-- **Testimonials.** Add real client quotes, with permission, to `src/data/testimonials.ts` and a
-  "What clients say" section appears under the projects. With none, there is no section.
+- **The intro video.** The script, recording tips and where the files go are in
+  `design/vsl/script.md`. Drop `vsl.mp4` (with `vsl.jpg`, its cover, and `vsl.vtt`, its captions)
+  into `src/assets/video/` and it replaces the case study reel at the top. It loads nothing until
+  it's played, and plays with sound.
+- **Testimonials** live in `src/data/testimonials.ts`: real quotes, from people who agreed to be
+  quoted. A quote still waiting for a client's approval is marked `draft`: it shows while you work
+  on the site (`npm run dev`), tagged as a draft, and never on the live site.
 
 ## Booking
 
@@ -59,8 +60,8 @@ visitor on to `/book/pick-a-time/`, the booking page on a page of its own.
 - **Story films.** Eleven short illustrated films tell the case studies, the services, the process
   steps and the 404. Each has a written version for screen readers in `src/data/clips.ts`. Most play
   while on screen and pause when scrolled away; on the case study cards they play under the pointer.
-- **Home page.** Until the video is recorded, a reel plays each case study's film in turn, with a
-  split-flap counter for its number.
+- **Home page.** Until the intro video is recorded, a reel plays each case study's film in turn,
+  with a split-flap counter for its number.
 - **Elsewhere.** The services page runs simulated leads through a working model of how leads get
   answered; each service page runs its steps as a live circuit; the case studies page has a photo
   that develops out of a dot pattern, with the dashboard on its screen moving.
@@ -113,7 +114,7 @@ src/data/         the words and numbers: site details, services, cases, process,
 src/assets/       the films (clips/), the home page photo (images/) and its loop (video/)
 public/           copied into the site as is: icons, share image, robots.txt, _headers
 scripts/          checks that run after every build
-design/           the sources the films, photo and icons are made from, and the video script (not part of the site)
+design/           the sources the films, photo and icons are made from, and the intro video script (not part of the site)
 netlify.toml      how Netlify builds the site
 ```
 

@@ -1,7 +1,7 @@
 ---
 /**
- * The landing page, kept short on purpose: the video (or the case reel until it's recorded), the
- * process at a glance, the work we've done (and what clients say, once there are quotes), the
+ * The landing page, kept short on purpose: Mohid's intro video (or the case reel until it's
+ * recorded), the process at a glance, the work we've done and what people say about it, the
  * guarantee and one thing to do: book the free audit.
  */
 import Board from '../components/Board.astro';
@@ -18,17 +18,17 @@ import Vsl from '../components/Vsl.astro';
 import { cases } from '../data/cases';
 import { homeFaqs } from '../data/faqs';
 import { site } from '../data/site';
-import { testimonials } from '../data/testimonials';
+import { shownTestimonials } from '../data/testimonials';
 import Base from '../layouts/Base.astro';
 
 // On the homepage only: the name Google shows for the site in its results.
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: `${site.url}/` };
-const total = testimonials.length ? 4 : 3;
+const total = shownTestimonials.length ? 4 : 3;
 const at = (n: number) => `${String(n).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
 ---
 
 <Base jsonLd={website}>
-  <!-- Hero: the promise, the video and the one thing to do -->
+  <!-- Hero: the promise, the intro video and the one thing to do -->
   <section class="hero" data-hold>
     <div class="gridlines" aria-hidden="true"></div>
     <div class="container">
@@ -98,10 +98,10 @@ const at = (n: number) => `${String(n).padStart(2, '0')} / ${String(total).padSt
   </section>
 
   {
-    testimonials.length > 0 && (
+    shownTestimonials.length > 0 && (
       <section class="section section--deep">
         <div class="container">
-          <SectionHead label="In their words" index={at(3)} title="What clients say." />
+          <SectionHead label="In their words" index={at(3)} title="In their own words." />
           <Testimonials />
         </div>
       </section>

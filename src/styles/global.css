@@ -1633,7 +1633,7 @@ button {
   text-transform: uppercase;
 }
 
-/* ---------- What clients say (home, Testimonials.astro) ---------- */
+/* ---------- In their own words (home, Testimonials.astro) ---------- */
 
 .quotes {
   display: grid;
@@ -1642,11 +1642,30 @@ button {
   list-style: none;
 }
 
+/* One quote reads as a pull quote, not a card stretched across the page. */
+.quotes:has(> :only-child) {
+  max-width: 52rem;
+}
+
+.quote__draft {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 4px 8px;
+  border: 1px dashed var(--accent-ink);
+  color: var(--accent-ink);
+}
+
+/* The quote takes the card's height under the draft tag, if there is one, so the names line up. */
+.quote {
+  display: flex;
+  flex-direction: column;
+}
+
 .quote figure {
+  flex: 1;
   display: grid;
   align-content: space-between;
   gap: 24px;
-  height: 100%;
   margin: 0;
 }
 
