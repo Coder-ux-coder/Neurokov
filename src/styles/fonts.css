@@ -18,7 +18,7 @@
   font-family: 'Archivo Signs';
   font-style: normal;
   font-display: optional;
-  font-weight: 100 900;
+  font-weight: 600 900;
   font-stretch: 62% 100%;
   src: url('../assets/fonts/archivo-signs.woff2') format('woff2-variations');
   unicode-range: U+0021-002F, U+003A-0040, U+005B-0060, U+007B-007E;

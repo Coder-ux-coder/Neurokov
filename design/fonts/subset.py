@@ -19,8 +19,17 @@ pieces to src/styles/fonts.css.
 Archivo keeps all its weights and the widths the site sets in text, 100% to 125%. Its width axis
 has a master at 100%, so dropping the narrower end leaves every glyph exactly as it was (cutting a
 range at a point between masters would round the outlines a little, and the text would no longer
-render pixel for pixel the same). Nothing a visitor can see changes: every character the copy uses
-comes from the fonts, drawn the same.
+render pixel for pixel the same). The signs are only ever set at the tiles' weight (700, .flap in
+global.css), so they keep weights 600 to 900: 600 is a master too, and everything below it goes.
+Nothing a visitor can see changes: every character the copy uses comes from the fonts, drawn the
+same.
+
+The fonts keep the OpenType features a browser applies to this text: the defaults for Latin set left
+to right (ligatures, kerning, the variation alternates and so on) and the tabular figures that
+tabular-nums asks for. Fractions (frac, numr, dnom: a browser sets them only around U+2044, which
+the copy never uses), proportional figures (pnum: the default ones already are) and other
+languages' letter forms (locl: Catalan, Guarani, Polish and Turkish; every page is lang="en") are
+never shown, and their glyphs were a fifth of each font.
 
 The sources are the Fontsource packages in node_modules, so run `npm ci` first.
 
@@ -77,10 +86,15 @@ def faces(css_file):
     return out
 
 
+# What a browser applies to this site's text (HarfBuzz's defaults for horizontal Latin, plus tnum).
+FEATURES = ['abvm', 'blwm', 'calt', 'ccmp', 'clig', 'curs', 'dist', 'kern', 'liga', 'ltra', 'ltrm',
+            'mark', 'mkmk', 'rclt', 'rlig', 'rvrn', 'tnum']
+
+
 def cut(src, unicodes, name, axes=None):
     font = TTFont(src)
     options = subset.Options()
-    options.layout_features = ['*']  # tabular figures, kerning and the rest stay; hinting stays too
+    options.layout_features = FEATURES  # hinting stays
     sub = subset.Subsetter(options)
     sub.populate(unicodes=unicodes)
     sub.subset(font)
@@ -108,8 +122,8 @@ def split(family, src_css, prefix, weight, axes, stretch):
             cut(src, CORE, f'{prefix}.woff2', axes)
             rules.append(rule(family, f'{prefix}.woff2', ranges(CORE), weight, stretch))
             if family == 'Archivo Variable':
-                cut(src, SIGNS, f'{prefix}-signs.woff2', {'wdth': (62, 100)})
-                rules.append(rule('Archivo Signs', f'{prefix}-signs.woff2', ranges(SIGNS), weight, '62% 100%'))
+                cut(src, SIGNS, f'{prefix}-signs.woff2', {'wdth': (62, 100), 'wght': (600, 900)})
+                rules.append(rule('Archivo Signs', f'{prefix}-signs.woff2', ranges(SIGNS), '600 900', '62% 100%'))
     return rules
 
 
