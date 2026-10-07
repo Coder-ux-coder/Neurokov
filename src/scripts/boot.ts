@@ -1,10 +1,12 @@
 /**
- * Starts the site's script (site.ts) once the first screen is up. Everything the first screen shows
- * is in the page and its stylesheet, so the browser paints it as soon as the page arrives; the
- * script, which nothing there waits for, is fetched and run after that (the head script in
- * Base.astro says when) instead of holding it up. Should it fail, the page falls back to how it
- * reads without JavaScript.
+ * Starts the bar and its menu at once (shell.ts), and the rest of the site's script (site.ts) once
+ * the first screen is up. Everything the first screen shows is in the page and its stylesheet, so
+ * the browser paints it as soon as the page arrives; the script, which nothing there waits for, is
+ * fetched and run after that (the head script in Base.astro says when) instead of holding it up.
+ * Should it fail, the page falls back to how it reads without JavaScript.
  */
+import './shell';
+
 const root = document.documentElement;
 
 // Claims the page for the script: the head script (Base.astro) otherwise shows it as it reads

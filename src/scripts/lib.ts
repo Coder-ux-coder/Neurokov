@@ -1,11 +1,20 @@
 /** Small helpers shared by the site's scripts. */
 
 export const root = document.documentElement;
-export type Theme = 'dark' | 'light';
-export const currentTheme = (): Theme => (root.dataset.theme === 'dark' ? 'dark' : 'light');
 export const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 /** A mouse or trackpad, as opposed to a touch screen. */
 export const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/** Whether the browser lets the site keep notes at all (blocked storage, some private modes don't). */
+export const storageWorks = (() => {
+  try {
+    localStorage.setItem('nk-test', '1');
+    localStorage.removeItem('nk-test');
+    return true;
+  } catch {
+    return false;
+  }
+})();
 
 export const store = {
   get(key: string) {

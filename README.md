@@ -52,7 +52,9 @@ with a Google Meet link, to mohid@neurokov.com's calendar and emails the visitor
 The answers are emailed to Neurokov through Web3Forms as soon as the form is sent, so a visitor who
 leaves without picking a time is not lost. The
 same answers are sent once a day at most, however many times the form goes in (a second try, a
-reload, another tab), and a failed send is retried the next time. Google's booking page only loads
+reload, another tab). An email that didn't go through is tried again while the visitor stays (after
+5 seconds, then less and less often for about 10 minutes), at once when their connection comes back,
+and once more as they leave. Google's booking page only loads
 once the form is sent. Without JavaScript the form posts straight to Web3Forms, which sends the
 visitor on to `/book/pick-a-time/`, the booking page on a page of its own.
 
@@ -68,7 +70,9 @@ visitor on to `/book/pick-a-time/`, the booking page on a page of its own.
   scroll.
 
 Visitors whose device asks for reduced motion get no scroll animations, and the films wait for
-their play button, as they also do in data-saver mode. There is a light and a dark theme.
+their play button, as they also do in data-saver mode. There is a light and a dark theme: the button
+that switches them waits in the bottom corner on a wide screen, and sits in the bar beside the menu
+button on phones and tablets, where it covers no text.
 
 ## Search, speed and accessibility
 

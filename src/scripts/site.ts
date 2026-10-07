@@ -1,8 +1,10 @@
 /**
- * The site's behaviour. This file holds the basics (nav, theme, review mode);
- * booking and each effect live in their own modules, imported below.
+ * The site's behaviour, started once the first screen is up (boot.ts). This file holds the basics
+ * (the wordmark's fit, the tool marks, review mode); booking and each effect live in their own
+ * modules, imported below. The bar and its menu start with the page (shell.ts), and the theme
+ * button with the head script (Base.astro).
  */
-import { currentTheme, root, store, type Theme } from './lib';
+import { root } from './lib';
 import './reveal';
 import './flap';
 import './clips';
@@ -13,46 +15,6 @@ import './live';
 import './circuit';
 import './vsl';
 import './scroll';
-
-/* ---------- Nav: solid background once scrolled, mobile menu ---------- */
-
-const nav = document.querySelector<HTMLElement>('[data-nav]');
-const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
-const mobileMenu = document.querySelector<HTMLElement>('[data-mobile-menu]');
-
-const onScroll = () => nav?.classList.toggle('is-scrolled', window.scrollY > 8);
-// In the next frame, not now: reading the scroll position while the scripts start would lay the page out
-// an extra time before its first paint. The effects hold their first measurements back the same way.
-requestAnimationFrame(onScroll);
-addEventListener('scroll', onScroll, { passive: true });
-
-const setMenu = (open: boolean) => {
-  nav?.classList.toggle('is-open', open);
-  burger?.setAttribute('aria-expanded', String(open));
-  document.body.style.overflow = open ? 'hidden' : '';
-  // While the menu covers the page, the page behind it can't be tabbed into or read out.
-  for (const el of document.body.children) {
-    if (el !== nav && el !== mobileMenu && el instanceof HTMLElement) el.inert = open;
-  }
-};
-burger?.addEventListener('click', () => setMenu(!nav?.classList.contains('is-open')));
-// A link in the menu closes it, and so does one in the bar above it: the bar's booking button, shown
-// beside the menu button on a tablet, opens the booking form, which can't be used while the menu keeps
-// the rest of the page inert. On the menu and the bar, so it runs before booking.ts's handler on the document.
-const closeOnLink = (e: Event) => {
-  if (nav?.classList.contains('is-open') && (e.target as Element).closest('a')) setMenu(false);
-};
-mobileMenu?.addEventListener('click', closeOnLink);
-nav?.addEventListener('click', closeOnLink);
-addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape' || !nav?.classList.contains('is-open')) return;
-  setMenu(false);
-  burger?.focus();
-});
-// Wide enough for the links again (the breakpoint in global.css): the menu closes.
-matchMedia('(max-width: 62.5em)').addEventListener('change', (e) => !e.matches && setMenu(false));
-// Back to a page kept in memory (the back button): the menu that led away from it is closed again.
-addEventListener('pageshow', (e) => e.persisted && setMenu(false));
 
 /* ---------- Big type that fills its line ---------- */
 
@@ -68,9 +30,25 @@ const fit = () => {
 };
 if (fitEls.length) {
   document.fonts?.ready.then(fit);
-  // Watch the parents: their width doesn't depend on the type size, so fitting can't loop. The
-  // observer's first call, before the first paint, does the first fit.
-  const ro = new ResizeObserver(fit);
+  // Watch the parents' widths: only those call for a new size (their heights follow the type, so a
+  // change there is the fit's own doing). The fit waits for the next frame: resizing the type inside
+  // the observer's call would have it report again within the same frame, which browsers log as an
+  // error. The observer's first call does the first fit.
+  const widths = new WeakMap<Element, number>();
+  let queued = 0;
+  const ro = new ResizeObserver((entries) => {
+    let wider = false;
+    for (const entry of entries) {
+      if (widths.get(entry.target) === entry.contentRect.width) continue;
+      widths.set(entry.target, entry.contentRect.width);
+      wider = true;
+    }
+    if (wider && !queued)
+      queued = requestAnimationFrame(() => {
+        queued = 0;
+        fit();
+      });
+  });
   fitEls.forEach((el) => el.parentElement && ro.observe(el.parentElement));
 }
 
@@ -79,20 +57,6 @@ if (fitEls.length) {
 // The tools' logos come from one file (data/tools.ts), fetched only now that the first screen is up:
 // they're all further down the page, and it shouldn't share the connection with that first screen.
 document.querySelectorAll<SVGUseElement>('use[data-href]').forEach((use) => use.setAttribute('href', use.dataset.href!));
-
-/* ---------- Theme toggle ---------- */
-
-const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-const applyTheme = (theme: Theme) => {
-  if (theme === 'dark') root.dataset.theme = 'dark';
-  else delete root.dataset.theme;
-  themeMeta?.setAttribute('content', theme === 'dark' ? '#0f0f0e' : '#f2efe8');
-};
-document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-  const next: Theme = currentTheme() === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  store.set('nk-theme', next);
-});
 
 /* ---------- Review mode: ?review outlines every placeholder ---------- */
 

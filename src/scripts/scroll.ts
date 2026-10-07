@@ -3,18 +3,28 @@
  * step counter, and the case study contents that follow along.
  */
 import { Flap } from './flap';
-import { calm } from './lib';
+import { calm, clamp } from './lib';
 
 /* ---------- Ruler ---------- */
 
 const ruler = document.querySelector<HTMLElement>('[data-ruler]');
 const rulerRead = ruler?.querySelector<HTMLElement>('[data-ruler-read]');
 if (ruler) {
+  const bands = [...document.querySelectorAll<HTMLElement>('.footer, .section--ink')];
   let queued = false;
   const paint = () => {
     queued = false;
     const max = document.documentElement.scrollHeight - innerHeight;
-    const p = max > 0 ? Math.min(1, scrollY / max) : 0;
+    // Clamped: a trackpad's rubber band scrolls past either end.
+    const p = max > 0 ? clamp(scrollY / max, 0, 1) : 0;
+    // Where the readout sits, and whether a dark band runs behind it there (all reads, then writes).
+    const box = ruler.getBoundingClientRect();
+    const y = box.top + p * box.height;
+    const dark = bands.some((band) => {
+      const r = band.getBoundingClientRect();
+      return r.top <= y && r.bottom >= y;
+    });
+    ruler.classList.toggle('is-on-dark', dark);
     ruler.style.setProperty('--p', p.toFixed(4));
     if (rulerRead) rulerRead.textContent = String(Math.round(p * 100)).padStart(3, '0');
   };

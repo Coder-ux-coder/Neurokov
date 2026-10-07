@@ -947,8 +947,8 @@ button {
     grid-template-columns: 1fr auto;
   }
 
-  .js button.nav__burger,
-  html:not(.js) .nav__burger--link {
+  .menu-ready button.nav__burger,
+  html:not(.menu-ready) .nav__burger--link {
     display: grid;
   }
 
@@ -1776,7 +1776,13 @@ html:not(.js) .clip__full {
 @media (hover: none) {
   .clip__toggle,
   .clip__full {
+    width: 44px;
+    height: 44px;
     opacity: 1;
+  }
+
+  .clip__full {
+    right: 64px;
   }
 }
 
@@ -3185,6 +3191,11 @@ html:not(.js) .clip__full {
   border-bottom: 1px solid var(--line);
 }
 
+/* "Fig. 02" stays on one line; on a phone the title beside it wraps instead. */
+.chart__head > .label {
+  flex: none;
+}
+
 .chart__title {
   font-weight: 650;
   font-stretch: 106%;
@@ -4102,7 +4113,14 @@ html:not(.js) .clip__full {
 }
 
 .booking-dialog[open] {
-  animation: film-in 0.55s var(--ease-out);
+  animation: dialog-in 0.55s var(--ease-out);
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
 }
 
 .booking-dialog::backdrop {
@@ -4500,7 +4518,9 @@ html:not(.js) .clip__full {
   color: var(--text);
 }
 
-@media (max-width: 960px) {
+/* Below the width where the page list would squeeze into three narrow columns beside the pitch
+   (a tablet on its side), the list goes under it. */
+@media (max-width: 1100px) {
   .footer__top {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -4529,10 +4549,6 @@ html:not(.js) .clip__full {
 /* ---------- Theme toggle ---------- */
 
 .theme-toggle {
-  position: fixed;
-  right: 18px;
-  bottom: calc(18px + env(safe-area-inset-bottom));
-  z-index: 45;
   display: grid;
   place-items: center;
   width: 42px;
@@ -4546,10 +4562,42 @@ html:not(.js) .clip__full {
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.theme-toggle:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #121212;
+/* On a wide screen it waits in the bottom corner, clear of the text; with the menu button (phones,
+   tablets), where text runs close to the edge, it sits in the bar beside that button instead. */
+.theme-toggle--float {
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 45;
+}
+
+.theme-toggle--bar {
+  display: none;
+  background: transparent;
+}
+
+@media (max-width: 62.5em) {
+  .theme-toggle--float {
+    display: none;
+  }
+
+  .theme-toggle--bar {
+    display: grid;
+  }
+}
+
+/* Without JavaScript it can't switch anything. */
+html:not(.js) .theme-toggle {
+  display: none;
+}
+
+/* A tap leaves a hover behind on a touch screen: only a pointer lights it up. */
+@media (hover: hover) {
+  .theme-toggle:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #121212;
+  }
 }
 
 .theme-toggle .icon-sun {
@@ -4592,8 +4640,11 @@ html:not(.js) .clip__full {
   bottom: 0;
 }
 
+/* Filled to the scroll position by a clip, and the readout moved by a transform: neither lays the page
+   out again as it scrolls, nor counts as content moving (layout shift). */
 .ruler__fill {
-  height: calc(var(--p, 0) * 100%);
+  bottom: 0;
+  clip-path: inset(0 0 calc((1 - var(--p, 0)) * 100%) 0);
   background:
     repeating-linear-gradient(to bottom, var(--accent) 0 1px, transparent 1px 30px) right top / 12px 100% no-repeat,
     repeating-linear-gradient(to bottom, var(--accent) 0 1px, transparent 1px 6px) right top / 6px 100% no-repeat;
@@ -4602,17 +4653,52 @@ html:not(.js) .clip__full {
 .ruler__read {
   position: absolute;
   right: 18px;
-  top: calc(var(--p, 0) * 100%);
-  transform: translateY(-50%);
+  top: 0;
+  transform: translateY(calc(var(--p, 0) * min(36vh, 300px) - 50%));
   color: var(--text-3);
   font-family: var(--mono);
   font-size: 0.6rem;
   letter-spacing: 0.06em;
 }
 
+/* Over a dark band (the footer, an ink section) it takes the band's colours, so it still reads. */
+.ruler.is-on-dark {
+  --text-3: rgb(242 239 232 / 0.58);
+  --line-strong: rgb(242 239 232 / 0.32);
+}
+
 @media (max-width: 1100px) {
   .ruler {
     display: none;
+  }
+}
+
+/* ---------- Touch targets ----------
+   A fingertip needs more room than a pointer. On a touch screen the small links and buttons take taps
+   from at least 44 px of height, without anything on the page moving: links in running lines get
+   padding (which doesn't move lines), boxes get padding paid back with a negative margin. */
+
+@media (pointer: coarse) {
+  .nav__burger,
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .nav__brand {
+    padding-block: 5px;
+    margin-block: -5px;
+  }
+
+  .footer__cols a {
+    padding-block: 10px;
+  }
+
+  .footer__legal a,
+  .back-link,
+  .booking__note .text-link {
+    padding-block: 13px;
+    margin-block: -13px;
   }
 }
 

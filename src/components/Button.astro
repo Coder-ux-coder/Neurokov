@@ -17,8 +17,11 @@ interface Props {
 
 const { label = cta.label, href, size = 'md', variant = 'solid', class: cls } = Astro.props;
 const books = !href;
+// On the booking page of its own (step 2 without JavaScript), the visitor has answered already:
+// the buttons point at the booking page there, not back to the questions.
+const bookHref = Astro.url.pathname.startsWith('/book/pick-a-time') ? '#pick' : '/book/';
 
-const bookingAttrs = books ? { href: '/book/', 'data-book': '', 'data-ph': ph('booking') } : { href };
+const bookingAttrs = books ? { href: bookHref, 'data-book': '', 'data-ph': ph('booking') } : { href };
 ---
 
 <a class:list={['btn', size !== 'md' && `btn--${size}`, variant === 'ghost' && 'btn--ghost', cls]} {...bookingAttrs}>

@@ -1,7 +1,7 @@
 # Netlify sends these with every page and file (the build copies this file into dist/).
 # npm run build stops if the Content-Security-Policy would block one of the site's own scripts.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-prPGKMpHpDNAZYZq2STLOkuZBGr7O/r5jHbu+y1+IpE=' 'sha256-NO5htK3wW3wiAg/XA1E3H3a1fJEQkU4BXF1CSB1CcpE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://api.web3forms.com; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com https://calendar.google.com; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-2pp0OUDZhTt/TFlx/MLCWJnWuA8aAmAbTAaY9hy2uMI=' 'sha256-NO5htK3wW3wiAg/XA1E3H3a1fJEQkU4BXF1CSB1CcpE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://api.web3forms.com; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com https://calendar.google.com; frame-ancestors 'none'
   Strict-Transport-Security: max-age=63072000
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   X-Frame-Options: DENY

@@ -2,6 +2,7 @@
 // usage: node harness.mjs http://localhost:4400 [out.json] [--only=crawl,storm,booking,nojs,calm,axe,redirects]
 // Exits 1 if anything fails. Every failure is printed with the page and viewport.
 import { chromium } from 'playwright';
+import { SAFE_ARGS } from './safe.mjs';
 import { AxeBuilder } from '@axe-core/playwright';
 import { writeFileSync } from 'node:fs';
 
@@ -155,6 +156,27 @@ async function animationsDone(page) {
     .catch(() => {});
 }
 
+// Content still hidden once scrolled through. A section scrolled past keeps its reveal paused while it
+// is off screen (content-visibility skips it), so each suspect is brought back into view and given time.
+async function stillHidden(page) {
+  const first = await page.evaluate(hiddenContent);
+  if (!first.length) return [];
+  const out = [];
+  const n = await page.evaluate(() => document.querySelectorAll('[data-hidden-suspect]').length);
+  for (let i = 0; i < Math.min(n, 12); i++) {
+    await page.evaluate((i) => document.querySelectorAll('[data-hidden-suspect]')[i].scrollIntoView({ block: 'center', behavior: 'instant' }), i);
+    await page.waitForTimeout(2500);
+    const label = await page.evaluate((i) => {
+      const el = document.querySelectorAll('[data-hidden-suspect]')[i];
+      let n = el, op = 1;
+      for (; n && n.nodeType === 1; n = n.parentElement) { const cs = getComputedStyle(n); op *= parseFloat(cs.opacity); if (cs.visibility === 'hidden') op = 0; }
+      return op < 0.99 ? el.dataset.hiddenSuspect : null;
+    }, i);
+    if (label) out.push(label);
+  }
+  return out;
+}
+
 const hiddenContent = () =>
   [...document.querySelectorAll('[data-reveal], [data-split], main h1, main h2, main p')].filter((el) => {
     const r = el.getBoundingClientRect();
@@ -167,7 +189,11 @@ const hiddenContent = () =>
       n = n.parentElement;
     }
     return false;
-  }).map((el) => el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : '') + ' "' + (el.textContent || '').trim().slice(0, 40) + '"');
+  }).map((el) => {
+    const label = el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : '') + ' "' + (el.textContent || '').trim().slice(0, 40) + '"';
+    el.dataset.hiddenSuspect = label;
+    return label;
+  });
 
 async function crawl(browser) {
   for (const vp of Object.keys(VIEWPORTS)) {
@@ -183,7 +209,7 @@ async function crawl(browser) {
         if (res.status() !== expected) fail(where, `status ${res.status()} expected ${expected}`);
         await settle(page);
         await scrollThrough(page);
-        const stuck = await page.evaluate(hiddenContent);
+        const stuck = await stillHidden(page);
         if (stuck.length) fail(where, `content still hidden after scrolling: ${stuck.slice(0, 5).join(' | ')}`);
         if (want('axe')) {
           const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze().catch((e) => ({ violations: [{ id: 'axe-crashed', help: String(e), nodes: [] }] }));
@@ -454,7 +480,7 @@ async function calmRun(browser) {
       await page.goto(BASE + path);
       await settle(page);
       await scrollThrough(page);
-      const stuck = await page.evaluate(hiddenContent);
+      const stuck = await stillHidden(page);
       if (stuck.length) fail(where, `content hidden with reduced motion: ${stuck.slice(0, 5).join(' | ')}`);
       const playing = await page.evaluate(() => [...document.querySelectorAll('video')].filter((v) => !v.paused).map((v) => v.currentSrc || v.outerHTML.slice(0, 60)));
       if (playing.length) fail(where, `videos playing with reduced motion: ${playing.join(', ')}`);
@@ -477,7 +503,7 @@ async function redirects() {
   }
 }
 
-const browser = await chromium.launch();
+const browser = await chromium.launch({ args: SAFE_ARGS });
 const t0 = Date.now();
 try {
   if (want('redirects')) { console.log('redirects'); await redirects(); }

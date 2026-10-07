@@ -34,12 +34,19 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     </nav>
     <div class="nav__end">
       <Button size="sm" />
+      {/* With the menu button (phones, tablets) the theme button sits here, where it covers nothing; on a
+          wide screen it waits in the bottom corner (Base.astro). */}
+      <button class="theme-toggle theme-toggle--bar" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
+        <Icon name="sun" class="icon-sun" size={18} />
+        <Icon name="moon" class="icon-moon" size={18} />
+      </button>
       <button class="nav__burger" type="button" aria-expanded="false" aria-controls="mobile-menu" data-burger>
         <span class="sr-only">Menu</span>
         <Icon name="menu" class="icon-open" />
         <Icon name="x" class="icon-close" />
       </button>
-      {/* Without JavaScript the button can't open the menu: this link to the footer's page list stands in. */}
+      {/* Until the menu's script is running (shell.ts), and without JavaScript, the button can't open the
+          menu: this link to the footer's page list stands in. */}
       <a class="nav__burger nav__burger--link" href="#site-links">
         <span class="sr-only">Menu</span>
         <Icon name="menu" />

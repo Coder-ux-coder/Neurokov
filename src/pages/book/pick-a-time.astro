@@ -19,7 +19,8 @@ import Base from '../../layouts/Base.astro';
   />
   <section class="section section--tight">
     <div class="container">
-      <div class="book__cal booking-time booking-time--page" data-ph={ph('booking')}>
+      {/* Every booking button on this page brings it into view (Button.astro, booking.ts). */}
+      <div class="book__cal booking-time booking-time--page" id="pick" data-booking-page tabindex="-1" data-ph={ph('booking')}>
         <div class="booking-time__frame">
           <iframe src={bookingEmbedUrl} title="Pick a time for your free growth audit"></iframe>
         </div>

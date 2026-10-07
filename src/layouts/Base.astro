@@ -96,7 +96,8 @@ const speculation = {
     <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />
     <script is:inline type="speculationrules" set:html={JSON.stringify(speculation)} />
 
-    <!-- Runs before first paint: the theme (light unless the visitor chose dark) and reduced motion. -->
+    {/* Runs before first paint: the theme (light unless the visitor chose dark) and its button, reduced
+        motion, and the web fonts. */}
     <script is:inline>
       (function () {
         var r = document.documentElement;
@@ -141,13 +142,32 @@ const speculation = {
           loaded = true;
           flush();
         });
+        // A page whose loading waits on another site's frame (the booking page, say) holds the script
+        // back no longer than this once its own content is in.
+        addEventListener('DOMContentLoaded', function () {
+          setTimeout(function () {
+            loaded = true;
+            flush();
+          }, 2500);
+        });
+        // The theme, and every button that switches it, working from the moment it's on the page.
+        var meta = document.querySelector('meta[name="theme-color"]');
+        var theme = function (dark) {
+          if (dark) r.dataset.theme = 'dark';
+          else delete r.dataset.theme;
+          if (meta) meta.setAttribute('content', dark ? '#0f0f0e' : '#f2efe8');
+        };
         try {
-          if (localStorage.getItem('nk-theme') === 'dark') r.dataset.theme = 'dark';
+          if (localStorage.getItem('nk-theme') === 'dark') theme(true);
         } catch (e) {}
-        if (r.dataset.theme === 'dark') {
-          var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', '#0f0f0e');
-        }
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest || !e.target.closest('[data-theme-toggle]')) return;
+          var dark = r.dataset.theme !== 'dark';
+          theme(dark);
+          try {
+            localStorage.setItem('nk-theme', dark ? 'dark' : 'light');
+          } catch (err) {}
+        });
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('calm');
         // The web fonts (global.css). The page first paints in fonts the visitor already has, sized to
         // take the same room, and these swap in without moving anything. On a first visit they're
@@ -201,7 +221,7 @@ const speculation = {
     </main>
     <Footer />
     <BookingForm mode="dialog" />
-    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
+    <button class="theme-toggle theme-toggle--float" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
       <Icon name="sun" class="icon-sun" size={18} />
       <Icon name="moon" class="icon-moon" size={18} />
     </button>

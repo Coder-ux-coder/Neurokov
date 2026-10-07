@@ -5,7 +5,7 @@
 import { createServer } from 'node:http';
 import { createSecureServer } from 'node:http2';
 import { readFile, stat } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, extname, resolve, dirname } from 'node:path';
 import { brotliCompressSync, gzipSync, constants } from 'node:zlib';
 import { execSync } from 'node:child_process';
@@ -26,10 +26,17 @@ const types = {
 };
 const compressible = /^(text\/|application\/(json|xml|javascript|manifest)|image\/svg)/;
 
-// _headers: blocks of a path pattern followed by indented "Name: value" lines.
-const rules = [];
+// _headers: blocks of a path pattern followed by indented "Name: value" lines. Read again whenever
+// the file changes (a rebuild), so a running server never serves stale headers.
+let rules = [];
+let rulesMtime = -1;
 const headersFile = join(dist, '_headers');
-if (existsSync(headersFile)) {
+function loadRules() {
+  if (!existsSync(headersFile)) return;
+  const m = statSync(headersFile).mtimeMs;
+  if (m === rulesMtime) return;
+  rulesMtime = m;
+  rules = [];
   let cur = null;
   for (const line of readFileSync(headersFile, 'utf8').split('\n')) {
     if (!line.trim() || line.trim().startsWith('#')) continue;
@@ -38,6 +45,7 @@ if (existsSync(headersFile)) {
     if (cur && i > 0) cur.headers.push([line.slice(0, i).trim(), line.slice(i + 1).trim()]);
   }
 }
+loadRules();
 const matches = (pattern, path) => {
   const re = new RegExp('^' + pattern.split('*').map((s) => s.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$');
   return re.test(path);
@@ -96,6 +104,7 @@ async function handle(method, rawUrl, reqHeaders, respond) {
   const { body } = await load(found.file);
   const type = types[extname(found.file)] ?? 'application/octet-stream';
   const headers = { 'content-type': type, 'cache-control': 'public, max-age=0, must-revalidate' };
+  loadRules();
   for (const rule of rules) if (matches(rule.pattern, path)) for (const [k, v] of rule.headers) headers[k.toLowerCase()] = v;
   let out = body;
   const ae = String(reqHeaders['accept-encoding'] ?? '');
