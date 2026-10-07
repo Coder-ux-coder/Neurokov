@@ -16,7 +16,7 @@ const CATS = arg('cats', 'performance,accessibility,best-practices,seo').split('
 
 const chrome = await chromeLauncher.launch({
   chromePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  chromeFlags: ['--headless=new', '--no-sandbox', '--ignore-certificate-errors', '--disable-gpu'],
+  chromeFlags: ['--headless=new', '--no-sandbox', '--ignore-certificate-errors', '--disable-gpu', '--no-proxy-server', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'],
 });
 
 const median = (xs) => {

@@ -54,7 +54,8 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     </div>
   </div>
 </header>
-<div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+{/* On a phone this is the site's navigation (the bar's list is hidden there), so it's a nav too. */}
+<nav class="mobile-menu" id="mobile-menu" aria-label="Main" data-mobile-menu>
   <ul>
     {
       mobileLinks.map((l, i) => (
@@ -68,4 +69,4 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     }
   </ul>
   <Button size="lg" />
-</div>
+</nav>

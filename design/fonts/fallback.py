@@ -154,7 +154,8 @@ def main():
 
     CSS.write_text(
         '/* Written by design/fonts/fallback.py: edit that, then run it again. Fonts the visitor already\n'
-        '   has, sized to take the same room as Archivo and Plex Mono, so nothing moves when those arrive. */\n\n'
+        '   has, sized to take the same room as Archivo and Plex Mono: a page whose web fonts can\'t be there\n'
+        '   for its first paint is set in these and keeps them (fonts.css), looking as close as it can. */\n\n'
         + '\n'.join(rules)
     )
     print(f'-> {CSS.relative_to(ROOT)}')

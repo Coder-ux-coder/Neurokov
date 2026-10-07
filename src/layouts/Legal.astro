@@ -12,7 +12,7 @@ interface Props {
 const { title, description, updated } = Astro.props;
 ---
 
-<Base title={`${title} | Neurokov`} description={description}>
+<Base title={`${title} | Neurokov`} description={description} boldMono={false}>
   <PageHero label="Legal" meta={`Updated ${updated}`} title={title} />
   <section class="section" style="padding-top: 0">
     <div class="container--narrow prose" data-ph={ph('legal-review')}>

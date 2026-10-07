@@ -1,10 +1,13 @@
 /* Written by design/fonts/subset.py: edit that, then run it again. Each font holds just the
-   characters the site's copy uses; anything else shows in the fallback font (fallback.css). */
+   characters the site's copy uses; anything else shows in the fallback font (fallback.css).
+   Optional: a font that isn't there for the page's first paint (Base.astro asks for them with the
+   page) isn't swapped in later, when it would move the text; the page keeps the fallback, sized to
+   match, and the next page has the font from the cache. */
 
 @font-face {
   font-family: 'Archivo Variable';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 100 900;
   font-stretch: 100% 125%;
   src: url('../assets/fonts/archivo.woff2') format('woff2-variations');
@@ -14,7 +17,7 @@
 @font-face {
   font-family: 'Archivo Signs';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 100 900;
   font-stretch: 62% 100%;
   src: url('../assets/fonts/archivo-signs.woff2') format('woff2-variations');
@@ -24,7 +27,7 @@
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 400;
   src: url('../assets/fonts/plex-mono-400.woff2') format('woff2');
   unicode-range: U+0020-007E, U+00A0, U+00A7, U+00A9, U+00B7, U+00D7, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;
@@ -33,7 +36,7 @@
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 500;
   src: url('../assets/fonts/plex-mono-500.woff2') format('woff2');
   unicode-range: U+0020-007E, U+00A0, U+00A7, U+00A9, U+00B7, U+00D7, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;
@@ -42,7 +45,7 @@
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
   font-weight: 600;
   src: url('../assets/fonts/plex-mono-600.woff2') format('woff2');
   unicode-range: U+0020-007E, U+00A0, U+00A7, U+00A9, U+00B7, U+00D7, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;

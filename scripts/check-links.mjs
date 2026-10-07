@@ -3,8 +3,10 @@
 // renamed or a file left out would otherwise ship as a broken link.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIST = new URL('../dist/', import.meta.url).pathname;
+// A file path, not a URL's: a folder name with a space in it would otherwise read as %20.
+const DIST = fileURLToPath(new URL('../dist/', import.meta.url));
 const SITE = 'https://neurokov.com';
 
 const pages = [];

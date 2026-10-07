@@ -50,7 +50,7 @@ const pickATime = new URL('/book/pick-a-time/', site.url).href;
           <input type="hidden" name="redirect" value={pickATime} />
           {/* A trap for spam bots: never shown, so a person never ticks it, and Web3Forms drops any
               submission that has it ticked. */}
-          <input class="booking__trap" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <input class="booking__trap" type="checkbox" name="botcheck" tabindex="-1" aria-hidden="true" />
         </>
       )
     }

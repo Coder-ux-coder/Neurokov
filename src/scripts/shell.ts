@@ -43,7 +43,11 @@ addEventListener('keydown', (e) => {
   burger?.focus();
 });
 // Wide enough for the links again (the breakpoint in global.css): the menu closes.
-matchMedia('(max-width: 62.5em)').addEventListener('change', (e) => !e.matches && setMenu(false));
+const wide = matchMedia('(max-width: 62.5em)');
+const onWidth = (e: MediaQueryListEvent) => !e.matches && setMenu(false);
+// addListener: Safari before 14 has no addEventListener here.
+if (wide.addEventListener) wide.addEventListener('change', onWidth);
+else wide.addListener(onWidth);
 // Back to a page kept in memory (the back button): the menu that led away from it is closed again.
 addEventListener('pageshow', (e) => e.persisted && setMenu(false));
 

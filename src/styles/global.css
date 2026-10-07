@@ -38,24 +38,18 @@
   --radius: 3px;
   --radius-sm: 2px;
   --max: 1320px;
-  --gutter: clamp(16px, 4.4vw, 64px);
+  /* Clear of a notch on a phone held sideways (the page draws under it: viewport-fit=cover). */
+  --gutter: max(clamp(16px, 4.4vw, 64px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --nav-h: 72px;
   --section: clamp(84px, 10vw, 150px);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
 
-  /* Fonts the visitor already has, sized to take the same room as the web fonts (fallback.css)... */
+  /* The web fonts, and behind them fonts the visitor already has, sized to take the same room
+     (fallback.css): those show when a web font can't be there for the first paint (fonts.css). */
   --font-here: 'Archivo Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   --mono-here: 'Plex Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-  --font: var(--font-here);
-  --mono: var(--mono-here);
-}
-
-/* ...and the web fonts ahead of them once the head script (Base.astro) asks for them: right after the
-   first paint on a first visit, from the start once they're cached. A web font is fetched only when
-   some text is set in it, so until then none is. */
-:root.fonts {
   --font: 'Archivo Variable', var(--font-here);
   --mono: 'IBM Plex Mono', var(--mono-here);
 }
@@ -217,7 +211,8 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  /* The orange that passes 3:1 against the paper: a focus ring has to be seen. */
+  outline: 2px solid var(--accent-ink);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
@@ -237,7 +232,7 @@ button {
 /* Fixed, so it shows where the visitor is: reached from the footer, it doesn't scroll the page. */
 .skip-link {
   position: fixed;
-  left: 16px;
+  left: max(16px, env(safe-area-inset-left, 0px));
   top: -60px;
   z-index: 100;
   padding: 10px 16px;
@@ -289,6 +284,13 @@ button {
   body > .footer {
     content-visibility: auto;
     contain-intrinsic-size: auto 1000px;
+  }
+
+  /* A smooth scroll aims at where its target would be with those placeholder heights, and the
+     sections it passes take their real heights on the way: it would stop short of a link's target or
+     the next field in tab order. The browser's own jump corrects for them. */
+  html {
+    scroll-behavior: auto;
   }
 }
 
@@ -626,7 +628,7 @@ button {
   isolation: isolate;
   display: inline-flex;
   align-items: stretch;
-  height: var(--h);
+  min-height: var(--h);
   padding: 0;
   border: 0;
   border-radius: var(--radius-sm);
@@ -638,7 +640,6 @@ button {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-decoration: none;
-  white-space: nowrap;
   cursor: pointer;
   overflow: hidden;
   transition: color 0.45s var(--ease-out), transform 0.3s var(--ease);
@@ -668,11 +669,14 @@ button {
   transform: translateY(1px);
 }
 
+/* One line where there's room; where a button would run past its column (a phone, a reader's larger
+   text) the label wraps and the button grows. Margin, not padding: the label clips its rolling copy
+   at its padding edge. */
 .btn__label {
   display: grid;
   align-self: center;
   overflow: hidden;
-  height: 1.3em;
+  margin-block: 8px;
   padding: 0 22px 0 24px;
   line-height: 1.3em;
 }
@@ -800,19 +804,10 @@ button {
   }
 }
 
-/* On a narrow phone a long label wraps to a second line instead of running off the screen. */
-/* 30em is 480px at the usual text size, and wider when the reader has set larger text. */
+/* On a narrow phone (30em is 480px at the usual text size, wider with larger text) labels set a
+   little tighter, so fewer of them need a second line. */
 @media (max-width: 30em) {
-  .btn {
-    height: auto;
-    min-height: var(--h);
-    white-space: normal;
-  }
-
-  /* Margin, not padding: the label clips its rolling copy at its padding edge. */
   .btn .btn__label {
-    height: auto;
-    margin-block: 8px;
     letter-spacing: 0.03em;
   }
 }
@@ -830,7 +825,8 @@ button {
 }
 
 .nav.is-scrolled,
-.nav.is-open {
+.nav.is-open,
+html:not(.js) .nav {
   background: var(--nav-bg);
   border-bottom-color: var(--line);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
@@ -1382,7 +1378,7 @@ button {
   font-stretch: 62.5%;
 }
 
-.fonts .fc--signal > span > i {
+.fc--signal > span > i {
   font-family: 'Archivo Signs', var(--font);
 }
 
@@ -1846,6 +1842,14 @@ html:not(.js) .clip__full {
 
 .fig__cap span {
   text-align: right;
+}
+
+/* On a phone the caption runs to several lines: set flush left after the figure number, it reads
+   as a paragraph rather than a ragged right-hand column. */
+@media (max-width: 640px) {
+  .fig__cap span {
+    text-align: left;
+  }
 }
 
 /* A film across the full column still fits the screen, caption and all. */
@@ -4566,7 +4570,7 @@ html:not(.js) .clip__full {
    tablets), where text runs close to the edge, it sits in the bar beside that button instead. */
 .theme-toggle--float {
   position: fixed;
-  right: 18px;
+  right: max(18px, env(safe-area-inset-right, 0px));
   bottom: calc(18px + env(safe-area-inset-bottom));
   z-index: 45;
 }
@@ -4586,8 +4590,8 @@ html:not(.js) .clip__full {
   }
 }
 
-/* Without JavaScript it can't switch anything. */
-html:not(.js) .theme-toggle {
+/* Without JavaScript it can't switch anything (the head script, Base.astro, marks the page when it can). */
+html:not(.themes) .theme-toggle {
   display: none;
 }
 
@@ -4683,6 +4687,16 @@ html:not(.js) .theme-toggle {
   .theme-toggle {
     width: 44px;
     height: 44px;
+  }
+
+  .btn--sm {
+    --h: 44px;
+  }
+
+  /* The bar's page links on a tablet held sideways, which has room for them. */
+  .nav__links a {
+    padding-block: 10px;
+    margin-block: -10px;
   }
 
   .nav__brand {

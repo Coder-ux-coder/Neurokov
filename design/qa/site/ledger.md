@@ -15,7 +15,7 @@ Status codes: OPEN, FIXED (commit), REJECTED (reason).
   frame moves it in layout: a stream of layout shifts on every desktop page (CLS > 0 in the field).
   global.css .ruler__read.
 - H4 FIXED (ruler takes band colours over .footer/.section--ink; scrollY clamped): Ruler readout fails colour contrast where it overlaps the dark footer (axe, desktop light).
-- H5 OPEN: First-visit font swap moves text: desktop nav links (0.002), mobile hero full stop
+- H5 FIXED (fonts preloaded + font-display: optional; first-visit CLS 0.00000 on 17 pages x 5 viewports): First-visit font swap moves text: desktop nav links (0.002), mobile hero full stop
   (.accent-mark, 0.0005 in Lighthouse). CLS > 0.
 - H6 WATCH: /process/ desktop light: one '#text' shift (1.7e-5) at 2.7 s in the crawl; not reproduced
   in 6 targeted runs.
@@ -36,6 +36,31 @@ Status codes: OPEN, FIXED (commit), REJECTED (reason).
 - A-09 FIXED (@keyframes dialog-in) minor: .booking-dialog[open] uses @keyframes film-in, deleted in ba13ea1.
 - A-S1 CONFIRMED, NOT CODE: Google page title is "Free Systems Audit" (GET 200). User must rename the appointment schedule in Google Calendar.: Google booking page may still say "Free Systems Audit" (check with a GET).
 - A-S2 FIXED (reply.success === false counts as a failure): Web3Forms 200 with success:false would count as sent (parse JSON).
+
+### From auditor B (site shell)
+- B-01 FIXED major: Tab to a control below unrendered sections (<=1100px) left it off screen: smooth
+  scroll vs content-visibility placeholders. scroll-behavior: auto at <=1100px.
+- B-02 FIXED major (with A-07): menu/theme dead until site.js.
+- B-03 FIXED major: stalled site.js left content hidden forever: boot.ts drops .js after 8 s.
+- B-04 FIXED major: focus ring #ff4f00 on paper 2.87:1 -> --accent-ink (5.16:1).
+- B-05 FIXED minor: no-JS nav had no background over text.
+- B-06 FIXED minor: theme buttons hidden until the head script marks .themes.
+- B-07 FIXED minor (+S-1): theme re-read on pageshow(persisted) and prerenderingchange.
+- B-08 FIXED minor: flap SR text kept its case ("<60s").
+- B-09 FIXED (= A-09).
+- B-10 FIXED minor: data saver now holds hover previews (liveOk).
+- B-11 FIXED (clamp). B-12 FIXED (is-on-dark).
+- B-13 FIXED minor: button labels wrap whenever the button would overflow (any width); one-line
+  rendering identical.
+- B-14 FIXED minor: check-links uses fileURLToPath.
+- S-2 FIXED: gutter and fixed corners respect safe-area insets (landscape notch).
+- S-5 FIXED: phone menu is a <nav aria-label="Main">.
+- S-7 FIXED: matchMedia addListener fallback.
+- S-8 FIXED: autocomplete removed from the honeypot checkbox.
+- S-3, S-4 NOT CHANGED (unverifiable / not a defect), S-6 NOT VERIFIABLE locally.
+
+### Auditor C (pages, media)
+- Hit the usage limit twice before reporting; its scope is re-audited fresh in round 2.
 
 ## Task 3 (mobile layout)
 - Prompt: task-3-mobile-layout.md. Scanner: tools/layout.mjs.

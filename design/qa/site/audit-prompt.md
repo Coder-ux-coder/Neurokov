@@ -15,6 +15,17 @@ Read every file in your scope in full, line by line. Do not skim or sample.
   {WORK} (create it) and run them from {TOOLS} so the imports resolve (for example
   `cd {TOOLS} && node {WORK}/test.mjs`). Chromium is already installed; never run
   "playwright install".
+- **Network safety (mandatory).** This machine routes browser traffic through a proxy to the real
+  internet. Launch EVERY Chromium with these two args (they are exported as SAFE_ARGS from
+  {TOOLS}/safe.mjs):
+  - '--no-proxy-server'
+  - "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1"
+
+  Then nothing but localhost can be reached. Mock Web3Forms and Google Calendar with `context.route`
+  as well.
+- **Browser features Playwright turns off.** It disables the back/forward cache by default; pass
+  `ignoreDefaultArgs: ['--disable-back-forward-cache']` to test it. Speculation-rules prerendering
+  doesn't run under Playwright at all.
 
 ## Hard rules
 - READ-ONLY on the repository. Do not edit, create or delete anything under /home/user/Neurokov.

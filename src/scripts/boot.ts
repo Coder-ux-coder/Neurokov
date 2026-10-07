@@ -13,10 +13,20 @@ const root = document.documentElement;
 // without JavaScript once the page has loaded, and the script may well arrive after that.
 root.dataset.ready = '';
 
-const start = () =>
-  import('./site').catch(() => {
-    root.classList.remove('js');
-  });
+// Content below the first screen waits hidden for the site's script to reveal it. Should the script
+// fail, or still not have arrived after this long (a stalled connection), the page shows as it reads
+// without JavaScript instead.
+const GIVE_UP_AFTER = 8000;
+const start = () => {
+  const giveUp = setTimeout(() => root.classList.remove('js'), GIVE_UP_AFTER);
+  import('./site').then(
+    () => clearTimeout(giveUp),
+    () => {
+      clearTimeout(giveUp);
+      root.classList.remove('js');
+    },
+  );
+};
 const later = (root as HTMLElement & { nkLater?: (fn: () => void) => void }).nkLater;
 if (later) later(start);
 else start();

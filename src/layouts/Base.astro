@@ -1,5 +1,6 @@
 ---
 import archivo from '../assets/fonts/archivo.woff2?url';
+import archivoSigns from '../assets/fonts/archivo-signs.woff2?url';
 import plex400 from '../assets/fonts/plex-mono-400.woff2?url';
 import plex500 from '../assets/fonts/plex-mono-500.woff2?url';
 import plex600 from '../assets/fonts/plex-mono-600.woff2?url';
@@ -19,6 +20,10 @@ interface Props {
   image?: string;
   noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** The page sets mono type in bold (figure numbers, step numbers, diagrams): most pages do. */
+  boldMono?: boolean;
+  /** The page has a split-flap board with signs on it (%, <, +), set in Archivo Signs. */
+  signs?: boolean;
 }
 
 const {
@@ -27,7 +32,12 @@ const {
   image = '/og.png',
   noindex = false,
   jsonLd,
+  boldMono = true,
+  signs = false,
 } = Astro.props;
+
+// The web fonts this page sets text in, fetched at once with the page (fonts.css says how they're used).
+const fonts = [archivo, plex400, plex500, ...(boldMono ? [plex600] : []), ...(signs ? [archivoSigns] : [])];
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = new URL(image, Astro.site ?? site.url).href;
@@ -75,8 +85,8 @@ const speculation = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    {/* The web fonts every page uses, for the head script below to fetch early when they're cached. */}
-    <meta name="nk-fonts" content={[archivo, plex400, plex500, plex600].join(' ')} />
+    {/* The web fonts, asked for with the page so they can be there for its first paint (fonts.css). */}
+    {fonts.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -96,16 +106,16 @@ const speculation = {
     <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />
     <script is:inline type="speculationrules" set:html={JSON.stringify(speculation)} />
 
-    {/* Runs before first paint: the theme (light unless the visitor chose dark) and its button, reduced
-        motion, and the web fonts. */}
+    {/* Runs before first paint: the theme (light unless the visitor chose dark) and its button, and
+        reduced motion. */}
     <script is:inline>
       (function () {
         var r = document.documentElement;
-        r.classList.add('js');
-        // Work that can wait until the first screen is up (r.nkLater(fn): the fonts below, the site's
-        // script): once the page has loaded and its first paint has reached the screen (as the browser
-        // reports it), and two frames more. Nothing then competes with the first screen for the
-        // connection or holds up its paint.
+        r.classList.add('js', 'themes');
+        // Work that can wait until the first screen is up (r.nkLater(fn): the site's script): once the
+        // page has loaded and its first paint has reached the screen (as the browser reports it), and
+        // two frames more. Nothing then competes with the first screen for the connection or holds up
+        // its paint.
         var later = [];
         var loaded = false;
         var painted = !(window.PerformanceObserver && (PerformanceObserver.supportedEntryTypes || []).indexOf('paint') >= 0);
@@ -157,9 +167,18 @@ const speculation = {
           else delete r.dataset.theme;
           if (meta) meta.setAttribute('content', dark ? '#0f0f0e' : '#f2efe8');
         };
-        try {
-          if (localStorage.getItem('nk-theme') === 'dark') theme(true);
-        } catch (e) {}
+        var stored = function () {
+          try {
+            theme(localStorage.getItem('nk-theme') === 'dark');
+          } catch (e) {}
+        };
+        stored();
+        // A page shown again from memory (Back) or one made ahead of the click (prerendered) was set up
+        // before the theme last changed: it takes the theme as it is now.
+        addEventListener('pageshow', function (e) {
+          if (e.persisted) stored();
+        });
+        document.addEventListener('prerenderingchange', stored);
         document.addEventListener('click', function (e) {
           if (!e.target.closest || !e.target.closest('[data-theme-toggle]')) return;
           var dark = r.dataset.theme !== 'dark';
@@ -169,47 +188,6 @@ const speculation = {
           } catch (err) {}
         });
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('calm');
-        // The web fonts (global.css). The page first paints in fonts the visitor already has, sized to
-        // take the same room, and these swap in without moving anything. On a first visit they're
-        // fetched once the first screen is up (nkLater), so it doesn't share the connection with 70 KB
-        // of fonts, and they swap in together when all have arrived; on a later one they're in the
-        // browser's cache, so they're fetched now and used from the first paint.
-        var fonts = function () {
-          r.classList.add('fonts');
-        };
-        var cached = false;
-        try {
-          cached = !!localStorage.getItem('nk-fonts');
-        } catch (e) {}
-        if (cached || !document.fonts) {
-          document
-            .querySelector('meta[name="nk-fonts"]')
-            .content.split(' ')
-            .forEach(function (href) {
-              var l = document.createElement('link');
-              l.rel = 'preload';
-              l.as = 'font';
-              l.type = 'font/woff2';
-              l.crossOrigin = '';
-              l.href = href;
-              document.head.appendChild(l);
-            });
-          fonts();
-        } else {
-          r.nkLater(function () {
-            var faces = ['1em "Archivo Variable"', '1em "IBM Plex Mono"', '500 1em "IBM Plex Mono"', '600 1em "IBM Plex Mono"'];
-            Promise.all(
-              faces.map(function (f) {
-                return document.fonts.load(f);
-              }),
-            ).then(function () {
-              fonts();
-              try {
-                localStorage.setItem('nk-fonts', '1');
-              } catch (e) {}
-            }, fonts);
-          });
-        }
       })();
     </script>
   </head>

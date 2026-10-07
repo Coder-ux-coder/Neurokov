@@ -105,7 +105,8 @@ export class Flap {
 document.querySelectorAll<HTMLElement>('[data-flap]').forEach((el) => {
   if (calm || el.closest('[data-scrolly]')) return;
   const flap = new Flap(el);
-  const value = el.dataset.flap ?? '';
+  // As written (the tiles are capitals anyway), so the text read out stays as written: "<60s", not "<60S".
+  const value = el.querySelector('[data-flap-text]')?.textContent ?? el.dataset.flap ?? '';
   flap.blank();
   onceVisible(el, () => flap.set(value, { flips: 5, stagger: 54, speed: 37 }), { threshold: 0.35 });
 });

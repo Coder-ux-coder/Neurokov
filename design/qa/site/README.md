@@ -24,3 +24,14 @@ node lh.mjs https://localhost:4443 out.json --runs=5   # Lighthouse medians, pho
 - `lh.mjs` runs Lighthouse several times per page and reports the median of each measure.
 - `loaf.mjs` lists the long animation frames on a page and the scripts behind them, with the CPU
   slowed as on a phone (`CPU=4`).
+- `layout.mjs` checks every page at phone and tablet sizes: text over text, anything off the side
+  of the screen or clipped, touch targets under 44 px, tiny text, and controls hidden under a
+  fixed bar (`--shots` saves screenshots too).
+- `shots.mjs` takes screen-by-screen screenshots of a page, once its reveals have settled.
+- `shifts.mjs` measures each page's layout shifts on a first visit, at five screen sizes.
+- `vdiff.mjs` compares two builds pixel by pixel, with motion stopped (proof that a change for
+  phones left the desktop as it was).
+- `rehash.mjs` sets `script-src` in `public/_headers` to the hashes the built pages need.
+
+Every script launches Chromium with `safe.mjs`'s flags: no proxy, and every host but localhost
+unresolvable, so a test can never reach the real Web3Forms or Google.

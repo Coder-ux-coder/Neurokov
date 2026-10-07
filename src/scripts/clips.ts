@@ -5,7 +5,7 @@
  * back to its poster when the pointer leaves. A "manual" clip is left to the
  * script of whatever it sits in.
  */
-import { calm, fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
+import { fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
 
 // A first-screen poster came in the page at one size (Clip.astro). A screen with more pixels to
 // fill than that gets the full set now; one it already suits doesn't fetch the same size again.
@@ -20,7 +20,8 @@ document.querySelectorAll<HTMLElement>('[data-clip="auto"]').forEach((host) => {
   const film = player(host);
   settled.then(() => watchVisible(host, film.want, { threshold: 0.4 }));
 });
-if (fine && !calm) document.querySelectorAll<HTMLElement>('[data-clip="hover"]').forEach(hover);
+// Not with reduced motion or in data-saver mode, like every film (liveOk).
+if (fine && liveOk) document.querySelectorAll<HTMLElement>('[data-clip="hover"]').forEach(hover);
 
 /**
  * Runs a clip with controls: it plays while its page wants it (on screen, in

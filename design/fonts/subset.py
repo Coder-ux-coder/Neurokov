@@ -93,7 +93,7 @@ def cut(src, unicodes, name, axes=None):
 
 def rule(family, file, unicode_range, weight, stretch=None):
     fmt = 'woff2-variations' if stretch else 'woff2'
-    lines = [f"  font-family: '{family}';", '  font-style: normal;', '  font-display: swap;', f'  font-weight: {weight};']
+    lines = [f"  font-family: '{family}';", '  font-style: normal;', '  font-display: optional;', f'  font-weight: {weight};']
     if stretch:
         lines.append(f'  font-stretch: {stretch};')
     lines += [f"  src: url('../assets/fonts/{file}') format('{fmt}');", f'  unicode-range: {unicode_range};']
@@ -120,7 +120,10 @@ def main():
         rules += split('IBM Plex Mono', PLEX / f'{w}.css', f'plex-mono-{w}', str(w), None, None)
     CSS.write_text(
         '/* Written by design/fonts/subset.py: edit that, then run it again. Each font holds just the\n'
-        '   characters the site\'s copy uses; anything else shows in the fallback font (fallback.css). */\n\n'
+        '   characters the site\'s copy uses; anything else shows in the fallback font (fallback.css).\n'
+        '   Optional: a font that isn\'t there for the page\'s first paint (Base.astro asks for them with the\n'
+        '   page) isn\'t swapped in later, when it would move the text; the page keeps the fallback, sized to\n'
+        '   match, and the next page has the font from the cache. */\n\n'
         + '\n'.join(rules)
     )
     print(f'-> {CSS.relative_to(ROOT)}')

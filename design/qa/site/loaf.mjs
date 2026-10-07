@@ -1,8 +1,9 @@
 // Long animation frames with script attribution, during load and an optional scroll-through.
 import { chromium } from 'playwright';
+import { SAFE_ARGS } from './safe.mjs';
 const [,, base, path = '/', vpName = 'mobile', scroll = 'noscroll'] = process.argv;
 const VP = { mobile: { viewport:{width:412,height:823}, deviceScaleFactor:1.75, isMobile:true, hasTouch:true }, desktop: { viewport:{width:1350,height:940} } };
-const b = await chromium.launch({ args: ['--ignore-certificate-errors'] });
+const b = await chromium.launch({ args: [...SAFE_ARGS, '--ignore-certificate-errors'] });
 const ctx = await b.newContext({ ...VP[vpName], ignoreHTTPSErrors: true });
 await ctx.addInitScript(() => {
   window.__loaf = [];
