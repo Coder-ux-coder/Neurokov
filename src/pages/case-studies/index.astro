@@ -40,7 +40,7 @@ const callouts = [
   <section class="section" style="padding-top: 0">
     <div class="container">
       <div class="cases cases--2">
-        {cases.map((c, i) => <CaseCard study={c} delay={(i % 2) * 120} level={2} eager={i === 0} />)}
+        {cases.map((c, i) => <CaseCard study={c} delay={(i % 2) * 120} level={2} eager={i === 0} hold={i < 2} />)}
       </div>
     </div>
   </section>

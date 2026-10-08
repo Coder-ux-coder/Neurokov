@@ -79,7 +79,7 @@ export function decode(el: HTMLElement, text?: string, duration = 700) {
 
 export function startReveal() {
   // Not on the first screen ([data-hold]): its headline is there from the first frame (global.css).
-  if (!calm) document.querySelectorAll<HTMLElement>('[data-split]:not([data-hold] *)').forEach(split);
+  if (!calm) document.querySelectorAll<HTMLElement>('[data-split]:not([data-hold], [data-hold] *)').forEach(split);
 
   const reveals = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
   const decodes = [...document.querySelectorAll<HTMLElement>('[data-decode]')];

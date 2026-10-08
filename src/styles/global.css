@@ -4735,8 +4735,10 @@ html:not(.themes) .theme-toggle {
 /* The first screen ([data-hold]) doesn't wait for the script: it is all there in the first frame the
    page paints, headline and film included, and rises a little into place. Nothing on it is hidden,
    cut into words or wiped open, so what the visitor came for shows (and the browser counts the page
-   as painted) as soon as the page arrives, however slowly the script follows. */
-.js:not(.calm) [data-hold] [data-reveal]:not([data-reveal='none']) {
+   as painted) as soon as the page arrives, however slowly the script follows. data-hold marks a
+   whole opening section, or one block below it that still shows on the first screen (a film, the
+   first row of cards). */
+.js:not(.calm) :is([data-hold] [data-reveal], [data-reveal][data-hold]):not([data-reveal='none']) {
   opacity: 1;
   animation: rise-in 0.6s var(--ease-out) calc(var(--d, 0ms) / 2) both;
 }
@@ -4765,7 +4767,7 @@ html:not(.themes) .theme-toggle {
   transition: none;
 }
 
-.js:not(.calm) [data-split]:not(.is-split, [data-hold] *) {
+.js:not(.calm) [data-split]:not(.is-split, [data-hold], [data-hold] *) {
   opacity: 0;
 }
 
@@ -4777,13 +4779,13 @@ html:not(.themes) .theme-toggle {
   transform: none;
 }
 
-.js [data-reveal='clip']:not([data-hold] *) > * {
+.js [data-reveal='clip']:not([data-hold], [data-hold] *) > * {
   clip-path: inset(0 0 100% 0);
   transition: clip-path 1.3s var(--ease-in-out);
   transition-delay: var(--d, 0ms);
 }
 
-.js [data-reveal='clip'].is-in:not([data-hold] *) > * {
+.js [data-reveal='clip'].is-in:not([data-hold], [data-hold] *) > * {
   clip-path: inset(-20px -20px -20px -20px);
 }
 

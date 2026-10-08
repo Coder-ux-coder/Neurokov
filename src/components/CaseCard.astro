@@ -12,6 +12,8 @@ interface Props {
   level?: 2 | 3;
   /** The first card under a page's opening, on screen as the page loads: its poster loads first. */
   eager?: boolean;
+  /** In the first row under a page's opening: on the first screen, it shows in the first paint (global.css). */
+  hold?: boolean;
 }
 
 const {
@@ -20,6 +22,7 @@ const {
   sizes = '(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 640px',
   level = 3,
   eager = false,
+  hold = false,
 } = Astro.props;
 const Title = `h${level}` as const;
 const n = String(cases.indexOf(study) + 1).padStart(2, '0');
@@ -30,6 +33,7 @@ const [headline] = study.stats;
   class="case-card"
   href={`/case-studies/${study.slug}/`}
   data-reveal
+  data-hold={hold ? '' : undefined}
   style={`--d: ${delay}ms`}
   data-ph={study.placeholder ? `case:${study.slug}` : undefined}
 >
