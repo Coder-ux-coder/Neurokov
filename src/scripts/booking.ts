@@ -57,16 +57,30 @@ function pickATime(host: HTMLElement) {
   form.hidden = true;
   step.hidden = false;
   host.classList.add('is-picking');
-  // The booking page appears right under the pointer: the second click of a double click on the
-  // button mustn't land in it (and pick a time, or take the keyboard into Google's page).
-  frame.style.pointerEvents = 'none';
-  setTimeout(() => (frame.style.pointerEvents = ''), 700);
+  shield(host, frame);
   if (host instanceof HTMLDialogElement) {
     host.setAttribute('aria-labelledby', step.getAttribute('aria-labelledby')!);
     // A short screen scrolled down to the button: step 2 starts at its top, title first.
     host.scrollTop = 0;
   }
   step.focus({ preventScroll: true });
+}
+
+/** The booking page appears right under the pointer: no click of the run that sent the form (the
+ *  second of a double click, a burst of taps) may land in it, to pick a time or take the keyboard
+ *  into Google's page. It takes clicks once the presses have stopped for a moment. */
+function shield(host: HTMLElement, frame: HTMLElement) {
+  frame.style.pointerEvents = 'none';
+  let timer = 0;
+  const wait = () => {
+    clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      frame.style.pointerEvents = '';
+      host.removeEventListener('pointerdown', wait, true);
+    }, 700);
+  };
+  host.addEventListener('pointerdown', wait, true);
+  wait();
 }
 
 /* ---------- The email ---------- */
@@ -132,6 +146,8 @@ function logSent(id: string, entry: Sent | null) {
 
 /** Emails that didn't go through yet, by hash: how to send each again, and its next try. */
 const pending = new Map<string, { send: () => void; timer: number }>();
+/** Answers another tab was sending, to look at again once its send should have reported back. */
+const rechecks = new Set<string>();
 // Leaving the page cuts the page off from its requests, not the requests themselves (keepalive): one
 // that fails to report back as the page goes still went.
 let leaving = false;
@@ -155,7 +171,16 @@ function notify(form: HTMLFormElement, answers: Answers) {
   const waiting = pending.get(id);
   if (waiting) return waiting.send(); // sent again by hand: no need to wait for the next try
   const before = sentLog()[id];
-  if (before && (before.ok || Date.now() - before.at < UNDER_WAY)) return;
+  if (before?.ok) return;
+  if (before && Date.now() - before.at < UNDER_WAY) {
+    // Another tab (or this page before a reload) is sending them now. Should it never say how that
+    // went (closed mid-send), they go from here once the wait is over.
+    if (!rechecks.has(id)) {
+      rechecks.add(id);
+      setTimeout(() => (rechecks.delete(id), notify(form, answers)), UNDER_WAY - (Date.now() - before.at) + 1000);
+    }
+    return;
+  }
   const body = new FormData();
   body.set('access_key', key);
   body.set('subject', `New audit form: ${answers.business} (${answers.niche})`);
@@ -229,24 +254,36 @@ export function startBooking() {
     dialog.querySelectorAll('[data-booking-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
     // A click on the backdrop (the dialog itself, outside its box) closes it. Only a click that
     // started there too: selecting text in a field and letting go outside it isn't one. Nor the rest
-    // of a double click (or a quick run of clicks) on the button that opened it: the backdrop comes up
-    // under the pointer, and the clicks after the first would close the form they opened.
+    // of a double click or a quick run of clicks or taps on the button that opened it: the backdrop
+    // comes up under the pointer, and the presses after the first would close the form they opened.
+    // A run is told by the time since the press before (a touch screen's click count starts over
+    // every third tap).
     let pressedOutside = false;
+    let lastPress = -Infinity;
+    let pressBefore = -Infinity;
+    document.addEventListener(
+      'pointerdown',
+      (e) => {
+        pressBefore = lastPress;
+        lastPress = e.timeStamp;
+      },
+      true,
+    );
     dialog.addEventListener('pointerdown', (e) => {
-      pressedOutside = e.target === dialog && e.timeStamp - openedAt > 600;
+      pressedOutside = e.target === dialog && e.timeStamp - openedAt > 600 && e.timeStamp - pressBefore > 500;
     });
     dialog.addEventListener('click', (e) => {
-      if (e.target === dialog && pressedOutside && e.detail <= 1) dialog.close();
+      if (e.target === dialog && pressedOutside) dialog.close();
       pressedOutside = false;
     });
     // Opened from the phone menu, whose links are gone once it closes: focus goes back to the menu
-    // button rather than to nowhere.
+    // button rather than to nowhere (nor to a link of the menu while it's still fading out).
     dialog.addEventListener('close', () => {
       if (!fromMenu) return;
       fromMenu = false;
       requestAnimationFrame(() => {
         const at = document.activeElement;
-        if (!at || at === document.body || !(at as HTMLElement).checkVisibility?.()) {
+        if (!at || at === document.body || at.closest('[data-mobile-menu]') || !(at as HTMLElement).checkVisibility?.()) {
           document.querySelector<HTMLElement>('[data-burger]')?.focus();
         }
       });

@@ -71,11 +71,11 @@ const pickATime = new URL('/book/pick-a-time/', site.url).href;
     <div class="booking__fields">
       <div class="field field--wide">
         <label for={id('business')}>Business name</label>
-        <input id={id('business')} name="business" type="text" required maxlength="120" autocomplete="organization" />
+        <input id={id('business')} name="business" type="text" required pattern=".*\S.*" title="Type an answer, not just spaces" maxlength="120" autocomplete="organization" />
       </div>
       <div class="field">
         <label for={id('niche')}>Niche</label>
-        <input id={id('niche')} name="niche" type="text" required maxlength="120" placeholder="e.g. dental clinics" />
+        <input id={id('niche')} name="niche" type="text" required pattern=".*\S.*" title="Type an answer, not just spaces" maxlength="120" placeholder="e.g. dental clinics" />
       </div>
       <div class="field">
         <label for={id('revenue')}>Monthly revenue</label>
