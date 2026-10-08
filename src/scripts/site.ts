@@ -118,7 +118,16 @@ const breathe = () =>
 
 (async () => {
   for (const step of steps) {
-    step();
+    try {
+      step();
+    } catch (error) {
+      // One broken piece doesn't stop the rest (the error still reaches the console). Without the
+      // reveals, though, the content waiting for them would stay hidden: the page shows as it reads
+      // without JavaScript instead (boot.ts does the same when the whole script fails).
+      if (typeof reportError === 'function') reportError(error);
+      else console.error(error);
+      if (step === startReveal) root.classList.remove('js');
+    }
     await breathe();
   }
 })();
