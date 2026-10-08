@@ -72,7 +72,10 @@ visitor on to `/book/pick-a-time/`, the booking page on a page of its own.
 Visitors whose device asks for reduced motion get no scroll animations, and the films wait for
 their play button, as they also do in data-saver mode. There is a light and a dark theme: the button
 that switches them waits in the bottom corner on a wide screen, and sits in the bar beside the menu
-button on phones and tablets, where it covers no text.
+button on phones and tablets, where it covers no text. A pause-motion button (above the theme button
+on a wide screen, in the menu on phones and tablets) stops everything that keeps moving (the tickers,
+the status light, living photos, the lead machine, the circuit and films playing by themselves) on
+every page until it's pressed again.
 
 ## Search, speed and accessibility
 
@@ -99,8 +102,8 @@ The Content-Security-Policy would block the badge and log an error on every page
 practices 92), so each page carries an empty placeholder that makes the script stand down
 (`Base.astro`). Turning the badge off in Netlify's project settings, where the plan allows it, stops
 the script being sent at all.
-The visitor's browser keeps a few small notes for them: the chosen theme and which booking answers
-were already emailed.
+The visitor's browser keeps a few small notes for them: the chosen theme, whether motion is paused,
+and which booking answers were already emailed.
 
 The Web3Forms access key in `src/data/site.ts` is public by design: it can only send email to the
 address it was made for.
