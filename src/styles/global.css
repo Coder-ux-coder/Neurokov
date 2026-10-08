@@ -424,10 +424,6 @@ button {
   font-weight: 800;
   font-stretch: 125%;
   line-height: 0.9;
-  /* In cap heights: with Archivo (a capital is 0.686em) it comes to the same, but in the fallback a slow
-     first visit keeps (fonts.css), whose capitals stand taller, the lines open up instead of touching.
-     The same for the other big headings. */
-  line-height: max(0.9em, 1.31cap);
   letter-spacing: -0.03em;
   text-transform: uppercase;
 }
@@ -439,7 +435,6 @@ button {
   font-weight: 750;
   font-stretch: 118%;
   line-height: 0.96;
-  line-height: max(0.96em, 1.39cap);
   letter-spacing: -0.035em;
 }
 
@@ -448,7 +443,6 @@ button {
   font-weight: 720;
   font-stretch: 112%;
   line-height: 1;
-  line-height: max(1em, 1.45cap);
   letter-spacing: -0.032em;
 }
 
@@ -2459,7 +2453,6 @@ html:not(.js) .nav {
   font-stretch: 122%;
   letter-spacing: -0.035em;
   line-height: 0.95;
-  line-height: max(0.95em, 1.38cap);
   text-transform: uppercase;
 }
 
@@ -3651,7 +3644,6 @@ html:not(.js) .nav {
   font-weight: 800;
   font-stretch: 120%;
   line-height: 0.95;
-  line-height: max(0.95em, 1.38cap);
   letter-spacing: -0.035em;
 }
 
@@ -5168,6 +5160,29 @@ html:not(.themes) .motion-toggle,
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Heading lines in cap heights, on phones and tablets: with Archivo (a capital is 0.686em) it comes to
+   the same line heights, but in the fallback a slow first visit keeps (fonts.css: optional), whose
+   capitals stand taller, the lines open up instead of touching. (Not on a wide screen: there it
+   would move the type by a fraction of a pixel, rounded differently.) */
+@media (max-width: 1100px) {
+  .display {
+    line-height: max(0.9em, 1.31cap);
+  }
+
+  .h1 {
+    line-height: max(0.96em, 1.39cap);
+  }
+
+  .h2 {
+    line-height: max(1em, 1.45cap);
+  }
+
+  .cta__title,
+  .founder__name {
+    line-height: max(0.95em, 1.38cap);
   }
 }
 
