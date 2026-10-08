@@ -78,6 +78,32 @@ Status codes: OPEN, FIXED (commit), REJECTED (reason).
 ## Task 3 findings so far
 - T3-1 FIXED: the floating theme button covered text on phones/tablets on nearly every screen; it now
   sits in the bar (<= 62.5em). Sticky hover on touch fixed.
-- T3-2 TODO: footer columns squeezed at 961-1100 px (1024 landscape): 3-line link wraps.
-- T3-3 TODO: case study chart label "FIG. 02" wraps into two lines on phones.
-- T3-4 TODO: touch targets: footer links 19 px tall; clip controls 38 px; burger/theme 42 px.
+- T3-2 FIXED (9621fbd: footer stacks at <= 1100px): footer columns squeezed at 961-1100 px.
+- T3-3 FIXED (9621fbd: .chart__head > .label flex none): chart label "FIG. 02" wrapped on phones.
+- T3-4 FIXED (9621fbd + 9a9327b: 44px targets under pointer: coarse): small touch targets.
+
+## Round 2 (auditors A-D on round2/dist = main 9a9327b)
+- Resumed 3 times after usage limits (agent ids: A a391cc1c17888eb01, B a21709b454d547e7d,
+  C aff3baa8eab0a01b1, D a409bef1084082b66). No final reports yet.
+
+## Task 2 progress (2026-10-07/08), worktree /home/user/nk-perf (branch perf-wip)
+- Lantern facts: LCP graph = every request (except low-priority images) that ENDED before the
+  observed LCP; so fonts (75 KB) were in it: +3 round trips (450 ms) over FCP. Documents over
+  14,600 bytes transfer cost one more round trip (150 ms) for FCP and LCP.
+- 1609191 fonts: frac/numr/dnom/pnum/locl dropped, signs wght 600-900: 74.6 -> 64.1 KB; pixel
+  identical (fontcmp.mjs, 41M pixels, all weights/widths).
+- page-styles.mjs (uncommitted): per-page CSS pruning in astro:build:done, css-tree (already in the
+  tree; PurgeCSS rejected: npm audit high via fast-glob/braces). Keeps 61%. BUG found and fixed:
+  dataset.theme -> data-theme not a literal token (dark mode rules were dropped); wordsIn() maps
+  dataset.x/ariaX to attribute names.
+- First-screen holds (uncommitted): case-study film, service film and the first row of case cards
+  were outside [data-hold], so they waited for site.js + a 0.9 s fade: observed LCP 1.1-1.2 s after
+  FCP on 7 pages (phone and laptop). data-hold now also works on a single block (CSS :is(), reveal.ts).
+  Phone: LCP = FCP on all 7 pages after the fix (lcpgap.mjs).
+- Remaining desktop gap 100-200 ms on film pages: the poster upgrade (768w inline -> full srcset)
+  makes a later, larger LCP entry (upscaled image counts at intrinsic size). By design (sharpness).
+- Lighthouse bf-cache audit fails 2/8 runs on main and perf alike ("IgnoreEventAndEvict", internal,
+  not actionable); real navigation restores 60/60 (bfloop.mjs, full Chromium, incl. chrome://terms).
+- Quiet-machine mobile medians, main -> perf (fonts+prune+chunks): book FCP 991->817 LCP 1373->1129;
+  faq 984->835 / 1351->1127; services LCP 1426->1352; about 1426->1362; home 1502->1434; TBT 0.
+- npm audit: sharp <0.35.5 high (pre-existing, build-time); mention to user / bump separately.

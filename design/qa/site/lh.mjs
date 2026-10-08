@@ -16,7 +16,7 @@ const CATS = arg('cats', 'performance,accessibility,best-practices,seo').split('
 
 const chrome = await chromeLauncher.launch({
   chromePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  chromeFlags: ['--headless=new', '--no-sandbox', '--ignore-certificate-errors', '--disable-gpu', '--no-proxy-server', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'],
+  chromeFlags: ['--headless=new', '--no-sandbox', '--ignore-certificate-errors', '--disable-gpu', '--proxy-server=http://127.0.0.1:9', '--proxy-bypass-list=localhost;127.0.0.1', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'],
 });
 
 const median = (xs) => {
@@ -34,7 +34,9 @@ try {
       for (let i = 0; i < RUNS; i++) {
         const flags = { port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: CATS, throttlingMethod: THROTTLE };
         const config = ff === 'desktop' ? desktopConfig : undefined;
-        const r = await lighthouse(BASE + path, flags, config);
+        let r = await lighthouse(BASE + path, flags, config);
+        // A run now and then comes back empty (no paint seen): run it again.
+        for (let retry = 0; retry < 2 && !r?.lhr?.audits?.['first-contentful-paint']?.numericValue; retry++) r = await lighthouse(BASE + path, flags, config);
         const lhr = r.lhr;
         const a = lhr.audits;
         const num = (id) => a[id]?.numericValue ?? null;
@@ -53,11 +55,11 @@ try {
           ttfb: num('server-response-time'),
           bytes: num('total-byte-weight'),
           requests: a['network-requests']?.details?.items?.length ?? null,
-          dom: num('dom-size'),
+          dom: a['dom-size-insight']?.details?.items?.[0]?.value?.value ?? null,
           mainthread: num('mainthread-work-breakdown'),
           bootup: num('bootup-time'),
-          lcpEl: a['largest-contentful-paint-element']?.details?.items?.[0]?.items?.[0]?.node?.snippet?.slice(0, 120) ?? null,
-          lcpPhases: a['largest-contentful-paint-element']?.details?.items?.[1]?.items?.map((x) => `${x.phase}:${Math.round(x.timing)}`).join(' ') ?? null,
+          lcpEl: a['lcp-breakdown-insight']?.details?.items?.find((x) => x.type === 'node')?.selector ?? null,
+          lcpPhases: a['lcp-breakdown-insight']?.details?.items?.[0]?.items?.map((x) => `${x.subpart}:${Math.round(x.duration)}`).join(' ') ?? null,
           renderBlocking: a['render-blocking-resources']?.details?.items?.map((x) => x.url) ?? [],
           failed: Object.values(a).filter((x) => x.score !== null && x.score < 1 && x.scoreDisplayMode !== 'informative' && x.scoreDisplayMode !== 'notApplicable' && x.scoreDisplayMode !== 'manual').map((x) => `${x.id}(${x.score})`),
           warnings: lhr.runWarnings,
