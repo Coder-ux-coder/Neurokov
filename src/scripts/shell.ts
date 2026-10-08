@@ -51,5 +51,32 @@ else wide.addListener(onWidth);
 // Back to a page kept in memory (the back button): the menu that led away from it is closed again.
 addEventListener('pageshow', (e) => e.persisted && setMenu(false));
 
+/* ---------- Focus kept in view ---------- */
+
+// Up to 1100px wide, sections off screen hold a placeholder height until they're shown (global.css).
+// Tab to something past a few of them and the browser scrolls to where it would be at those heights;
+// the sections around it then take their real heights, over a few frames, and it can end up off screen
+// or under the bar. It's watched until it holds still in view, and brought back each time it isn't.
+const placeholders = matchMedia('(max-width: 1100px)');
+document.addEventListener('focusin', (e) => {
+  const el = e.target as Element;
+  if (!placeholders.matches || !el.matches(':focus-visible') || el.closest('dialog')) return;
+  let frames = 0;
+  let steady = 0;
+  const check = () => {
+    if (document.activeElement !== el) return;
+    const box = el.getBoundingClientRect();
+    const css = getComputedStyle(root);
+    const top = parseFloat(css.scrollPaddingTop) || 0;
+    const bottom = innerHeight - (parseFloat(css.scrollPaddingBottom) || 0);
+    if (box.top < top || box.bottom > bottom) {
+      el.scrollIntoView({ block: 'nearest' });
+      steady = 0;
+    } else steady++;
+    if (++frames < 40 && steady < 4) requestAnimationFrame(check);
+  };
+  requestAnimationFrame(check);
+});
+
 // The button works now: it takes over from the link (global.css).
 root.classList.add('menu-ready');

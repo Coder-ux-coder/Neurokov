@@ -130,7 +130,7 @@ const more = cases.filter((c) => c !== featured);
         title="Some of our work."
         lead="Real businesses, real numbers. Every result here was delivered by us."
       >
-        <a slot="after-lead" class="text-link" href="/case-studies/"> Read the case studies →</a>
+        <a slot="after-lead" class="text-link" href="/case-studies/"> Read the case studies<Icon name="arrow-right" size={16} class="text-link__arrow" /></a>
       </SectionHead>
       <div class="cases cases--2">
         {more.map((c, i) => <CaseCard study={c} delay={i * 100} />)}
@@ -160,7 +160,7 @@ const more = cases.filter((c) => c !== featured);
         title="From first call to booked calls."
         lead="One free call, one fixed price and booked calls from day one."
       >
-        <a slot="after-lead" class="text-link" href="/process/"> See the process in detail →</a>
+        <a slot="after-lead" class="text-link" href="/process/"> See the process in detail<Icon name="arrow-right" size={16} class="text-link__arrow" /></a>
       </SectionHead>
       <Steps />
     </div>

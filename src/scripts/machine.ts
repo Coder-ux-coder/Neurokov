@@ -4,7 +4,7 @@
  * and leaves as actions (orange dots): a good fit books a call, updates the CRM
  * and pings the team; anyone else is updated in the CRM and nurtured.
  */
-import { calm, fine, loop, pad, watchVisible } from './lib';
+import { calm, fine, loop, onMotion, pad, still, watchVisible } from './lib';
 import { decode } from './reveal';
 
 
@@ -13,6 +13,8 @@ export function startMachine() {
   if (host) machine(host);
 }
 interface Packet {
+  /** Which wire it rides, the same in both drawings: in:<n>, core or out:<key>. */
+  wire: string;
   path: SVGPathElement;
   len: number;
   t: number;
@@ -35,14 +37,32 @@ function machine(host: HTMLElement) {
   let sinceSpawn = 0;
   let nextSpawn = 400;
 
+  // The wire a packet rides, and the gates along the core, in the drawing on screen.
+  const pathOf = (wire: string) =>
+    (wire === 'core'
+      ? svg.querySelector<SVGPathElement>('[data-core]')
+      : wire.startsWith('in:')
+        ? svg.querySelectorAll<SVGPathElement>('[data-in]')[Number(wire.slice(3))]
+        : svg.querySelector<SVGPathElement>(`[data-out="${wire.slice(4)}"]`))!;
+  const gatesNow = () =>
+    [...svg.querySelectorAll<SVGRectElement>('[data-gate]')].map((g) => ({ el: g, at: Number(g.dataset.at) }));
+
+  // A wide and a tall drawing: the one on screen runs. Switching (a phone turned on its side), the leads
+  // on their way carry on along the same wires in the other drawing, so every lead in is still answered.
   const pick = () => {
     const visible = [...host.querySelectorAll<SVGSVGElement>('svg.machine__svg')].find(
       (s) => getComputedStyle(s).display !== 'none',
     );
     if (!visible || visible === svg) return;
-    packets.forEach((p) => p.el.remove());
-    packets = [];
+    svg?.querySelectorAll('.is-hot').forEach((g) => g.classList.remove('is-hot'));
     svg = visible;
+    const layer = svg.querySelector('[data-packets]')!;
+    packets.forEach((p) => {
+      p.path = pathOf(p.wire);
+      p.len = p.path.getTotalLength();
+      if (p.gates) p.gates = gatesNow();
+      layer.append(p.el);
+    });
     render();
   };
 
@@ -56,12 +76,13 @@ function machine(host: HTMLElement) {
     });
   };
 
-  const send = (path: SVGPathElement, cls: string, dur: number, done: () => void, gates?: Packet['gates']) => {
+  const send = (wire: string, cls: string, dur: number, done: () => void) => {
     const el = document.createElementNS(NS, 'circle');
     el.setAttribute('r', '5');
     el.setAttribute('class', cls);
     svg.querySelector('[data-packets]')!.append(el);
-    packets.push({ path, len: path.getTotalLength(), t: 0, dur, el, gates, done });
+    const path = pathOf(wire);
+    packets.push({ wire, path, len: path.getTotalLength(), t: 0, dur, el, gates: wire === 'core' ? gatesNow() : undefined, done });
   };
 
   const hit = (key: string) => {
@@ -76,30 +97,17 @@ function machine(host: HTMLElement) {
   };
 
   const spawn = () => {
-    const ins = [...svg.querySelectorAll<SVGPathElement>('[data-in]')];
-    const core = svg.querySelector<SVGPathElement>('[data-core]')!;
-    const gates = [...svg.querySelectorAll<SVGRectElement>('[data-gate]')].map((g) => ({
-      el: g,
-      at: Number(g.dataset.at),
-    }));
-    const out = (key: string) => svg.querySelector<SVGPathElement>(`[data-out="${key}"]`)!;
-    const src = ins[(Math.random() * ins.length) | 0];
+    const ins = svg.querySelectorAll('[data-in]').length;
     tallies.in++;
     render();
-    send(src, 'dot', 1150, () =>
-      send(
-        core,
-        'dot dot--core',
-        1300,
-        () => {
-          tallies.answered++;
-          render();
-          const fit = Math.random() < 0.68;
-          const keys = fit ? ['booked', 'crm', 'team'] : ['nurture', 'crm'];
-          keys.forEach((k, n) => setTimeout(() => send(out(k), 'dot dot--out', 900, () => hit(k)), n * 90));
-        },
-        gates,
-      ),
+    send(`in:${(Math.random() * ins) | 0}`, 'dot', 1150, () =>
+      send('core', 'dot dot--core', 1300, () => {
+        tallies.answered++;
+        render();
+        const fit = Math.random() < 0.68;
+        const keys = fit ? ['booked', 'crm', 'team'] : ['nurture', 'crm'];
+        keys.forEach((k, n) => setTimeout(() => send(`out:${k}`, 'dot dot--out', 900, () => hit(k)), n * 90));
+      }),
     );
   };
 
@@ -146,6 +154,12 @@ function machine(host: HTMLElement) {
 
   requestAnimationFrame(pick);
   addEventListener('resize', pick, { passive: true });
+  host.classList.add('is-ready');
   if (calm) return;
-  watchVisible(host, (v) => (v ? engine.start() : engine.stop()), { rootMargin: '80px 0px' });
+  host.classList.add('is-simulated');
+  // It runs while it's on screen, unless the visitor has paused the site's motion.
+  let visible = false;
+  const run = () => (visible && !still() ? engine.start() : engine.stop());
+  watchVisible(host, (v) => ((visible = v), run()), { rootMargin: '80px 0px' });
+  onMotion(run);
 }

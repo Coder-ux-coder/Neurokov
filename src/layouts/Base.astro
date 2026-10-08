@@ -167,25 +167,58 @@ const speculation = {
           else delete r.dataset.theme;
           if (meta) meta.setAttribute('content', dark ? '#0f0f0e' : '#f2efe8');
         };
+        // The moving parts (the tickers, living photos, the lead machine, the circuit and films that
+        // play by themselves) stop for as long as the visitor wants, on every page, with the motion
+        // button: anything moving for more than five seconds can be paused (WCAG 2.2.2). site.ts's
+        // scripts listen for nk-motion.
+        var labels = function () {
+          var label = r.classList.contains('still') ? 'Play motion' : 'Pause motion';
+          var all = document.querySelectorAll('[data-motion-label]');
+          for (var i = 0; i < all.length; i++) all[i].textContent = label;
+        };
+        var still = function (on) {
+          if (r.classList.contains('still') === on) return;
+          r.classList.toggle('still', on);
+          labels();
+          document.dispatchEvent(new Event('nk-motion'));
+        };
+        document.addEventListener('DOMContentLoaded', labels);
         var stored = function () {
           try {
             theme(localStorage.getItem('nk-theme') === 'dark');
+            still(localStorage.getItem('nk-motion') === 'still');
           } catch (e) {}
         };
         stored();
-        // A page shown again from memory (Back) or one made ahead of the click (prerendered) was set up
-        // before the theme last changed: it takes the theme as it is now.
+        // A page shown again from memory (Back), one made ahead of the click (prerendered) or one open
+        // in another tab was set up before the theme or motion last changed: it takes them as they are now.
         addEventListener('pageshow', function (e) {
           if (e.persisted) stored();
         });
         document.addEventListener('prerenderingchange', stored);
+        addEventListener('storage', function (e) {
+          if (e.key === 'nk-theme' || e.key === 'nk-motion' || e.key === null) stored();
+        });
         document.addEventListener('click', function (e) {
-          if (!e.target.closest || !e.target.closest('[data-theme-toggle]')) return;
-          var dark = r.dataset.theme !== 'dark';
-          theme(dark);
-          try {
-            localStorage.setItem('nk-theme', dark ? 'dark' : 'light');
-          } catch (err) {}
+          if (!e.target.closest) return;
+          if (e.target.closest('[data-theme-toggle]')) {
+            var dark = r.dataset.theme !== 'dark';
+            theme(dark);
+            try {
+              localStorage.setItem('nk-theme', dark ? 'dark' : 'light');
+            } catch (err) {}
+          } else if (e.target.closest('[data-motion-toggle]')) {
+            var on = !r.classList.contains('still');
+            still(on);
+            try {
+              localStorage.setItem('nk-motion', on ? 'still' : 'moving');
+            } catch (err) {}
+          }
+        });
+        // Back and Forward bring a page straight back: no wipe to wait through (nor taps lost in it).
+        addEventListener('pagereveal', function (e) {
+          var nav = window.navigation;
+          if (e.viewTransition && nav && nav.activation && nav.activation.navigationType === 'traverse') e.viewTransition.skipTransition();
         });
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('calm');
       })();
@@ -202,6 +235,11 @@ const speculation = {
     <button class="theme-toggle theme-toggle--float" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
       <Icon name="sun" class="icon-sun" size={18} />
       <Icon name="moon" class="icon-moon" size={18} />
+    </button>
+    <button class="motion-toggle motion-toggle--float" type="button" data-motion-toggle>
+      <span class="sr-only" data-motion-label>Pause motion</span>
+      <Icon name="pause" class="icon-pause" size={16} />
+      <Icon name="play" class="icon-play" size={16} />
     </button>
     <div class="ruler" data-ruler aria-hidden="true">
       <span class="ruler__track"><span class="ruler__fill"></span></span>

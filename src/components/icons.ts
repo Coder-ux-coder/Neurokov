@@ -24,6 +24,8 @@ import menu from 'lucide-static/icons/menu.svg?raw';
 import messageSquareReply from 'lucide-static/icons/message-square-reply.svg?raw';
 import moon from 'lucide-static/icons/moon.svg?raw';
 import palette from 'lucide-static/icons/palette.svg?raw';
+import pause from 'lucide-static/icons/pause.svg?raw';
+import play from 'lucide-static/icons/play.svg?raw';
 import receipt from 'lucide-static/icons/receipt.svg?raw';
 import refreshCcw from 'lucide-static/icons/refresh-ccw.svg?raw';
 import rocket from 'lucide-static/icons/rocket.svg?raw';
@@ -66,6 +68,8 @@ export const icons = {
   'message-square-reply': messageSquareReply,
   moon,
   palette,
+  pause,
+  play,
   receipt,
   'refresh-ccw': refreshCcw,
   rocket,
