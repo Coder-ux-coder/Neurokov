@@ -9,6 +9,7 @@ import { startCircuits } from './circuit';
 import { startClips } from './clips';
 import { startDither } from './dither';
 import { startFlaps } from './flap';
+import { warmFonts } from './fonts';
 import { root } from './lib';
 import { startLive } from './live';
 import { startMachine } from './machine';
@@ -94,7 +95,8 @@ function startReview() {
 /* ---------- Start, most wanted first ---------- */
 
 // Booking first: a button pressed now opens the form instead of following its link. Then what
-// comes into view as the visitor scrolls, then the first screen's moving parts, then the rest.
+// comes into view as the visitor scrolls, then the first screen's moving parts, then the rest, and
+// last the web fonts for the next page (fonts.ts).
 const steps = [
   startBooking,
   startReveal,
@@ -109,6 +111,7 @@ const steps = [
   startMachine,
   startCircuits,
   startReview,
+  warmFonts,
 ];
 
 /** Hands the main thread back to the browser (input, painting) before the next piece of work. */

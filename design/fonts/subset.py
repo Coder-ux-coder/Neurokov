@@ -5,7 +5,7 @@ pieces to src/styles/fonts.css.
 
 - The core of each font holds what the copy uses: plain ASCII (also everything typed into the
   booking form), a few Latin-1 signs (§ © · × and the no-break space) and typographic punctuation.
-  Every page needs it, so Base.astro preloads it.
+  Every page uses it, from the cache once the site's script has put it there (fonts.ts).
 - "signs" holds Archivo's symbols from 62% to 100% wide, for the narrow signs on the split-flap
   tiles. It is a family of its own, 'Archivo Signs', so its narrow symbols never stand in for normal
   ones.
@@ -135,9 +135,10 @@ def main():
     CSS.write_text(
         '/* Written by design/fonts/subset.py: edit that, then run it again. Each font holds just the\n'
         '   characters the site\'s copy uses; anything else shows in the fallback font (fallback.css).\n'
-        '   Optional: a font that isn\'t there for the page\'s first paint (Base.astro asks for them with the\n'
-        '   page) isn\'t swapped in later, when it would move the text; the page keeps the fallback, sized to\n'
-        '   match, and the next page has the font from the cache. */\n\n'
+        '   A first visit paints in the fallback (global.css: .cold) and the site\'s script then puts the\n'
+        '   fonts in the cache (fonts.ts), for every page after. Optional: a font that isn\'t there for a\n'
+        '   page\'s first paint isn\'t swapped in later, when it would move the text; the page keeps the\n'
+        '   fallback, sized to match. */\n\n'
         + '\n'.join(rules)
     )
     print(f'-> {CSS.relative_to(ROOT)}')

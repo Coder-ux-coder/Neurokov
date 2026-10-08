@@ -52,6 +52,15 @@
   --mono-here: 'Plex Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font: 'Archivo Variable', var(--font-here);
   --mono: 'IBM Plex Mono', var(--mono-here);
+  --signs: 'Archivo Signs', var(--font);
+}
+
+/* A first visit, until the web fonts are in the cache (the head script in Base.astro, fonts.ts): set
+   at once in the fonts the visitor has, sized to match, with nothing to wait for or swap in later. */
+.cold {
+  --font: var(--font-here);
+  --mono: var(--mono-here);
+  --signs: var(--font-here);
 }
 
 :root[data-theme='dark'] {
@@ -1411,7 +1420,7 @@ html:not(.js) .nav {
 }
 
 .fc--signal > span > i {
-  font-family: 'Archivo Signs', var(--font);
+  font-family: var(--signs);
 }
 
 /* ---------- The video (home): what we do and how we work (Vsl.astro) ---------- */
@@ -4879,12 +4888,12 @@ html:not(.themes) .motion-toggle,
   }
 }
 
-/* A touch tablet on its side, wide enough for the bar's links: the buttons in the corner (theme,
-   motion) would sit on the ends of lines and on buttons at the content's edge. A wider margin keeps the
-   content clear of them. */
-@media (min-width: 62.5em) and (max-width: 1100px) and (pointer: coarse) {
+/* Wherever the theme and motion buttons wait in the corner (wider than 62.5em), the margin is wide
+   enough for them, so they never sit on the ends of lines or on the content's edge: 42px buttons (44px
+   on a touch screen) 18px from the edge, in a margin of at least 72px. */
+@media (min-width: 62.5001em) {
   :root {
-    --gutter: max(72px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+    --gutter: max(clamp(16px, 4.4vw, 64px), 72px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   }
 }
 
@@ -5163,27 +5172,24 @@ html:not(.themes) .motion-toggle,
   }
 }
 
-/* Heading lines in cap heights, on phones and tablets: with Archivo (a capital is 0.686em) it comes to
-   the same line heights, but in the fallback a slow first visit keeps (fonts.css: optional), whose
-   capitals stand taller, the lines open up instead of touching. (Not on a wide screen: there it
-   would move the type by a fraction of a pixel, rounded differently.) */
-@media (max-width: 1100px) {
-  .display {
-    line-height: max(0.9em, 1.31cap);
-  }
+/* Heading lines in cap heights: with Archivo (a capital is 0.686em) it comes to the same line
+   heights, but in the fallback a first visit paints in (fonts.css), whose capitals stand taller, the
+   lines open up instead of touching. */
+.display {
+  line-height: max(0.9em, 1.31cap);
+}
 
-  .h1 {
-    line-height: max(0.96em, 1.39cap);
-  }
+.h1 {
+  line-height: max(0.96em, 1.39cap);
+}
 
-  .h2 {
-    line-height: max(1em, 1.45cap);
-  }
+.h2 {
+  line-height: max(1em, 1.45cap);
+}
 
-  .cta__title,
-  .founder__name {
-    line-height: max(0.95em, 1.38cap);
-  }
+.cta__title,
+.founder__name {
+  line-height: max(0.95em, 1.38cap);
 }
 
 /* ---------- Print (or save as PDF): the page as a document ----------

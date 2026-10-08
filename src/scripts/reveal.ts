@@ -87,14 +87,19 @@ export function startReveal() {
   if (calm || !('IntersectionObserver' in window)) {
     reveals.forEach((el) => el.classList.add('is-in'));
   } else {
+    // A label already on screen when this starts has been read as it is since the first paint:
+    // only the ones scrolled to later decode.
+    const seen = new WeakSet<Element>();
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
           const el = entry.target as HTMLElement;
+          const first = !seen.has(el);
+          seen.add(el);
+          if (!entry.isIntersecting) continue;
           io.unobserve(el);
           if (el.hasAttribute('data-reveal')) el.classList.add('is-in');
-          if (el.hasAttribute('data-decode')) decode(el);
+          if (el.hasAttribute('data-decode') && !first) decode(el);
         }
       },
       // Any part in view counts: a share of a block taller than a short screen might never be.

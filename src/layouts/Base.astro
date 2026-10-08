@@ -24,6 +24,8 @@ interface Props {
   boldMono?: boolean;
   /** The page has a split-flap board with signs on it (%, <, +), set in Archivo Signs. */
   signs?: boolean;
+  /** The booking popup. Not on the book pages, whose booking buttons bring their own form into view. */
+  bookingDialog?: boolean;
 }
 
 const {
@@ -34,9 +36,11 @@ const {
   jsonLd,
   boldMono = true,
   signs = false,
+  bookingDialog = true,
 } = Astro.props;
 
-// The web fonts this page sets text in, fetched at once with the page (fonts.css says how they're used).
+// The web fonts this page sets text in. Once they're in the cache, the head script asks for them with
+// the page, so they're there for its first paint (fonts.css, fonts.ts).
 const fonts = [archivo, plex400, plex500, ...(boldMono ? [plex600] : []), ...(signs ? [archivoSigns] : [])];
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
@@ -56,7 +60,10 @@ const organization = {
   email: site.email,
   founder: { '@type': 'Person', name: site.founder.name, jobTitle: site.founder.role },
 };
-const structured = [organization, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [])];
+// On the home and about pages, as Google asks (the home page or one that describes the organisation);
+// every other page carries only its own.
+const aboutUs = ['/', '/about/'].includes(Astro.url.pathname);
+const structured = [...(aboutUs ? [organization] : []), ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [])];
 
 // The next page is ready before the click: a link to another page of the site is loaded and laid
 // out (prerendered) as the pointer rests on it or a finger presses it, so it opens at once. The
@@ -73,7 +80,7 @@ const speculation = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-fonts={fonts.join(' ')}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -85,8 +92,6 @@ const speculation = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    {/* The web fonts, asked for with the page so they can be there for its first paint (fonts.css). */}
-    {fonts.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -103,7 +108,7 @@ const speculation = {
     {ph('domain') && <meta name="nk-placeholder" content="Canonical domain not confirmed" data-ph={ph('domain')} />}
 
     {/* Every < escaped, so no text in the data can ever close this script tag early. */}
-    <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />
+    {structured.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />}
     <script is:inline type="speculationrules" set:html={JSON.stringify(speculation)} />
 
     {/* Runs before first paint: the theme (light unless the visitor chose dark) and its button, and
@@ -112,6 +117,26 @@ const speculation = {
       (function () {
         var r = document.documentElement;
         r.classList.add('js', 'themes');
+        // The web fonts once they're in the cache (fonts.ts puts them there once a page is up): until
+        // then the page paints at once in the fonts the visitor has, sized to match (global.css: .cold).
+        // Then they're asked for with the page, so they're there for its first paint. (Storage
+        // blocked: asked for all the same, used if they come in time; fonts.css.)
+        var cold = false;
+        try {
+          cold = localStorage.getItem('nk-fonts') !== '1';
+        } catch (e) {}
+        if (cold) r.classList.add('cold');
+        else
+          (r.getAttribute('data-fonts') || '').split(' ').forEach(function (href) {
+            if (!href) return;
+            var link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'font';
+            link.type = 'font/woff2';
+            link.crossOrigin = '';
+            link.href = href;
+            document.head.appendChild(link);
+          });
         // Work that can wait until the first screen is up (r.nkLater(fn): the site's script): once the
         // page has loaded and its first paint has reached the screen (as the browser reports it), and
         // two frames more. Nothing then competes with the first screen for the connection or holds up
@@ -231,7 +256,7 @@ const speculation = {
       <slot />
     </main>
     <Footer />
-    <BookingForm mode="dialog" />
+    {bookingDialog && <BookingForm mode="dialog" />}
     <button class="theme-toggle theme-toggle--float" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
       <Icon name="sun" class="icon-sun" size={18} />
       <Icon name="moon" class="icon-moon" size={18} />

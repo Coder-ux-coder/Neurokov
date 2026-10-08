@@ -1,8 +1,9 @@
 /* Written by design/fonts/subset.py: edit that, then run it again. Each font holds just the
    characters the site's copy uses; anything else shows in the fallback font (fallback.css).
-   Optional: a font that isn't there for the page's first paint (Base.astro asks for them with the
-   page) isn't swapped in later, when it would move the text; the page keeps the fallback, sized to
-   match, and the next page has the font from the cache. */
+   A first visit paints in the fallback (global.css: .cold) and the site's script then puts the
+   fonts in the cache (fonts.ts), for every page after. Optional: a font that isn't there for a
+   page's first paint isn't swapped in later, when it would move the text; the page keeps the
+   fallback, sized to match. */
 
 @font-face {
   font-family: 'Archivo Variable';

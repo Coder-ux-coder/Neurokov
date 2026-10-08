@@ -81,10 +81,13 @@ every page until it's pressed again.
 
 - Each page has its own title, description, canonical address and share card (`public/og.png`).
   The sitemap (`/sitemap-index.xml`) and `robots.txt` are built with the site.
-- Structured data tells search engines who Neurokov is (every page), the site's name (home) and
-  the questions answered (FAQ and service pages).
+- Structured data tells search engines who Neurokov is (home and about pages), the site's name
+  (home) and the questions answered (FAQ and service pages).
 - Photos are served as AVIF or WebP at the size the screen needs, films and photos load as they
-  come into view, fonts are served by the site itself, and links start loading on hover.
+  come into view, and links start loading on hover.
+- The fonts are served by the site itself. A first visit paints at once in fonts the visitor already
+  has, sized to take the same room, then fetches the site's fonts for every page after; nothing is
+  swapped in under the reader, so nothing on the page moves.
 - On phones and tablets, sections below the first screen are laid out and painted only as they come
   near it, so the first screen paints sooner.
 - Each page carries its styles inside it, cut down to what that page can use
