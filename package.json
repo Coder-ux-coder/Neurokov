@@ -23,6 +23,7 @@
     "simple-icons": "^16.32.0"
   },
   "devDependencies": {
-    "css-tree": "^3.2.1"
+    "css-tree": "^3.2.1",
+    "esbuild": "^0.28.2"
   }
 }

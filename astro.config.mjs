@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { inlineScripts } from './scripts/inline-scripts.mjs';
 import { pageStyles } from './scripts/page-styles.mjs';
 
 /**
@@ -39,7 +40,9 @@ export default defineConfig({
   site: SITE,
   integrations: [
     lowPriorityScripts,
+    // Reads each page's words, the inline script's among them, before that script is minified.
     pageStyles,
+    inlineScripts,
     sitemap({
       // Not the 404, nor the step a visitor without JavaScript reaches after the booking form.
       filter: (page) => !page.endsWith('/404/') && !page.endsWith('/book/pick-a-time/'),

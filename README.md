@@ -87,6 +87,9 @@ every page until it's pressed again.
   come into view, fonts are served by the site itself, and links start loading on hover.
 - On phones and tablets, sections below the first screen are laid out and painted only as they come
   near it, so the first screen paints sooner.
+- Each page carries its styles inside it, cut down to what that page can use
+  (`scripts/page-styles.mjs`), and the theme script minified (`scripts/inline-scripts.mjs`), so it
+  can paint without asking for anything else first; the shortest pages arrive in a single round trip.
 - Pages work by keyboard, with a skip link, labelled controls, visible focus and text versions of
   every film.
 
@@ -119,7 +122,7 @@ src/styles/       global.css, the design system and every section's styles
 src/data/         the words and numbers: site details, services, cases, process, FAQs, stats
 src/assets/       the films (clips/), the home page photo (images/) and its loop (video/)
 public/           copied into the site as is: icons, share image, robots.txt, _headers
-scripts/          checks that run after every build
+scripts/          the build's last steps (each page's styles cut down, the inline script minified) and the checks that run after it
 design/           the sources the films, photo and icons are made from, and the intro video script (not part of the site)
 netlify.toml      how Netlify builds the site
 ```
