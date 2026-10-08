@@ -1715,13 +1715,14 @@ html:not(.js) .nav {
   opacity: 1;
 }
 
+/* Beside the pause button. While the story waits, the play button sits in the middle and this takes
+   the corner: it moves by transform, as a change of position would count as the page shifting. */
 .clip__full {
-  right: 58px;
+  transform: translateX(-46px);
 }
 
-/* While the story waits, the play button sits in the middle and this takes the corner. */
 .clip.is-held .clip__full {
-  right: 12px;
+  transform: none;
 }
 
 .clip__full .i-shrink,
@@ -1818,7 +1819,7 @@ html:not(.js) .nav {
   }
 
   .clip__full {
-    right: 64px;
+    transform: translateX(-52px);
   }
 }
 

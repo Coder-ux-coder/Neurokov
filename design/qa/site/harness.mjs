@@ -253,6 +253,14 @@ async function storm(browser) {
             if (!box) break;
             const x = box.x + box.width / 2;
             const y = box.y + box.height / 2;
+            // Clicks go to whatever is on top at that point: only storm a control a visitor could hit
+            // there (a menu link still fading out, say, has the page under it already).
+            const onTop = await page.evaluate(([s, px, py]) => {
+              const el = document.querySelector(s);
+              const at = document.elementFromPoint(px, py);
+              return !!el && !!at && (el === at || el.contains(at));
+            }, [sel, x, y]);
+            if (!onTop) break;
             if (mode === 'single') await page.mouse.click(x, y);
             else if (mode === 'double') await page.mouse.dblclick(x, y);
             else for (let k = 0; k < 10; k++) await page.mouse.click(x, y, { delay: 0 });
@@ -272,7 +280,8 @@ async function storm(browser) {
             const open = await page.evaluate(() => !!document.querySelector('dialog[open]') || !!document.querySelector('[data-nav].is-open'));
             if (!open) break;
             await page.keyboard.press('Escape');
-            await page.waitForTimeout(150);
+            // The phone menu takes 0.6 s to close.
+            await page.waitForTimeout(700);
           }
           const stuck = await page.evaluate(() => ({
             dialog: !!document.querySelector('dialog[open]'),
