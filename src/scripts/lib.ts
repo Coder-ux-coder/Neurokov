@@ -36,6 +36,11 @@ export const store = {
 /** Living photos play unless motion is reduced or the visitor asked to save data. */
 export const liveOk = !calm && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
+/** The visitor has paused the site's moving parts with the motion button (the head script, Base.astro). */
+export const still = () => root.classList.contains('still');
+/** Calls fn each time the visitor pauses or restarts the moving parts. */
+export const onMotion = (fn: () => void) => document.addEventListener('nk-motion', fn);
+
 /**
  * Once the page has loaded and the browser has a moment to spare. Films and loops start no sooner, so a
  * phone fetches the page, its fonts and its first screen before any video, and nothing looks different
@@ -49,7 +54,7 @@ export const settled = new Promise<void>((resolve) => {
 
 /** Plays a living photo's loop, fetching it first if need be; it fades in once it runs. */
 export function playLive(video: HTMLVideoElement) {
-  if (!video.dataset.bound) {
+  if (!('bound' in video.dataset)) {
     video.dataset.bound = '';
     video.addEventListener('playing', () => video.classList.add('is-playing'));
   }
@@ -60,7 +65,7 @@ export function playLive(video: HTMLVideoElement) {
 
 /** Plays a story clip's preview: the first time, from its poster's frame (Clip.astro), so the still turns into motion without a jump. */
 export function playPreview(video: HTMLVideoElement) {
-  if (!video.dataset.bound) video.currentTime = Number(video.dataset.at ?? 0);
+  if (!('bound' in video.dataset)) video.currentTime = Number(video.dataset.at ?? 0);
   playLive(video);
 }
 

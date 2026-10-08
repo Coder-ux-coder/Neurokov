@@ -1,11 +1,11 @@
 /**
  * Story clips (Clip.astro). An "auto" clip plays while it's on screen and
- * pauses when it isn't; with reduced motion or save-data it waits for its play
- * button. A "hover" clip plays while the pointer is over its card, and fades
+ * pauses when it isn't; with reduced motion or save-data, or while the visitor
+ * has paused the site's motion, it waits for its play button. A "hover" clip plays while the pointer is over its card, and fades
  * back to its poster when the pointer leaves. A "manual" clip is left to the
  * script of whatever it sits in.
  */
-import { fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
+import { fine, liveOk, loop, onMotion, playLive, playPreview, settled, still, watchVisible } from './lib';
 
 
 export function startClips() {
@@ -39,31 +39,54 @@ export function player(host: HTMLElement) {
   const label = host.querySelector<HTMLElement>('[data-clip-label]');
   const bar = host.querySelector<HTMLElement>('[data-clip-bar]');
   const full = host.querySelector<HTMLButtonElement>('[data-clip-full]');
-  let held = !liveOk;
+  let held = !liveOk || still();
   let wanted = false;
+  // Paused by the visitor's own press: it stays paused when the site's motion is paused and restarted.
+  let paused = false;
+  // Held by a failed load (the connection dropped), not by the visitor: it plays again once the
+  // connection is back.
+  let failed = false;
 
+  // The progress line moves while the film does, and only then.
   const meter = loop(() => {
     if (bar) bar.style.transform = `scaleX(${(video.currentTime / (video.duration || 1)).toFixed(4)})`;
   });
+  video.addEventListener('playing', meter.start);
+  video.addEventListener('pause', meter.stop);
   const sync = () => {
     if (wanted && !held && !document.hidden) {
+      // After a failed load the film only plays once it's loaded afresh.
+      if (video.error) video.load();
       playLive(video);
-      meter.start();
-    } else {
-      video.pause();
-      meter.stop();
-    }
+    } else video.pause();
     host.classList.toggle('is-held', held);
-    toggle?.setAttribute('aria-pressed', String(held));
     if (label) label.textContent = held ? 'Play the story' : 'Pause the story';
   };
 
   toggle?.addEventListener('click', () => {
-    held = !held;
+    held = paused = !held;
+    failed = false;
     sync();
   });
   video.addEventListener('ended', () => {
-    held = true;
+    held = paused = true;
+    sync();
+  });
+  // The motion button (Base.astro) pauses every film playing by itself, and restarts them.
+  onMotion(() => {
+    held = still() || !liveOk || paused;
+    failed = false;
+    sync();
+  });
+  video.addEventListener('error', () => {
+    meter.stop();
+    if (held) return;
+    held = failed = true;
+    sync();
+  });
+  addEventListener('online', () => {
+    if (!failed) return;
+    held = failed = false;
     sync();
   });
 
@@ -72,7 +95,7 @@ export function player(host: HTMLElement) {
   full?.addEventListener('click', () => {
     if (document.fullscreenElement) return void document.exitFullscreen().catch(() => {});
     if (held) {
-      held = false;
+      held = paused = false;
       sync();
     }
     if (host.requestFullscreen) host.requestFullscreen().catch(() => {});
@@ -83,6 +106,8 @@ export function player(host: HTMLElement) {
   });
   document.addEventListener('visibilitychange', sync);
   sync();
+  // Its buttons show from now on (global.css): before, there was nothing to answer them.
+  host.classList.add('is-ready');
 
   return {
     /** Whether the page wants the clip running just now. */
@@ -93,7 +118,8 @@ export function player(host: HTMLElement) {
     /** Back to the first frame; it plays unless reduced motion holds it. */
     restart() {
       video.currentTime = 0;
-      held = !liveOk;
+      held = !liveOk || still();
+      paused = failed = false;
       sync();
     },
   };
