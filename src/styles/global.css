@@ -4972,7 +4972,8 @@ html:not(.themes) .motion-toggle,
    as painted) as soon as the page arrives, however slowly the script follows. data-hold marks a
    whole opening section, or one block below it that still shows on the first screen (a film, the
    first row of cards). */
-.js:not(.calm) :is([data-hold] [data-reveal], [data-reveal][data-hold]):not([data-reveal='none']) {
+.js:not(.calm) [data-hold] [data-reveal]:not([data-reveal='none']),
+.js:not(.calm) [data-reveal][data-hold]:not([data-reveal='none']) {
   opacity: 1;
   animation: rise-in 0.6s var(--ease-out) calc(var(--d, 0ms) / 2) both;
 }

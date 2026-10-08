@@ -58,9 +58,17 @@ addEventListener('pageshow', (e) => e.persisted && setMenu(false));
 // the sections around it then take their real heights, over a few frames, and it can end up off screen
 // or under the bar. It's watched until it holds still in view, and brought back each time it isn't.
 const placeholders = matchMedia('(max-width: 1100px)');
+// Keyboard focus only (a click lands on what's in view); a browser without :focus-visible counts all.
+const byKeyboard = (el: Element) => {
+  try {
+    return el.matches(':focus-visible');
+  } catch {
+    return true;
+  }
+};
 document.addEventListener('focusin', (e) => {
   const el = e.target as Element;
-  if (!placeholders.matches || !el.matches(':focus-visible') || el.closest('dialog')) return;
+  if (!placeholders.matches || !byKeyboard(el) || el.closest('dialog')) return;
   let frames = 0;
   let steady = 0;
   const check = () => {
