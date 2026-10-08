@@ -207,112 +207,115 @@ function deliver(id: string, body: FormData) {
   send();
 }
 
-/* ---------- The dialog every booking button opens ---------- */
 
-const dialog = document.querySelector<HTMLDialogElement>('dialog[data-booking]');
-const dialogForm = dialog?.querySelector('form');
-let openedAt = -Infinity;
-let fromMenu = false;
+export function startBooking() {
+  /* ---------- The dialog every booking button opens ---------- */
 
-if (dialog && dialogForm) {
-  const title = dialog.getAttribute('aria-labelledby')!;
-  // Closed and opened again, it starts from the questions, still answered: a second try sends them
-  // again (once a day at most) and goes back to the booking page.
-  dialog.addEventListener('close', () => {
-    dialogForm.hidden = false;
-    dialog.querySelector<HTMLElement>('[data-booking-time]')!.hidden = true;
-    dialog.classList.remove('is-picking');
-    dialog.setAttribute('aria-labelledby', title);
-  });
-  dialog.querySelectorAll('[data-booking-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
-  // A click on the backdrop (the dialog itself, outside its box) closes it. Only a click that
-  // started there too: selecting text in a field and letting go outside it isn't one. Nor the rest
-  // of a double click (or a quick run of clicks) on the button that opened it: the backdrop comes up
-  // under the pointer, and the clicks after the first would close the form they opened.
-  let pressedOutside = false;
-  dialog.addEventListener('pointerdown', (e) => {
-    pressedOutside = e.target === dialog && e.timeStamp - openedAt > 600;
-  });
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog && pressedOutside && e.detail <= 1) dialog.close();
-    pressedOutside = false;
-  });
-  // Opened from the phone menu, whose links are gone once it closes: focus goes back to the menu
-  // button rather than to nowhere.
-  dialog.addEventListener('close', () => {
-    if (!fromMenu) return;
-    fromMenu = false;
-    requestAnimationFrame(() => {
-      const at = document.activeElement;
-      if (!at || at === document.body || !(at as HTMLElement).checkVisibility?.()) {
-        document.querySelector<HTMLElement>('[data-burger]')?.focus();
-      }
+  const dialog = document.querySelector<HTMLDialogElement>('dialog[data-booking]');
+  const dialogForm = dialog?.querySelector('form');
+  let openedAt = -Infinity;
+  let fromMenu = false;
+
+  if (dialog && dialogForm) {
+    const title = dialog.getAttribute('aria-labelledby')!;
+    // Closed and opened again, it starts from the questions, still answered: a second try sends them
+    // again (once a day at most) and goes back to the booking page.
+    dialog.addEventListener('close', () => {
+      dialogForm.hidden = false;
+      dialog.querySelector<HTMLElement>('[data-booking-time]')!.hidden = true;
+      dialog.classList.remove('is-picking');
+      dialog.setAttribute('aria-labelledby', title);
     });
-  });
+    dialog.querySelectorAll('[data-booking-close]').forEach((b) => b.addEventListener('click', () => dialog.close()));
+    // A click on the backdrop (the dialog itself, outside its box) closes it. Only a click that
+    // started there too: selecting text in a field and letting go outside it isn't one. Nor the rest
+    // of a double click (or a quick run of clicks) on the button that opened it: the backdrop comes up
+    // under the pointer, and the clicks after the first would close the form they opened.
+    let pressedOutside = false;
+    dialog.addEventListener('pointerdown', (e) => {
+      pressedOutside = e.target === dialog && e.timeStamp - openedAt > 600;
+    });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog && pressedOutside && e.detail <= 1) dialog.close();
+      pressedOutside = false;
+    });
+    // Opened from the phone menu, whose links are gone once it closes: focus goes back to the menu
+    // button rather than to nowhere.
+    dialog.addEventListener('close', () => {
+      if (!fromMenu) return;
+      fromMenu = false;
+      requestAnimationFrame(() => {
+        const at = document.activeElement;
+        if (!at || at === document.body || !(at as HTMLElement).checkVisibility?.()) {
+          document.querySelector<HTMLElement>('[data-burger]')?.focus();
+        }
+      });
+    });
 
-  dialogForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const answers = answersOf(dialogForm);
-    if (!answers) return;
-    notify(dialogForm, answers);
-    pickATime(dialog);
-  });
-}
-
-/* ---------- The book page: the form in the page, then the booking page in its place ---------- */
-
-const inline = document.querySelector<HTMLElement>('div[data-booking]');
-const inlineForm = inline?.querySelector('form');
-
-/** The book page's panel (the form, or by now the booking page) comes into view, unless it's already there. */
-function panelIntoView() {
-  const panel = inline?.parentElement;
-  const top = panel?.getBoundingClientRect().top ?? 0;
-  if (top < 0 || top > innerHeight / 2) panel?.scrollIntoView({ block: 'start' });
-}
-
-if (inline && inlineForm) {
-  inlineForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const answers = answersOf(inlineForm);
-    if (!answers) return;
-    notify(inlineForm, answers);
-    pickATime(inline);
-    panelIntoView();
-  });
-}
-
-/* ---------- Booking buttons ---------- */
-
-// On the document, so it runs after the phone menu's own click handler has closed the menu (the
-// menu makes the rest of the page inert while it's open).
-document.addEventListener('click', (e) => {
-  // A new tab asked for: the link (the book page) does the job.
-  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  const button = (e.target as Element).closest?.('[data-book]');
-  if (!button) return;
-  // Already on the booking page of its own (pick-a-time): the buttons bring it into view.
-  const picker = document.querySelector<HTMLElement>('[data-booking-page]');
-  if (picker) {
-    e.preventDefault();
-    picker.scrollIntoView({ block: 'start' });
-    picker.focus({ preventScroll: true });
-    return;
+    dialogForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const answers = answersOf(dialogForm);
+      if (!answers) return;
+      notify(dialogForm, answers);
+      pickATime(dialog);
+    });
   }
+
+  /* ---------- The book page: the form in the page, then the booking page in its place ---------- */
+
+  const inline = document.querySelector<HTMLElement>('div[data-booking]');
+  const inlineForm = inline?.querySelector('form');
+
+  /** The book page's panel (the form, or by now the booking page) comes into view, unless it's already there. */
+  function panelIntoView() {
+    const panel = inline?.parentElement;
+    const top = panel?.getBoundingClientRect().top ?? 0;
+    if (top < 0 || top > innerHeight / 2) panel?.scrollIntoView({ block: 'start' });
+  }
+
   if (inline && inlineForm) {
+    inlineForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const answers = answersOf(inlineForm);
+      if (!answers) return;
+      notify(inlineForm, answers);
+      pickATime(inline);
+      panelIntoView();
+    });
+  }
+
+  /* ---------- Booking buttons ---------- */
+
+  // On the document, so it runs after the phone menu's own click handler has closed the menu (the
+  // menu makes the rest of the page inert while it's open).
+  document.addEventListener('click', (e) => {
+    // A new tab asked for: the link (the book page) does the job.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const button = (e.target as Element).closest?.('[data-book]');
+    if (!button) return;
+    // Already on the booking page of its own (pick-a-time): the buttons bring it into view.
+    const picker = document.querySelector<HTMLElement>('[data-booking-page]');
+    if (picker) {
+      e.preventDefault();
+      picker.scrollIntoView({ block: 'start' });
+      picker.focus({ preventScroll: true });
+      return;
+    }
+    if (inline && inlineForm) {
+      e.preventDefault();
+      panelIntoView();
+      if (inlineForm.hidden) inline.querySelector<HTMLElement>('[data-booking-time]')?.focus({ preventScroll: true });
+      else focusForm(inlineForm, true);
+      return;
+    }
+    // No modal dialogs (Safari before 15.4): the link opens the book page.
+    if (!dialog || !dialogForm || typeof dialog.showModal !== 'function') return;
     e.preventDefault();
-    panelIntoView();
-    if (inlineForm.hidden) inline.querySelector<HTMLElement>('[data-booking-time]')?.focus({ preventScroll: true });
-    else focusForm(inlineForm, true);
-    return;
-  }
-  // No modal dialogs (Safari before 15.4): the link opens the book page.
-  if (!dialog || !dialogForm || typeof dialog.showModal !== 'function') return;
-  e.preventDefault();
-  if (!dialog.open) {
-    fromMenu = !!button.closest('[data-mobile-menu]');
-    dialog.showModal();
-    openedAt = e.timeStamp;
-  }
-  focusForm(dialogForm);
-});
+    if (!dialog.open) {
+      fromMenu = !!button.closest('[data-mobile-menu]');
+      dialog.showModal();
+      openedAt = e.timeStamp;
+    }
+    focusForm(dialogForm);
+  });
+}

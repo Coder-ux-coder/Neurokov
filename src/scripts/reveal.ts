@@ -46,8 +46,6 @@ function split(el: HTMLElement) {
   el.classList.add('is-split'); // the CSS kept it hidden until now
 }
 
-// Not on the first screen ([data-hold]): its headline is there from the first frame (global.css).
-if (!calm) document.querySelectorAll<HTMLElement>('[data-split]:not([data-hold] *)').forEach(split);
 
 /* ---------- Decode: scramble, then resolve ---------- */
 
@@ -79,24 +77,29 @@ export function decode(el: HTMLElement, text?: string, duration = 700) {
 
 /* ---------- One observer for all of it ---------- */
 
-const reveals = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
-const decodes = [...document.querySelectorAll<HTMLElement>('[data-decode]')];
+export function startReveal() {
+  // Not on the first screen ([data-hold]): its headline is there from the first frame (global.css).
+  if (!calm) document.querySelectorAll<HTMLElement>('[data-split]:not([data-hold] *)').forEach(split);
 
-if (calm || !('IntersectionObserver' in window)) {
-  reveals.forEach((el) => el.classList.add('is-in'));
-} else {
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        const el = entry.target as HTMLElement;
-        io.unobserve(el);
-        if (el.hasAttribute('data-reveal')) el.classList.add('is-in');
-        if (el.hasAttribute('data-decode')) decode(el);
-      }
-    },
-    // Any part in view counts: a share of a block taller than a short screen might never be.
-    { rootMargin: '0px 0px -8% 0px', threshold: 0 },
-  );
-  new Set([...reveals, ...decodes]).forEach((el) => io.observe(el));
+  const reveals = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
+  const decodes = [...document.querySelectorAll<HTMLElement>('[data-decode]')];
+
+  if (calm || !('IntersectionObserver' in window)) {
+    reveals.forEach((el) => el.classList.add('is-in'));
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const el = entry.target as HTMLElement;
+          io.unobserve(el);
+          if (el.hasAttribute('data-reveal')) el.classList.add('is-in');
+          if (el.hasAttribute('data-decode')) decode(el);
+        }
+      },
+      // Any part in view counts: a share of a block taller than a short screen might never be.
+      { rootMargin: '0px 0px -8% 0px', threshold: 0 },
+    );
+    new Set([...reveals, ...decodes]).forEach((el) => io.observe(el));
+  }
 }

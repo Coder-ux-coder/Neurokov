@@ -5,8 +5,10 @@
  */
 import { liveOk, playLive, settled, watchVisible } from './lib';
 
-if (liveOk) document.querySelectorAll<HTMLVideoElement>('video[data-live]').forEach(live);
 
+export function startLive() {
+  if (liveOk) document.querySelectorAll<HTMLVideoElement>('video[data-live]').forEach(live);
+}
 function live(video: HTMLVideoElement) {
   const media = video.parentElement!;
   let visible = false;

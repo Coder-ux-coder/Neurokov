@@ -7,22 +7,27 @@
  */
 import { fine, liveOk, loop, playLive, playPreview, settled, watchVisible } from './lib';
 
-// A first-screen poster came in the page at one size (Clip.astro). A screen with more pixels to
-// fill than that gets the full set now; one it already suits doesn't fetch the same size again.
-document.querySelectorAll<HTMLSourceElement>('.clip source[data-srcset]').forEach((source) => {
-  const width = source.parentElement?.querySelector('img')?.getBoundingClientRect().width ?? 0;
-  if (width * devicePixelRatio <= 800) return;
-  source.sizes = source.dataset.sizes ?? '';
-  source.srcset = source.dataset.srcset ?? '';
-});
 
-document.querySelectorAll<HTMLElement>('[data-clip="auto"]').forEach((host) => {
-  const film = player(host);
-  settled.then(() => watchVisible(host, film.want, { threshold: 0.4 }));
-});
-// Not with reduced motion or in data-saver mode, like every film (liveOk).
-if (fine && liveOk) document.querySelectorAll<HTMLElement>('[data-clip="hover"]').forEach(hover);
+export function startClips() {
+  // A first-screen poster came in the page at one size (Clip.astro). A screen with more pixels to
+  // fill than that gets the full set once the page has settled; one it already suits doesn't fetch
+  // the same size again.
+  settled.then(() =>
+    document.querySelectorAll<HTMLSourceElement>('.clip source[data-srcset]').forEach((source) => {
+      const width = source.parentElement?.querySelector('img')?.getBoundingClientRect().width ?? 0;
+      if (width * devicePixelRatio <= 800) return;
+      source.sizes = source.dataset.sizes ?? '';
+      source.srcset = source.dataset.srcset ?? '';
+    }),
+  );
 
+  document.querySelectorAll<HTMLElement>('[data-clip="auto"]').forEach((host) => {
+    const film = player(host);
+    settled.then(() => watchVisible(host, film.want, { threshold: 0.4 }));
+  });
+  // Not with reduced motion or in data-saver mode, like every film (liveOk).
+  if (fine && liveOk) document.querySelectorAll<HTMLElement>('[data-clip="hover"]').forEach(hover);
+}
 /**
  * Runs a clip with controls: it plays while its page wants it (on screen, in
  * an open dialog) unless the visitor paused it. A clip that doesn't loop ends

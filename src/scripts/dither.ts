@@ -132,9 +132,12 @@ function develop(media: HTMLElement) {
   );
 }
 
-const photos = document.querySelectorAll<HTMLElement>('[data-dither]');
-photos.forEach((m) => {
-  m.classList.add('is-armed');
-  if (calm) m.classList.add('is-developed');
-  else develop(m);
-});
+
+export function startDither() {
+  const photos = document.querySelectorAll<HTMLElement>('[data-dither]');
+  photos.forEach((m) => {
+    m.classList.add('is-armed');
+    if (calm) m.classList.add('is-developed');
+    else develop(m);
+  });
+}

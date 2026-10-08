@@ -5,8 +5,10 @@
  */
 import { calm, sleep, watchVisible } from './lib';
 
-document.querySelectorAll<HTMLElement>('[data-circuit]').forEach(circuit);
 
+export function startCircuits() {
+  document.querySelectorAll<HTMLElement>('[data-circuit]').forEach(circuit);
+}
 function circuit(el: HTMLElement) {
   const body = el.querySelector<HTMLElement>('.circuit__body')!;
   const wire = el.querySelector<HTMLElement>('.circuit__wire')!;

@@ -7,9 +7,11 @@
 import { calm, fine, loop, pad, watchVisible } from './lib';
 import { decode } from './reveal';
 
-const host = document.querySelector<HTMLElement>('[data-machine]');
-if (host) machine(host);
 
+export function startMachine() {
+  const host = document.querySelector<HTMLElement>('[data-machine]');
+  if (host) machine(host);
+}
 interface Packet {
   path: SVGPathElement;
   len: number;

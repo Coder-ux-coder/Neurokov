@@ -100,13 +100,16 @@ export class Flap {
   }
 }
 
-// Boards flip in the first time they scroll into view, settling in about a second (the
-// user asked for them a third quicker). The process page's counter drives its own readout.
-document.querySelectorAll<HTMLElement>('[data-flap]').forEach((el) => {
-  if (calm || el.closest('[data-scrolly]')) return;
-  const flap = new Flap(el);
-  // As written (the tiles are capitals anyway), so the text read out stays as written: "<60s", not "<60S".
-  const value = el.querySelector('[data-flap-text]')?.textContent ?? el.dataset.flap ?? '';
-  flap.blank();
-  onceVisible(el, () => flap.set(value, { flips: 5, stagger: 54, speed: 37 }), { threshold: 0.35 });
-});
+
+export function startFlaps() {
+  // Boards flip in the first time they scroll into view, settling in about a second (the
+  // user asked for them a third quicker). The process page's counter drives its own readout.
+  document.querySelectorAll<HTMLElement>('[data-flap]').forEach((el) => {
+    if (calm || el.closest('[data-scrolly]')) return;
+    const flap = new Flap(el);
+    // As written (the tiles are capitals anyway), so the text read out stays as written: "<60s", not "<60S".
+    const value = el.querySelector('[data-flap-text]')?.textContent ?? el.dataset.flap ?? '';
+    flap.blank();
+    onceVisible(el, () => flap.set(value, { flips: 5, stagger: 54, speed: 37 }), { threshold: 0.35 });
+  });
+}

@@ -6,7 +6,8 @@
 import { site } from '../data/site';
 import Button from './Button.astro';
 
-const ink = `ink-${Math.random().toString(36).slice(2, 8)}`;
+// One stamp per page, so a fixed id: the same build gives the same page every time.
+const ink = 'stamp-ink';
 ---
 
 <div class="guarantee" data-reveal>
