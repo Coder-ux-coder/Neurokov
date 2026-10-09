@@ -319,8 +319,12 @@ async function booking(browser) {
       await page.goto(BASE + '/');
       await settle(page);
       const btn = page.locator('[data-book]:visible').first();
+      // Not in the page's HTML: the visitor's first move fetches it (here, the click's own).
+      if (await page.locator('dialog[data-booking]').count()) fail(where, 'the booking dialog is in the page before any move');
       await btn.click();
+      await page.locator('dialog[data-booking][open]').waitFor({ timeout: 5000 }).catch(() => {});
       if (!(await page.locator('dialog[data-booking][open]').count())) fail(where, 'booking button did not open the dialog');
+      if (await btn.getAttribute('aria-busy')) fail(where, 'the booking button is still busy with the dialog open');
       const dlg = page.locator('dialog[data-booking]');
       // Empty submit: nothing sent, stays on step 1.
       await dlg.locator('button[type="submit"]').click();
@@ -366,6 +370,7 @@ async function booking(browser) {
       await page2.goto(BASE + '/about/');
       await settle(page2);
       await page2.locator('[data-book]:visible').first().click();
+      await page2.locator('dialog[data-booking][open]').waitFor({ timeout: 5000 }).catch(() => fail(where + ' tab2', 'booking button did not open the dialog'));
       const dlg2 = page2.locator('dialog[data-booking]');
       await fillForm(dlg2);
       await dlg2.locator('button[type="submit"]').click();
@@ -409,6 +414,23 @@ async function booking(browser) {
       if (await page.locator('dialog[data-booking][open]').count()) fail(where, 'backdrop click did not close the dialog');
       log.console = log.console.filter((c) => !/status of 500|ERR_FAILED|web3forms/i.test(c));
       log.failed = log.failed.filter((f) => !f.includes('api.web3forms.com'));
+      await report(page, where, log);
+      await ctx.close();
+    }
+    // 1b. The dialog can't be had (offline, say): the button's own link, the book page, instead.
+    {
+      const ctx = await newContext(browser, vp);
+      await ctx.route(BASE + '/booking-popup/', (route) => route.abort('internetdisconnected'));
+      const page = await ctx.newPage();
+      const where = `booking-dialog-offline ${vp}`;
+      const log = watch(page, where);
+      await page.goto(BASE + '/');
+      await settle(page);
+      await page.locator('[data-book]:visible').first().click();
+      await page.waitForURL(/\/book\/$/, { timeout: 5000 }).catch(() => fail(where, `the booking button went nowhere: ${page.url()}`));
+      // The failed fetches are the point here.
+      log.console = log.console.filter((c) => !/ERR_INTERNET_DISCONNECTED/.test(c));
+      log.failed = log.failed.filter((f) => !f.includes('/booking-popup/'));
       await report(page, where, log);
       await ctx.close();
     }

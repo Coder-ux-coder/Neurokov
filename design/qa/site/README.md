@@ -34,6 +34,7 @@ node lh.mjs https://localhost:4443 out.json --runs=5   # Lighthouse medians, pho
 - `stylediff.mjs` compares two builds element by element: the computed style of every element and
   its `::before`/`::after`, at several screen sizes and in both themes. Faster than `vdiff.mjs`, and
   it sees what a screenshot can't; the check to run after a change to `scripts/page-styles.mjs`.
+  With `--dialog` it opens the booking popup first and compares that too.
 - `fold.mjs` checks the sections below the first screen that wait to be laid out: the first screen
   before any move looks as in the other build, the first move lays a wide page out, and every
   in-page link, `#address` and keyboard stop lands as it did; the ruler reads 000 and 100.

@@ -150,3 +150,34 @@ What PageSpeed counts (Lighthouse 13.5, read from its source and the reports):
   scripts as lookups (no change).
 - NEXT: the booking dialog's markup and styles out of every page's HTML (the dialog only works once
   site.js runs anyway): FAQ would come to about 13,000 bytes, one round trip.
+
+## Round 4 (2026-10-09): copy, films, and the booking popup out of the pages (main a83e637 on)
+
+- Copy (user): "since 2023" (was 2020); close rate "over 20%" / "20%+" (was 31%) in the stats, cases,
+  FAQ, services, the lead-conversion and founder films, the share card, the VSL script and the home
+  photo's dashboard tile (re-lit in DejaVu Sans, the font the screens were captured in).
+- Films: render.mjs scales to TV range (ffmpeg 9 kept Chrome's full-range JPEG frames: yuvj420p,
+  12-14% bigger). Founder Fig. 2 breaks after "lead" (the climber crossed "lead generation" at
+  8.2-8.7 s).
+- P6 FIXED (booking popup): not in the pages' HTML any more. booking.ts fetches /booking-popup/ on the
+  visitor's first move, or on the press of a booking button (busy cursor meanwhile; the book page if
+  it can't be had). booking.css holds the form's styles; page-styles.mjs keeps the rules the popup
+  shares with a page that fetches it. Every page but the book pages is 1.6-1.9 KB lighter as served;
+  FAQ 14,858 -> 13,108 bytes (one round trip), privacy 12,385 -> 10,507, home 35,052 -> 33,337. The
+  fetch URL must hold no class name: /booking-dialog/ kept .booking-dialog's rules on the book pages
+  (the pruner reads every word of the scripts), and /book/ went over its budget.
+  - Local Lighthouse, 3 runs: phone FAQ FCP 1066 -> 867, SI 1092 -> 867; laptop FAQ FCP 342 -> 242,
+    privacy 263 -> 241.
+  - stylediff, popup open (7 pages, 320-1440, both themes) and closed (17 pages, 7 widths): same.
+    Book pages: same.
+- P7 FIXED (site.ts fit): the footer wordmark fits again when a font face comes in. On a first visit
+  the stand-in face for its weight loads only once the footer is laid out; a fit before that left the
+  wordmark up to 24 px over its line (seen once in stylediff). With a deliberately late face: 239 of
+  356 px before, 351 after.
+- Kit: the harness waits for the fetched popup, checks it isn't in the page before a move, and that a
+  booking button falls back to /book/ when the fetch fails; stylediff --dialog, and it no longer reads
+  the head (a build may add styles there as it goes).
+- Harness on the round's build: 0 failures (warnings: long tasks, one aborted film). shifts.mjs: 0 on
+  every page, five devices.
+- BLOCKED: Netlify skipped fa64412, 9f0a456 and a83e637 ("Skipped" on the public deploys page); live
+  is still b043ce4. Needs the owner's login: stopped builds, credits, then "Trigger deploy".

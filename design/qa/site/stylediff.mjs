@@ -6,7 +6,8 @@
 // Skipped, as the builds may differ there by design: how sections below the first screen wait to be
 // laid out (content-visibility and its sizes, scroll-behavior), and the films' players (a test browser
 // may not play H.264).
-// usage: node stylediff.mjs <baseA> <baseB> [--vps=390x844,1440x900] [--pages=/,/faq/] [--dark] [--show=20]
+// With --dialog, each page's first booking button is pressed first, and the booking form compared open.
+// usage: node stylediff.mjs <baseA> <baseB> [--vps=390x844,1440x900] [--pages=/,/faq/] [--dark] [--dialog] [--show=20]
 import { chromium } from 'playwright';
 import { SAFE_ARGS, EXE } from './safe.mjs';
 
@@ -15,6 +16,7 @@ const arg = (k, d) => process.argv.find((a) => a.startsWith(`--${k}=`))?.split('
 const VPS = arg('vps', '320x568,390x844,768x1024,1024x768,1100x800,1101x800,1280x800,1440x900,1920x1080,2560x1440').split(',').map((v) => v.split('x').map(Number));
 const PAGES = arg('pages', '/,/about/,/book/,/book/pick-a-time/,/case-studies/,/case-studies/outbound-engine/,/case-studies/psychology-platform/,/case-studies/speed-to-lead/,/faq/,/privacy/,/process/,/services/,/services/lead-conversion/,/services/lead-generation/,/services/lead-reactivation/,/terms/,/x-404/').split(',');
 const THEMES = process.argv.includes('--dark') ? ['light', 'dark'] : ['light'];
+const DIALOG = process.argv.includes('--dialog');
 const SHOW = Number(arg('show', 20));
 const SKIP_PROPS = new Set(['content-visibility', 'overflow-clip-margin', 'contain-intrinsic-size', 'contain-intrinsic-width', 'contain-intrinsic-height', 'contain-intrinsic-block-size', 'contain-intrinsic-inline-size', 'scroll-behavior']);
 const SKIP_IN = '[data-clip], video';
@@ -35,6 +37,15 @@ async function open(base, path, w, h, theme) {
   // Every section laid out, in both builds: one a browser hasn't shown yet holds a placeholder height,
   // and which it has shown depends on timing, not on the stylesheet.
   await page.addStyleTag({ content: 'main > section, body > .footer { content-visibility: visible !important; }' });
+  if (DIALOG) {
+    // A build may fetch the form only now (booking.ts): it opens when it's there.
+    await page.locator('[data-book]:visible').first().click().catch(() => {});
+    await page.locator('dialog[data-booking][open]').waitFor({ timeout: 3000 }).catch(() => {});
+    // Read once it has come in and nothing is under the pointer: a field the dialog brings under it
+    // fades to its hover colour, at a moment that depends on how fast the dialog came.
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(900);
+  }
   // Motion stopped where it is, so both builds are read in the same state.
   await page.evaluate(() => { document.getAnimations().forEach((a) => { try { a.finish(); } catch { a.cancel(); } }); });
   return { ctx, page };
@@ -44,7 +55,8 @@ async function open(base, path, w, h, theme) {
 // (window.__sigs); only a hash of each comes back, and the full text for those that differ.
 const hashes = (page, skipProps, skipIn) => page.evaluate(({ skipProps, skipIn }) => {
   const skip = new Set(skipProps);
-  const all = [...document.querySelectorAll('*')];
+  // Not the head: its elements show nothing, and a build may add styles to it as it goes.
+  const all = [...document.querySelectorAll('html, body, body *')];
   const sigs = [];
   for (const el of all) {
     const ignored = el.closest(skipIn);
