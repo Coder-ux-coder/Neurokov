@@ -41,7 +41,7 @@ export const faqGroups: { title: string; items: Faq[] }[] = [
       },
       {
         q: 'Why should we trust you?',
-        a: 'Look at the numbers. 46 qualified calls in 30 days for a growth agency. A consulting firm’s first reply cut from 19 hours to under 60 seconds, and its close rate up 31% in a quarter. A psychology platform our CEO co-founded grown by over 100% in a single month. And everything we do is guaranteed: results, or you don’t pay.',
+        a: 'Look at the numbers. 46 qualified calls in 30 days for a growth agency. A consulting firm’s first reply cut from 19 hours to under 60 seconds, and its close rate up by over 20% in a quarter. A psychology platform our CEO co-founded grown by over 100% in a single month. And everything we do is guaranteed: results, or you don’t pay.',
       },
       {
         q: 'How soon will we see results?',

@@ -46,7 +46,9 @@ async function render(cdp, name, { scale, only, install }) {
   const mp4 = join(out, `${name}.mp4`);
   const ff = spawn('ffmpeg', [
     '-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-framerate', String(FPS), '-i', '-',
-    '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', crf, '-pix_fmt', 'yuv420p',
+    // Chrome's JPEG frames are full range; video players expect TV range (ffmpeg 8 and later keep the
+    // range unless told), so convert it here, as older ffmpeg did by itself.
+    '-vf', 'scale=out_range=tv', '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', crf, '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-movflags', '+faststart', '-an', mp4,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((resolve, reject) => ff.on('exit', (code) => (code ? reject(new Error(`ffmpeg exited ${code}`)) : resolve())));

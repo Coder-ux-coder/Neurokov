@@ -118,7 +118,7 @@ export const services: Service[] = [
     icon: 'timer',
     card: 'Every lead that comes to you gets a reply in under 60 seconds and a call on your calendar.',
     title: 'Every lead answered in under 60 seconds.',
-    sub: 'The leads you already pay for stop going cold. Each one gets a personal reply in under a minute, day or night, and the good ones book a call. One consulting firm lifted its close rate 31%.',
+    sub: 'The leads you already pay for stop going cold. Each one gets a personal reply in under a minute, day or night, and the good ones book a call. One consulting firm lifted its close rate by over 20%.',
     signs: [
       'New leads wait hours, sometimes days, for a first reply.',
       'By the time you call back, they’ve booked with someone else.',
@@ -128,7 +128,7 @@ export const services: Service[] = [
     intro: [
       'The fastest reply usually wins the client. Most businesses take hours to answer a new lead, and by then the lead has booked a call with someone else.',
       'We make sure that never happens to you. Every enquiry gets a personal reply in under a minute, whether it lands at 2pm on a Tuesday or 11pm on a Sunday. Good-fit leads book a call with the right person, and nobody slips through the cracks.',
-      'For one consulting firm, the first reply went from 19 hours to under 60 seconds, and the close rate went up 31% in a single quarter.',
+      'For one consulting firm, the first reply went from 19 hours to under 60 seconds, and the close rate went up by over 20% in a single quarter.',
     ],
     included: [
       {
@@ -192,7 +192,7 @@ export const services: Service[] = [
     ],
     metaTitle: 'Inbound Lead Conversion: Every Lead Answered in 60 Seconds | Neurokov',
     metaDescription:
-      'Every new lead gets a personal reply in under 60 seconds, day or night, and good-fit leads book a call straight away. One firm lifted its close rate 31%. Results, or you don’t pay.',
+      'Every new lead gets a personal reply in under 60 seconds, day or night, and good-fit leads book a call straight away. One firm lifted its close rate by over 20%. Results, or you don’t pay.',
   },
   {
     slug: 'lead-reactivation',

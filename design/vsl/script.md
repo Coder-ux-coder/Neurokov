@@ -16,7 +16,7 @@ audit. About 150 words, so 55 to 60 seconds at a natural pace.
 >
 > **(Proof, 0:30)** For one growth agency, that was 46 qualified calls in the first 30 days, with
 > zero sales hires. A consulting firm went from replying in 19 hours to under a minute, and closed
-> 31% more.
+> over 20% more.
 >
 > **(No risk, 0:45)** Before we start, we agree in writing what we'll deliver. If we don't deliver
 > it, you don't pay.

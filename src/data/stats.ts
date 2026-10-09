@@ -17,7 +17,7 @@ export interface Stat {
 export const heroStats: Stat[] = [
   { value: 46, label: 'qualified calls in 30 days' },
   { value: 60, prefix: '<', suffix: 's', label: 'first reply to a new lead' },
-  { value: 31, suffix: '%', label: 'higher close rate' },
+  { value: 20, suffix: '%+', label: 'higher close rate' },
   { value: 100, suffix: '%+', label: 'growth in one month' },
 ];
 

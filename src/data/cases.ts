@@ -125,15 +125,15 @@ export const cases: CaseStudy[] = [
     client: 'Management consulting firm, 12 partners',
     service: 'Inbound Lead Conversion',
     serviceSlug: 'lead-conversion',
-    summary: 'Every inbound lead answered in under 60 seconds, and a close rate that went up 31% in one quarter.',
+    summary: 'Every inbound lead answered in under 60 seconds, and a close rate that went up by over 20% in one quarter.',
     stats: [
       { value: '<60s', label: 'first reply, down from 19 hours' },
-      { value: '31%', label: 'higher close rate in one quarter' },
+      { value: '20%+', label: 'higher close rate in one quarter' },
       { value: '11 hrs', label: 'back for each partner, every week' },
     ],
     outcomes: [
       'We cut first reply time from 19 hours to under 60 seconds.',
-      'We lifted the close rate 31% in one quarter.',
+      'We lifted the close rate by over 20% in one quarter.',
       'We got proposals out the same day, not four or five days later.',
       'We handed 11 hours a week back to every partner.',
     ],
