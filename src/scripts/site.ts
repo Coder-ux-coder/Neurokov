@@ -21,37 +21,47 @@ import { startVsl } from './vsl';
 
 function startFit() {
   const fitEls = [...document.querySelectorAll<HTMLElement>('[data-fit]')];
+  if (!fitEls.length) return;
+  // The widths of the lines the type sits on, as the observer below last reported them.
+  const widths = new WeakMap<Element, number>();
   // Type width grows in step with its size, so one measurement at the current size gives the size
   // that fills the line. Every read comes before any write: a read after a write forces a layout.
+  // Only type whose line is laid out: measuring the rest would lay out what the browser is skipping
+  // for now (content-visibility).
   const fit = () => {
-    const sizes = fitEls.map((el) => {
+    const shown = fitEls.filter((el) => (widths.get(el.parentElement!) ?? 0) > 0);
+    const sizes = shown.map((el) => {
       const w = el.firstElementChild?.getBoundingClientRect().width ?? 0;
       return w > 0 ? Math.floor((parseFloat(getComputedStyle(el).fontSize) * el.clientWidth) / w) - 0.5 : 0;
     });
-    fitEls.forEach((el, i) => sizes[i] > 0 && (el.style.fontSize = `${sizes[i]}px`));
+    shown.forEach((el, i) => sizes[i] > 0 && (el.style.fontSize = `${sizes[i]}px`));
   };
-  if (fitEls.length) {
-    // Watch the parents' widths: only those call for a new size (their heights follow the type, so a
-    // change there is the fit's own doing). The fit waits for the next frame: resizing the type inside
-    // the observer's call would have it report again within the same frame, which browsers log as an
-    // error. The observer's first call does the first fit.
-    const widths = new WeakMap<Element, number>();
-    let queued = 0;
-    const ro = new ResizeObserver((entries) => {
-      let wider = false;
-      for (const entry of entries) {
-        if (widths.get(entry.target) === entry.contentRect.width) continue;
-        widths.set(entry.target, entry.contentRect.width);
-        wider = true;
-      }
-      if (wider && !queued)
-        queued = requestAnimationFrame(() => {
-          queued = 0;
-          fit();
-        });
-    });
-    fitEls.forEach((el) => el.parentElement && ro.observe(el.parentElement));
-  }
+  // The fit waits for the next frame: resizing the type inside the observer's call would have it
+  // report again within the same frame, which browsers log as an error.
+  let queued = 0;
+  const queue = () => {
+    if (!queued)
+      queued = requestAnimationFrame(() => {
+        queued = 0;
+        fit();
+      });
+  };
+  // Watch the parents' widths: only those call for a new size (their heights follow the type, so a
+  // change there is the fit's own doing). The observer's first call does the first fit.
+  const ro = new ResizeObserver((entries) => {
+    let wider = false;
+    for (const entry of entries) {
+      if (widths.get(entry.target) === entry.contentRect.width) continue;
+      widths.set(entry.target, entry.contentRect.width);
+      wider = true;
+    }
+    if (wider) queue();
+  });
+  fitEls.forEach((el) => el.parentElement && ro.observe(el.parentElement));
+  // A face the type is set in can come in after it was measured: on a first visit, the stand-in face
+  // for the wordmark's weight loads only once the footer is first laid out, and until it has, the
+  // wordmark measures narrower than it will be (and would overflow its line). Fit again when it's in.
+  document.fonts?.addEventListener('loadingdone', queue);
 }
 
 /* ---------- Tool marks ---------- */

@@ -1,0 +1,22 @@
+---
+/**
+ * The booking popup on its own, for booking.ts to fetch: every page but the book pages gets it on the
+ * visitor's first move (or first press of a booking button) instead of carrying it in its HTML, which
+ * keeps two kilobytes of form and styles off its first paint. Its styles here are only the form's own
+ * (booking.css); what it shares with the page (buttons, labels, links) the page keeps for it
+ * (scripts/page-styles.mjs). Not a page for people or search engines: out of the sitemap, noindex.
+ */
+import BookingForm from '../components/BookingForm.astro';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Booking form</title>
+  </head>
+  <body>
+    <BookingForm mode="dialog" />
+  </body>
+</html>

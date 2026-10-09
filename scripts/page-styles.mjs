@@ -331,6 +331,11 @@ export const pageStyles = {
       const dist = fileURLToPath(dir);
       let scripts = '';
       for await (const file of files(join(dist, '_astro'), '.js')) scripts += (await readFile(file, 'utf8')) + '\n';
+      // The booking popup that pages fetch when it's needed (pages/booking-popup.astro) brings only the
+      // form's own styles: a page that fetches it keeps what of its stylesheet the popup uses (buttons,
+      // labels, links), so the popup arrives styled as if it had been there all along.
+      const popup = await readFile(join(dist, 'booking-popup', 'index.html'), 'utf8').catch(() => '');
+      const popupWords = pageWords(popup.replace(STYLE, ''), '');
       let before = 0;
       let after = 0;
       for await (const file of files(dist, '.html')) {
@@ -338,7 +343,10 @@ export const pageStyles = {
         const sheets = [...html.matchAll(STYLE)].map((m) => m[2]);
         if (!sheets.length) continue;
         const page = html.replace(STYLE, '');
-        const pruned = pruneStyles(sheets, pageWords(page, scripts), page + scripts);
+        const seen = pageWords(page, scripts);
+        const fetchesPopup = popup && /<body\b[^>]*\bdata-booking-dialog\b/.test(page);
+        if (fetchesPopup) for (const word of popupWords) seen.add(word);
+        const pruned = pruneStyles(sheets, seen, page + scripts + (fetchesPopup ? popup : ''));
         let i = 0;
         const out = html.replace(STYLE, (_, open, css, close) => open + pruned[i++] + close);
         before += sheets.join('').length;

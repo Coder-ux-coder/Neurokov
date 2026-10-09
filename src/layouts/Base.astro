@@ -7,7 +7,6 @@ import plex600 from '../assets/fonts/plex-mono-600.woff2?url';
 import '../styles/fonts.css';
 import '../styles/fallback.css';
 import '../styles/global.css';
-import BookingForm from '../components/BookingForm.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import Nav from '../components/Nav.astro';
@@ -24,7 +23,8 @@ interface Props {
   boldMono?: boolean;
   /** The page has a split-flap board with signs on it (%, <, +), set in Archivo Signs. */
   signs?: boolean;
-  /** The booking popup. Not on the book pages, whose booking buttons bring their own form into view. */
+  /** The booking popup, which booking.ts fetches when it's needed (pages/booking-popup.astro). Not on the
+   *  book pages, whose booking buttons bring their own form into view. */
   bookingDialog?: boolean;
 }
 
@@ -207,14 +207,13 @@ const speculation = {
       })();
     </script>
   </head>
-  <body>
+  <body data-booking-dialog={bookingDialog ? '' : undefined}>
     <a class="skip-link" href="#main">Skip to content</a>
     <Nav />
     <main id="main">
       <slot />
     </main>
     <Footer />
-    {bookingDialog && <BookingForm mode="dialog" />}
     <button class="theme-toggle theme-toggle--float" type="button" data-theme-toggle aria-label="Switch between light and dark mode">
       <Icon name="sun" class="icon-sun" size={18} />
       <Icon name="moon" class="icon-moon" size={18} />

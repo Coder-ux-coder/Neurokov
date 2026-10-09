@@ -236,12 +236,51 @@ function deliver(id: string, body: FormData) {
 export function startBooking() {
   /* ---------- The dialog every booking button opens ---------- */
 
-  const dialog = document.querySelector<HTMLDialogElement>('dialog[data-booking]');
-  const dialogForm = dialog?.querySelector('form');
+  // Not in the page's HTML: every page but the book pages fetches it (pages/booking-popup.astro) on
+  // the visitor's first move, or with the first press of a booking button, which keeps it off the
+  // first paint. Without modal dialogs (Safari before 15.4) the buttons' link, the book page, does.
+  const wantsDialog =
+    document.body.hasAttribute('data-booking-dialog') &&
+    typeof HTMLDialogElement === 'function' &&
+    typeof HTMLDialogElement.prototype.showModal === 'function';
+  let dialogLoad: Promise<HTMLDialogElement | null> | undefined;
   let openedAt = -Infinity;
   let fromMenu = false;
 
-  if (dialog && dialogForm) {
+  /** The dialog, fetched once and put where the page would have had it (after the footer), with its
+   *  styles; null if it can't be had (offline, say), and then tried again on the next press. */
+  function loadDialog() {
+    dialogLoad ??= fetch('/booking-popup/')
+      .then((response) => (response.ok ? response.text() : Promise.reject(new Error(String(response.status)))))
+      .then((html) => {
+        const fetched = new DOMParser().parseFromString(html, 'text/html');
+        const dialog = fetched.querySelector<HTMLDialogElement>('dialog[data-booking]');
+        const form = dialog?.querySelector('form');
+        if (!dialog || !form) return null;
+        document.head.append(...fetched.querySelectorAll('style'));
+        const footer = document.querySelector('body > .footer');
+        if (footer) footer.after(dialog);
+        else document.body.append(dialog);
+        setUpDialog(dialog, form);
+        return dialog;
+      })
+      .catch(() => {
+        dialogLoad = undefined;
+        return null;
+      });
+    return dialogLoad;
+  }
+
+  if (wantsDialog) {
+    const MOVES = ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart', 'focusin', 'scroll'];
+    const early = () => {
+      for (const type of MOVES) removeEventListener(type, early, true);
+      loadDialog();
+    };
+    for (const type of MOVES) addEventListener(type, early, { capture: true, passive: true });
+  }
+
+  function setUpDialog(dialog: HTMLDialogElement, dialogForm: HTMLFormElement) {
     const title = dialog.getAttribute('aria-labelledby')!;
     // Closed and opened again, it starts from the questions, still answered: a second try sends them
     // again (once a day at most) and goes back to the booking page.
@@ -345,14 +384,25 @@ export function startBooking() {
       else focusForm(inlineForm, true);
       return;
     }
-    // No modal dialogs (Safari before 15.4): the link opens the book page.
-    if (!dialog || !dialogForm || typeof dialog.showModal !== 'function') return;
+    if (!wantsDialog) return;
     e.preventDefault();
-    if (!dialog.open) {
-      fromMenu = !!button.closest('[data-mobile-menu]');
-      dialog.showModal();
-      openedAt = e.timeStamp;
-    }
-    focusForm(dialogForm);
+    const href = (button as HTMLAnchorElement).href;
+    // Usually here since the visitor's first move; if not, it comes in a moment.
+    button.setAttribute('aria-busy', 'true');
+    loadDialog().then((dialog) => {
+      button.removeAttribute('aria-busy');
+      const form = dialog?.querySelector('form');
+      // Not to be had: the link's page, the book page, has the same form.
+      if (!dialog || !form) {
+        if (href) location.assign(href);
+        return;
+      }
+      if (!dialog.open) {
+        fromMenu = !!button.closest('[data-mobile-menu]');
+        dialog.showModal();
+        openedAt = performance.now();
+      }
+      focusForm(form);
+    });
   });
 }

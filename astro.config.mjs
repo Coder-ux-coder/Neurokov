@@ -44,8 +44,9 @@ export default defineConfig({
     // After the inline script is minified: the words of its comments name nothing on the page.
     pageStyles,
     sitemap({
-      // Not the 404, nor the step a visitor without JavaScript reaches after the booking form.
-      filter: (page) => !page.endsWith('/404/') && !page.endsWith('/book/pick-a-time/'),
+      // Not the 404, nor the step a visitor without JavaScript reaches after the booking form, nor the
+      // booking popup the pages fetch.
+      filter: (page) => !page.endsWith('/404/') && !page.endsWith('/book/pick-a-time/') && !page.endsWith('/booking-popup/'),
     }),
   ],
   devToolbar: { enabled: false },

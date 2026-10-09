@@ -859,6 +859,11 @@ html:not(.laid-out) {
   }
 }
 
+/* A booking button pressed before the booking form has arrived (booking.ts fetches it). */
+[data-book][aria-busy='true'] {
+  cursor: progress;
+}
+
 /* ---------- Nav ---------- */
 
 .nav {
@@ -4207,272 +4212,6 @@ html:not(.js) .nav {
   }
 }
 
-/* ---------- Booking form (BookingForm.astro, booking.ts) ----------
-   A few questions before the booking page. Every booking button opens it as a
-   dialog, pinned over the page like the guide's welcome clip but in the
-   page's own theme; the book page has it in its panel. */
-
-.booking-dialog {
-  width: min(680px, calc(100vw - 32px));
-  max-width: none;
-  max-height: calc(100dvh - 32px);
-  padding: 0;
-  border: 2px solid var(--text);
-  border-radius: var(--radius);
-  background: var(--bg);
-  color: var(--text);
-  box-shadow: 10px 10px 0 var(--accent);
-  overscroll-behavior: contain;
-}
-
-.booking-dialog[open] {
-  animation: dialog-in 0.55s var(--ease-out);
-}
-
-@keyframes dialog-in {
-  from {
-    opacity: 0;
-    transform: translateY(28px) scale(0.97);
-  }
-}
-
-.booking-dialog::backdrop {
-  background: rgb(12 12 11 / 0.66);
-  backdrop-filter: blur(3px);
-}
-
-.booking {
-  container-type: inline-size;
-  display: grid;
-  gap: 12px;
-  padding: clamp(20px, 3.2vw, 32px);
-}
-
-/* On the book page the fields sit recessed in the panel's lighter card. */
-.booking-inline .booking {
-  --field-bg: var(--bg);
-  padding: clamp(20px, 3.6vw, 40px);
-}
-
-.booking__head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  min-height: 32px;
-}
-
-/* The spam trap (BookingForm.astro): there for bots, never for people. */
-.booking__trap {
-  display: none;
-}
-
-.booking__x {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-}
-
-.booking__x:hover {
-  border-color: var(--text);
-  background: var(--text);
-  color: var(--bg);
-}
-
-/* Focus lands on these only so reading starts there (booking.ts), not to be typed in. */
-.booking__title:focus,
-.booking-time:focus {
-  outline: none;
-}
-
-.booking__lead {
-  max-width: 34rem;
-  color: var(--text-2);
-}
-
-.booking__fields {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 14px 16px;
-  margin: 8px 0 4px;
-}
-
-@container (min-width: 30em) {
-  .booking__fields {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .field--wide {
-    grid-column: 1 / -1;
-  }
-}
-
-.field {
-  display: grid;
-  gap: 8px;
-  align-content: start;
-}
-
-.field label {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-2);
-}
-
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  min-height: 48px;
-  margin: 0;
-  padding: 11px 14px;
-  /* Dark enough to read as the field's edge (3:1 or more on either theme). */
-  border: 1px solid var(--text-3);
-  border-radius: var(--radius-sm);
-  background: var(--field-bg, var(--card-2));
-  color: var(--text);
-  font: inherit;
-  /* 16px or more, or phones zoom in when a field gets focus. */
-  font-size: max(1rem, 16px);
-  line-height: 1.45;
-  transition: border-color 0.2s;
-}
-
-.field input:hover,
-.field select:hover,
-.field textarea:hover {
-  border-color: var(--text-2);
-}
-
-.field input:focus-visible,
-.field select:focus-visible,
-.field textarea:focus-visible {
-  border-color: var(--text);
-  outline-offset: 1px;
-}
-
-/* A question left blank, once the visitor has been past it. */
-.field :user-invalid {
-  border-color: var(--accent-ink);
-}
-
-.field ::placeholder {
-  color: var(--text-3);
-  opacity: 1;
-}
-
-.field textarea {
-  resize: vertical;
-}
-
-.field__select {
-  position: relative;
-  display: block;
-}
-
-.field__select select {
-  appearance: none;
-  padding-right: 44px;
-  cursor: pointer;
-}
-
-/* "Pick a range" reads as a hint until a range is picked. */
-.field__select select:invalid {
-  color: var(--text-3);
-}
-
-.field__select option {
-  color: var(--text);
-}
-
-.field__select::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 18px;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--text);
-  border-bottom: 2px solid var(--text);
-  transform: translateY(-70%) rotate(45deg);
-  pointer-events: none;
-}
-
-.booking__foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px 20px;
-  margin-top: 4px;
-}
-
-.booking__note {
-  flex: 1 1 15rem;
-}
-
-/* A short screen (a laptop at 1280×620, say): a tighter dialog, so the form fits without scrolling. */
-@media (max-height: 700px) {
-  .booking-dialog .booking {
-    gap: 10px;
-    padding: 24px;
-  }
-
-  .booking-dialog .booking-time {
-    gap: 8px;
-    padding: 20px 24px;
-  }
-}
-
-/* Step 2: the booking page on Google Calendar, in the form's place. Google's page keeps its own
-   light colours, whichever theme the site is in. */
-.booking-time {
-  display: grid;
-  gap: 12px;
-  padding: clamp(20px, 3.2vw, 32px);
-}
-
-.booking-inline .booking-time {
-  padding: clamp(20px, 3.6vw, 40px);
-}
-
-.booking[hidden],
-.booking-time[hidden] {
-  display: none;
-}
-
-.booking-time__frame iframe {
-  display: block;
-  width: 100%;
-  /* As tall as the screen leaves room for in the dialog, so its own scrolling is all there is. */
-  height: max(360px, min(700px, calc(100dvh - 214px)));
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  background: #fff;
-}
-
-.booking-inline .booking-time__frame iframe,
-.booking-time--page iframe {
-  height: 700px;
-}
-
-/* Picking a time takes more room than the questions. */
-.booking-dialog.is-picking {
-  width: min(960px, calc(100vw - 32px));
-}
-
 /* ---------- 404 ---------- */
 
 .lost {
@@ -4911,8 +4650,7 @@ html:not(.themes) .motion-toggle,
 @media (pointer: coarse) {
   .nav__burger,
   .theme-toggle,
-  .motion-toggle--float,
-  .booking__x {
+  .motion-toggle--float {
     width: 44px;
     height: 44px;
   }
@@ -4950,8 +4688,7 @@ html:not(.themes) .motion-toggle,
   }
 
   .footer__legal a,
-  .back-link,
-  .booking__note .text-link {
+  .back-link {
     padding-block: 13px;
     margin-block: -13px;
   }
@@ -5138,8 +4875,7 @@ html:not(.themes) .motion-toggle,
   .cta__track,
   .book__bar span:last-child::before,
   .js .guarantee.is-in .banner,
-  .js .guarantee.is-in .stamp,
-  .booking-dialog[open] {
+  .js .guarantee.is-in .stamp {
     animation: none;
   }
 
