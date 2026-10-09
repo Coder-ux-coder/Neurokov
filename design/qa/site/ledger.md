@@ -170,14 +170,26 @@ What PageSpeed counts (Lighthouse 13.5, read from its source and the reports):
     privacy 263 -> 241.
   - stylediff, popup open (7 pages, 320-1440, both themes) and closed (17 pages, 7 widths): same.
     Book pages: same.
-- P7 FIXED (site.ts fit): the footer wordmark fits again when a font face comes in. On a first visit
-  the stand-in face for its weight loads only once the footer is laid out; a fit before that left the
-  wordmark up to 24 px over its line (seen once in stylediff). With a deliberately late face: 239 of
-  356 px before, 351 after.
+- P7 (site.ts fit): the footer wordmark is fitted again whenever a font face finishes loading. With a
+  deliberately late face of other widths the old fit stayed wrong (239 of 356 px), the new one refits
+  (351). CORRECTION: the 50.7 px wordmark stylediff showed on two pages was not this. 50.7 px is the
+  unfitted size (13vw), read in the same instant stylediff forced the footer to lay out, before the
+  fit's next frame; in real loads the fit runs as the footer is laid out (46.5 px, every run).
+  stylediff now waits three frames after laying sections out.
+- P8 FIXED (touch targets): the footer's legal links and back links were 43.92 px tall and the FAQ's
+  index links 43.94 (padding 13 / 12.5 px on 11.2 / 11.84 px type): now 14 px paid back with margins,
+  and min-height 44px. The footer's short column links ("FAQ" 33 px wide) get min-width 44px. A dead
+  duplicate (.footer__cols a 8.5 px, overridden by the 10 px rule after it) is gone; the busy cursor of
+  a booking button moved from every page's CSS into booking.ts. Every page 6-63 bytes lighter
+  (book 13,339 -> 13,311, FAQ 13,111 -> 13,081); stylediff: only these properties, desktop the same.
+  layout.mjs before it (17 pages x 12 phone/tablet sizes): no sideways scroll, overlap, clipping or
+  covered control anywhere; nothing under WCAG 2.5.8's 24 px.
 - Kit: the harness waits for the fetched popup, checks it isn't in the page before a move, and that a
   booking button falls back to /book/ when the fetch fails; stylediff --dialog, and it no longer reads
   the head (a build may add styles there as it goes).
 - Harness on the round's build: 0 failures (warnings: long tasks, one aborted film). shifts.mjs: 0 on
   every page, five devices.
+- FIXED (npm audit): sharp 0.35.4 -> 0.35.5 (GHSA-wq5f-xc86-pv6w, librsvg, high; build time only).
+  Rebuilt without the image cache: all 175 images and every page byte for byte the same.
 - BLOCKED: Netlify skipped fa64412, 9f0a456 and a83e637 ("Skipped" on the public deploys page); live
   is still b043ce4. Needs the owner's login: stopped builds, credits, then "Trigger deploy".

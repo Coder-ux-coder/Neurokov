@@ -37,6 +37,9 @@ async function open(base, path, w, h, theme) {
   // Every section laid out, in both builds: one a browser hasn't shown yet holds a placeholder height,
   // and which it has shown depends on timing, not on the stylesheet.
   await page.addStyleTag({ content: 'main > section, body > .footer { content-visibility: visible !important; }' });
+  // Read after what the page does once a section is laid out has run: the footer wordmark's fit
+  // (site.ts) hears of its line's width in the frame after, and sets its size in the frame after that.
+  await page.evaluate(() => new Promise((done) => { let n = 3; const tick = () => (--n ? requestAnimationFrame(tick) : done()); requestAnimationFrame(tick); }));
   if (DIALOG) {
     // A build may fetch the form only now (booking.ts): it opens when it's there.
     await page.locator('[data-book]:visible').first().click().catch(() => {});
