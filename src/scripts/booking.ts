@@ -386,11 +386,15 @@ export function startBooking() {
     }
     if (!wantsDialog) return;
     e.preventDefault();
-    const href = (button as HTMLAnchorElement).href;
-    // Usually here since the visitor's first move; if not, it comes in a moment.
-    button.setAttribute('aria-busy', 'true');
+    const link = button as HTMLAnchorElement;
+    const href = link.href;
+    // Usually here since the visitor's first move; if not, it comes in a moment. (The busy cursor is
+    // set here rather than in the stylesheet, which every page carries in its HTML.)
+    link.setAttribute('aria-busy', 'true');
+    link.style.cursor = 'progress';
     loadDialog().then((dialog) => {
-      button.removeAttribute('aria-busy');
+      link.removeAttribute('aria-busy');
+      link.style.cursor = '';
       const form = dialog?.querySelector('form');
       // Not to be had: the link's page, the book page, has the same form.
       if (!dialog || !form) {

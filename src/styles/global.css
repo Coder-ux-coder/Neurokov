@@ -859,11 +859,6 @@ html:not(.laid-out) {
   }
 }
 
-/* A booking button pressed before the booking form has arrived (booking.ts fetches it). */
-[data-book][aria-busy='true'] {
-  cursor: progress;
-}
-
 /* ---------- Nav ---------- */
 
 .nav {
@@ -4656,6 +4651,7 @@ html:not(.themes) .motion-toggle,
   }
 
   .toc a {
+    min-height: 44px;
     padding-block: 12.5px;
   }
 
@@ -4663,9 +4659,11 @@ html:not(.themes) .motion-toggle,
     gap: 0;
   }
 
+  /* Short words ("FAQ") too: at least as wide as they are tall. */
   .footer__cols a {
     display: inline-block;
-    padding-block: 8.5px;
+    min-width: 44px;
+    padding-block: 10px;
   }
 
   .btn--sm {
@@ -4683,14 +4681,10 @@ html:not(.themes) .motion-toggle,
     margin-block: -5px;
   }
 
-  .footer__cols a {
-    padding-block: 10px;
-  }
-
   .footer__legal a,
   .back-link {
-    padding-block: 13px;
-    margin-block: -13px;
+    padding-block: 14px;
+    margin-block: -14px;
   }
 }
 
