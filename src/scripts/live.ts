@@ -3,11 +3,11 @@
  * screen (and, if it develops out of a dither, once it has) and pauses when it
  * isn't, or while the visitor has paused the site's motion.
  */
-import { liveOk, onMotion, playLive, settled, still, watchVisible } from './lib';
+import { filmsPlay, liveOk, onMotion, playLive, settled, still, watchVisible } from './lib';
 
 
 export function startLive() {
-  if (liveOk) document.querySelectorAll<HTMLVideoElement>('video[data-live]').forEach(live);
+  if (liveOk && filmsPlay) document.querySelectorAll<HTMLVideoElement>('video[data-live]').forEach(live);
 }
 function live(video: HTMLVideoElement) {
   const media = video.parentElement!;

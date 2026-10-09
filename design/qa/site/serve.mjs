@@ -7,7 +7,7 @@ import { createSecureServer } from 'node:http2';
 import { readFile, stat } from 'node:fs/promises';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, extname, resolve, dirname } from 'node:path';
-import { brotliCompressSync, gzipSync, constants } from 'node:zlib';
+import { createBrotliCompress, gzipSync, constants } from 'node:zlib';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -64,6 +64,22 @@ if (existsSync(toml)) {
   }
 }
 
+// Netlify compresses as it serves: Brotli at about quality 5, streamed. Its pages come out about 1%
+// smaller than this (measured October 2026), so a page that fits the first TCP window here fits it on
+// Netlify too. (Brotli 11 would make every page about 10% smaller than visitors get it.)
+const netlifyBrotli = (body) =>
+  new Promise((done) => {
+    const c = createBrotliCompress({ params: { [constants.BROTLI_PARAM_QUALITY]: 5 } });
+    const parts = [];
+    c.on('data', (d) => parts.push(d));
+    c.on('end', () => done(Buffer.concat(parts)));
+    for (let i = 0; i < body.length; i += 16384) {
+      c.write(body.subarray(i, i + 16384));
+      c.flush();
+    }
+    c.end();
+  });
+
 const cache = new Map();
 async function load(file) {
   const s = await stat(file);
@@ -114,7 +130,7 @@ async function handle(method, rawUrl, reqHeaders, respond) {
     const mtime = cache.get(found.file).mtime;
     if (!c || c.mtime !== mtime) {
       c = ae.includes('br')
-        ? { body: brotliCompressSync(body, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }), enc: 'br', mtime }
+        ? { body: await netlifyBrotli(body), enc: 'br', mtime }
         : ae.includes('gzip') ? { body: gzipSync(body, { level: 9 }), enc: 'gzip', mtime } : null;
       if (c) cache.set(key, c);
     }
@@ -141,7 +157,7 @@ async function handle(method, rawUrl, reqHeaders, respond) {
 if (h2) {
   const keyFile = join(here, 'key.pem');
   const certFile = join(here, 'cert.pem');
-  if (!existsSync(keyFile)) execSync(`openssl req -x509 -newkey rsa:2048 -nodes -keyout ${keyFile} -out ${certFile} -days 30 -subj /CN=localhost 2>/dev/null`);
+  if (!existsSync(keyFile)) execSync(`openssl req -x509 -newkey rsa:2048 -nodes -keyout "${keyFile}" -out "${certFile}" -days 30 -subj /CN=localhost`, { stdio: 'ignore' });
   const server = createSecureServer({ key: readFileSync(keyFile), cert: readFileSync(certFile), allowHTTP1: true });
   server.on('stream', (stream, headers) => {
     handle(headers[':method'], headers[':path'], headers, (status, h, body) => {

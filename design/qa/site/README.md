@@ -31,7 +31,45 @@ node lh.mjs https://localhost:4443 out.json --runs=5   # Lighthouse medians, pho
 - `shifts.mjs` measures each page's layout shifts on a first visit, at five screen sizes.
 - `vdiff.mjs` compares two builds pixel by pixel, with motion stopped (proof that a change for
   phones left the desktop as it was).
+- `stylediff.mjs` compares two builds element by element: the computed style of every element and
+  its `::before`/`::after`, at several screen sizes and in both themes. Faster than `vdiff.mjs`, and
+  it sees what a screenshot can't; the check to run after a change to `scripts/page-styles.mjs`.
+- `fold.mjs` checks the sections below the first screen that wait to be laid out: the first screen
+  before any move looks as in the other build, the first move lays a wide page out, and every
+  in-page link, `#address` and keyboard stop lands as it did; the ruler reads 000 and 100.
+- `paintcost.mjs` measures the main thread's work before the first paint (style, layout, parse),
+  with counts that don't depend on the machine's speed (elements styled, objects laid out), several
+  builds loaded in turn.
+- `settle.mjs` lists what changes on a page's first screen after its first paint, frame by frame
+  (Lighthouse's speed index counts every such change).
+- `firstpaint.mjs` breaks a Lighthouse run's main-thread work before the first paint into tasks;
+  `firstscreen.mjs` lists which blocks show on the first screen at sixteen screen sizes.
 - `rehash.mjs` sets `script-src` in `public/_headers` to the hashes the built pages need.
 
 Every script launches Chromium with `safe.mjs`'s flags: no proxy, and every host but localhost
 unresolvable, so a test can never reach the real Web3Forms or Google.
+
+## Speed: what Lighthouse counts
+
+PageSpeed Insights (the live site) is the measure; `lh.mjs` locally is for trying things out
+(`--live` runs it against neurokov.com; `--cpu=mobile:1.2,desktop:1` sets the CPU slowdown as
+PageSpeed did, which reports it as `cpuSlowdownMultiplier`). Lighthouse simulates the network:
+
+- A page's whole transfer (about 1,300 bytes of headers plus the Brotli body) up to 14,600 bytes
+  arrives in the first round trip; more costs one round trip more (150 ms on a phone, 40 ms on a
+  laptop) before the first paint. Netlify's Brotli comes out about 1% smaller than quality 5,
+  streamed in 16 KB chunks (which `serve.mjs` uses).
+- Speed index is 1.4 × the observed speed index + 0.4 × a layout-based one on a phone (0.575 and
+  0.49 on a laptop), never below the first paint. Anything on the first screen that changes after
+  the first paint (a film, a button appearing) counts against it.
+- PageSpeed's headless Chrome plays no H.264: the site's films keep their posters there (lib.ts:
+  `filmsPlay`). So does Playwright's own Chromium; the installed Google Chrome plays them.
+
+## On Windows
+
+- Git Bash rewrites arguments that start with `/` into Windows paths: run the checks with
+  `MSYS_NO_PATHCONV=1` (`--pages=/,/faq/`).
+- When the Chromium build Playwright expects isn't installed, point `QA_CHROMIUM` at another one,
+  for example `C:/Users/<you>/AppData/Local/ms-playwright/chromium-1223/chrome-win64/chrome.exe`.
+- Check out with LF line endings (`git config core.autocrlf false`), as Netlify does, so a build
+  here matches its byte for byte: the Content-Security-Policy hashes, the page sizes.

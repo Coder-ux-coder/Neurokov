@@ -137,53 +137,11 @@ const speculation = {
             link.href = href;
             document.head.appendChild(link);
           });
-        // Work that can wait until the first screen is up (r.nkLater(fn): the site's script): once the
-        // page has loaded and its first paint has reached the screen (as the browser reports it), and
-        // two frames more. Nothing then competes with the first screen for the connection or holds up
-        // its paint.
-        var later = [];
-        var loaded = false;
-        var painted = !(window.PerformanceObserver && (PerformanceObserver.supportedEntryTypes || []).indexOf('paint') >= 0);
-        var flush = function () {
-          if (!loaded || !painted || !later) return;
-          var fns = later;
-          later = null;
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-              setTimeout(function () {
-                fns.forEach(function (fn) {
-                  fn();
-                });
-              });
-            });
-          });
-        };
-        r.nkLater = function (fn) {
-          later ? later.push(fn) : fn();
-        };
-        if (!painted) {
-          new PerformanceObserver(function (list, observer) {
-            if (!list.getEntriesByName('first-contentful-paint').length) return;
-            observer.disconnect();
-            painted = true;
-            flush();
-          }).observe({ type: 'paint', buffered: true });
-        }
+        // Content waits hidden for the site's script to reveal it. If that script hasn't claimed the
+        // page by the time it has loaded (it failed to download, or the browser is too old for it),
+        // show the page as it reads without JavaScript instead of leaving it blank.
         addEventListener('load', function () {
-          // Content waits hidden for the site's script to reveal it. If that script hasn't claimed the
-          // page by now (it failed to download, or the browser is too old for it), show the page as it
-          // reads without JavaScript instead of leaving it blank.
           if (!r.hasAttribute('data-ready')) r.classList.remove('js');
-          loaded = true;
-          flush();
-        });
-        // A page whose loading waits on another site's frame (the booking page, say) holds the script
-        // back no longer than this once its own content is in.
-        addEventListener('DOMContentLoaded', function () {
-          setTimeout(function () {
-            loaded = true;
-            flush();
-          }, 2500);
         });
         // The theme, and every button that switches it, working from the moment it's on the page.
         var meta = document.querySelector('meta[name="theme-color"]');

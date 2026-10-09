@@ -2,11 +2,12 @@
 // it: the other pages' rules only cost a phone bytes and parse time before its first paint. After the
 // build, this drops from each page what can't apply to it:
 // - the rules no element can match. A selector stays while every class, id, tag and attribute it
-//   names appears in the page, or in the site's scripts as something a script could set (they add
-//   classes and elements as a visitor uses the page). What it can't judge stays: whatever sits inside
-//   a pseudo-class (:not(), :has(), :hover...), and custom properties;
+//   names appears in the page's markup, or in the site's scripts as something a script could set
+//   (they add classes and elements as a visitor uses the page). What it can't judge stays: whatever
+//   sits inside a pseudo-class (:not(), :has(), :hover...), and custom properties;
 // - the animations (@keyframes) nothing left names;
-// - the fallback font faces for widths (font-stretch) nothing left sets.
+// - the fallback font faces for widths (font-stretch) nothing left sets;
+// - the font faces of a family nothing left sets text in (the split-flap signs, on a page without a board).
 // Everything is cut out of the stylesheet's text, so what stays is byte for byte what Astro wrote.
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -14,6 +15,38 @@ import { fileURLToPath } from 'node:url';
 import * as csstree from 'css-tree';
 
 const words = (text) => new Set(text.match(/[\w-]+/g));
+
+// A start tag: its name, then its attributes up to the > that ends it (not one inside quotes).
+const START_TAG = /<[a-zA-Z](?:"[^"]*"|'[^']*'|[^'">])*>/y;
+
+/**
+ * The words of a page's tags: their names, their attributes' names and every word of the attributes'
+ * values. Not the text between them, which no selector reads, nor what's inside comments and scripts.
+ */
+function markupWords(markup, seen) {
+  for (const { index } of markup.matchAll(/<[a-zA-Z]/g)) {
+    START_TAG.lastIndex = index;
+    // A tag the pattern can't follow (a quote left open) gives its words up to the next > instead.
+    const tag = START_TAG.exec(markup)?.[0] ?? markup.slice(index, markup.indexOf('>', index) + 1 || undefined);
+    for (const word of tag.match(/[\w-]+/g) ?? []) seen.add(word).add(word.toLowerCase());
+  }
+}
+
+/**
+ * Every word a script could write into a class, id or attribute: one standing on its own ('is-open',
+ * class="is-open"). One that only ever follows a dot is a class being looked up ('.is-open') or a
+ * property, which puts nothing on the page.
+ */
+function scriptWords(code, seen) {
+  for (const m of code.matchAll(/[\w-]+/g)) if (code[m.index - 1] !== '.') seen.add(m[0]);
+  addAttributes(code, seen);
+}
+
+// A script element that runs (not data, like JSON-LD or speculation rules).
+const isCode = (attributes) => {
+  const type = attributes.match(/\btype=["']?([^"'\s>]+)/i)?.[1];
+  return !type || /^(module|(text|application)\/(java|ecma)script)$/i.test(type);
+};
 
 // Attributes a script sets through a property: dataset.theme sets data-theme, ariaExpanded aria-expanded.
 function addAttributes(text, seen) {
@@ -29,17 +62,19 @@ const IMPLIED_TAGS = ['html', 'head', 'body', 'tbody'];
 const BROWSER_ATTRIBUTES = ['open', 'checked', 'selected', 'value', 'disabled', 'hidden', 'inert'];
 
 /**
- * The words that may name something on a page: every word of its HTML (its inline scripts too), and
- * every word the site's scripts could write into a class, id or attribute. In a script that's a word
- * standing on its own ('is-open', class="is-open"); one that only ever follows a dot is a class being
- * looked up ('.is-open'), which puts nothing on the page.
+ * The words that may name something on a page (its stylesheets taken out): those of its tags, and
+ * every word its inline scripts and the site's scripts could write into a class, id or attribute.
  */
 export function pageWords(html, scripts) {
-  const seen = words(html);
-  for (const m of scripts.matchAll(/[\w-]+/g)) if (scripts[m.index - 1] !== '.') seen.add(m[0]);
-  addAttributes(html, seen);
-  addAttributes(scripts, seen);
-  for (const tag of IMPLIED_TAGS) seen.add(tag);
+  const seen = new Set(IMPLIED_TAGS);
+  const markup = html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/(<script\b([^>]*)>)([\s\S]*?)(<\/script\s*>)/gi, (_, open, attributes, code, close) => {
+      if (isCode(attributes)) scriptWords(code, seen);
+      return open + close;
+    });
+  markupWords(markup, seen);
+  scriptWords(scripts, seen);
   return seen;
 }
 
@@ -207,6 +242,35 @@ function widthsSet(css, outside) {
 }
 
 /**
+ * What the font and font-family declarations left on a page name (lower case), custom properties
+ * (var()) followed through every value they're given anywhere. Null when that can't be told: a custom
+ * property they go through is also set outside the stylesheets (a style attribute, a script).
+ */
+function fontsNamed(css, outside) {
+  const custom = new Map(); // --name -> every value it's given
+  const values = [];
+  csstree.walk(parse(css), {
+    visit: 'Declaration',
+    enter(declaration) {
+      if (this.atrule && isFontFace(this.atrule)) return;
+      const value = csstree.generate(declaration.value);
+      if (declaration.property.startsWith('--')) custom.set(declaration.property, [...(custom.get(declaration.property) ?? []), value]);
+      else if (/^font(-family)?$/i.test(declaration.property)) values.push(value);
+    },
+  });
+  const followed = new Set();
+  for (let i = 0; i < values.length; i++) {
+    for (const [, name] of values[i].matchAll(/var\(\s*(--[\w-]+)/g)) {
+      if (followed.has(name)) continue;
+      if (new RegExp(`${name}(?![\\w-])`).test(outside)) return null;
+      followed.add(name);
+      values.push(...(custom.get(name) ?? []));
+    }
+  }
+  return values.join('\n').toLowerCase();
+}
+
+/**
  * The page's stylesheets without what can't apply to it. outside: the page's text besides its
  * stylesheets, and the site's scripts.
  */
@@ -239,6 +303,13 @@ export function pruneStyles(sheets, seen, outside) {
       keep.set(family, chosen);
     }
     out = out.map((css) => cut(css, faces(css).filter((f) => keep.has(f.family) && !keep.get(f.family).has(f.width)).map((f) => f.range)));
+  }
+  // The faces of a family nothing left sets text in, and that nothing outside the stylesheets names
+  // (a script drawing text in it, an SVG's font-family), are never used.
+  const fonts = fontsNamed(out.join('\n'), outside);
+  if (fonts !== null) {
+    const elsewhere = outside.toLowerCase();
+    out = out.map((css) => cut(css, faces(css).filter((f) => f.family && !fonts.includes(f.family) && !elsewhere.includes(f.family)).map((f) => f.range)));
   }
   return out.map(dropEmptyBlocks);
 }

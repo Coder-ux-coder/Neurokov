@@ -1,7 +1,7 @@
 // Visual diff of two builds: full-page screenshots with motion stopped, compared pixel by pixel.
 // usage: node vdiff.mjs <baseA> <baseB> <outdir> [--vps=1280x800,1440x900] [--pages=/,/about/] [--dark]
 import { chromium } from 'playwright';
-import { SAFE_ARGS } from './safe.mjs';
+import { SAFE_ARGS, EXE } from './safe.mjs';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
@@ -12,7 +12,7 @@ const PAGES = arg('pages', '/,/about/,/book/,/book/pick-a-time/,/case-studies/,/
 const dark = process.argv.includes('--dark');
 const mobile = process.argv.includes('--mobile');
 mkdirSync(OUT, { recursive: true });
-const b = await chromium.launch({ args: SAFE_ARGS });
+const b = await chromium.launch({ executablePath: EXE, args: SAFE_ARGS });
 const STILL = `*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }
   .marquee__track, .cta__track { transform: none !important; }`;
 async function shot(base, path, w, h) {
@@ -26,8 +26,8 @@ async function shot(base, path, w, h) {
   await p.waitForLoadState('load');
   await p.waitForTimeout(1800);
   await p.addStyleTag({ content: STILL });
-  const H = await p.evaluate(() => document.documentElement.scrollHeight);
-  for (let y = 0; y < H; y += 400) { await p.evaluate((y) => scrollTo(0, y), y); await p.waitForTimeout(50); }
+  const height = () => p.evaluate(() => document.documentElement.scrollHeight);
+  for (let y = 0; y < (await height()); y += 400) { await p.evaluate((y) => scrollTo({ top: y, behavior: 'instant' }), y); await p.waitForTimeout(120); }
   await p.waitForTimeout(800);
   await p.evaluate(() => {
     document.querySelectorAll('video').forEach((v) => { v.pause(); v.removeAttribute('src'); v.load(); v.classList.remove('is-playing'); });
@@ -35,7 +35,7 @@ async function shot(base, path, w, h) {
     document.querySelectorAll('canvas.dither').forEach((c) => c.remove());
     // Live counters and clocks change every frame: blank them in both builds.
     document.querySelectorAll('[data-circuit-clock], [data-circuit-run], [data-tally], [data-out-count], [data-ruler-read], [data-machine] .dot').forEach((e) => (e.style.visibility = 'hidden'));
-    scrollTo(0, 0);
+    scrollTo({ top: 0, behavior: 'instant' });
   });
   await p.waitForTimeout(400);
   const buf = await p.screenshot({ fullPage: true });

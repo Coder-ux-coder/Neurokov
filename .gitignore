@@ -25,3 +25,7 @@ design/clips/stills/
 # capture frames (design/screens/capture.mjs) and Python caches: by-products, not sources
 design/screens/frames/
 __pycache__/
+
+# the local HTTPS server's certificate (design/qa/site/serve.mjs --h2 makes it)
+design/qa/site/cert.pem
+design/qa/site/key.pem

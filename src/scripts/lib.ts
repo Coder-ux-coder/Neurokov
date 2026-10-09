@@ -36,6 +36,12 @@ export const store = {
 /** Living photos play unless motion is reduced or the visitor asked to save data. */
 export const liveOk = !calm && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
+/**
+ * Whether the browser plays the site's films at all (H.264, in MP4). One that doesn't (a browser built
+ * without it, like some test browsers) keeps their posters and stills, and never fetches a film.
+ */
+export const filmsPlay = document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
+
 /** The visitor has paused the site's moving parts with the motion button (the head script, Base.astro). */
 export const still = () => root.classList.contains('still');
 /** Calls fn each time the visitor pauses or restarts the moving parts. */

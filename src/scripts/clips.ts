@@ -5,7 +5,7 @@
  * back to its poster when the pointer leaves. A "manual" clip is left to the
  * script of whatever it sits in.
  */
-import { fine, liveOk, loop, onMotion, playLive, playPreview, settled, still, watchVisible } from './lib';
+import { filmsPlay, fine, liveOk, loop, onMotion, playLive, playPreview, settled, still, watchVisible } from './lib';
 
 
 export function startClips() {
@@ -21,6 +21,9 @@ export function startClips() {
     }),
   );
 
+  // A browser that can't play the films keeps their posters, without the buttons of a player that
+  // couldn't play anything (global.css hides them until a player is bound).
+  if (!filmsPlay) return;
   document.querySelectorAll<HTMLElement>('[data-clip="auto"]').forEach((host) => {
     const film = player(host);
     settled.then(() => watchVisible(host, film.want, { threshold: 0.4 }));

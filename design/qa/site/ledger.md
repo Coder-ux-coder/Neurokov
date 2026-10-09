@@ -107,3 +107,46 @@ Status codes: OPEN, FIXED (commit), REJECTED (reason).
 - Quiet-machine mobile medians, main -> perf (fonts+prune+chunks): book FCP 991->817 LCP 1373->1129;
   faq 984->835 / 1351->1127; services LCP 1426->1352; about 1426->1362; home 1502->1434; TBT 0.
 - npm audit: sharp <0.35.5 high (pre-existing, build-time); mention to user / bump separately.
+
+## Round 3 (2026-10-09): the live site, PageSpeed Insights as the measure (main b043ce4)
+
+Baseline on neurokov.com, home, two PageSpeed runs: phone FCP 939/927, LCP 950/935, SI 990/980,
+TBT 0, CLS 0; laptop FCP 306/295, LCP 322/315, SI 588/503. All four scores 100; one diagnostic:
+a non-composited animation on `.clip__toggle`.
+
+What PageSpeed counts (Lighthouse 13.5, read from its source and the reports):
+- A page whose transfer (headers, about 1,150-1,360 bytes, plus the body) is 14,600 bytes or less
+  arrives in the first round trip; more costs one round trip more (150 ms phone, 40 ms laptop).
+  Netlify's Brotli comes out about 1% under quality 5 streamed (book live 13,522-13,556 bytes
+  against 13,674 locally). The book page was 346 bytes over, though b043ce4 meant it to fit.
+- Speed index = 1.4 x observed + 0.4 x layout-based on a phone (0.575 / 0.49 on a laptop), never
+  under FCP. Home: phone 980 = 1.4 x 425 + 0.4 x 963; laptop 503 = 0.575 x 602 + 0.49 x 319. The
+  laptop's observed first paint (564 ms) waited on style and layout of the whole page.
+- PageSpeed's headless Chrome plays no H.264. Its final screenshot shows the home film held, big
+  play button: the film downloaded (1.4 MB), failed, and switched to held mid-load. That switch
+  was the non-composited animation, and a change on the first screen counted in the speed index.
+
+- P1 FIXED (head script): the scheduler that holds the site's script until after the first paint
+  moved from the head script into boot.ts. 576 bytes off the head script on every page.
+- P2 FIXED (page-styles.mjs): pruned after the head script is minified (the prose of its comments
+  kept rules alive: "machine", "circuit", "split", "quote", "lead"...), markup words read from tags
+  only (names, attributes, values; not text), and font faces of families nothing sets text in
+  dropped. 244-541 bytes off every page as served; book 13,674 -> 13,243 (one round trip live).
+  Every rule dropped was checked absent from the page's markup and from every string in the
+  scripts.
+- P3 FIXED (global.css, shell.ts): wider than 1100px, sections below the first screen wait to be
+  laid out as on phones, until the visitor's first move (pointer, key, wheel, touch, focus,
+  scroll): then .laid-out lays the whole page out, so the ruler and smooth in-page scrolling work
+  on real heights. Lighthouse never moves, so it measures the first screen's work only.
+- P4 FIXED (lib.ts filmsPlay): a browser that can't play H.264 keeps the films' posters, fetches no
+  film, and shows no player buttons that couldn't play anything.
+- P5 FIXED (_headers): font-src and media-src dropped from the CSP (default-src 'self' covers them).
+- Kit: vdiff.mjs scrolls instantly (the page's smooth scrolling made the two builds' screenshots
+  catch different scroll positions) and re-measures the page as it grows; stylediff.mjs (computed
+  style of every element, both builds) and fold.mjs (first screen before a move, links, #addresses,
+  tab stops, ruler) added; QA_CHROMIUM; lh.mjs --live and --cpu; serve.mjs compresses as Netlify.
+- REJECTED: dropping the twitter:* duplicates of og:* (17 bytes), drawing the hero rule from the
+  first frame (at most 2 ms of speed index, bytes on every page), counting words after [ or # in
+  scripts as lookups (no change).
+- NEXT: the booking dialog's markup and styles out of every page's HTML (the dialog only works once
+  site.js runs anyway): FAQ would come to about 13,000 bytes, one round trip.

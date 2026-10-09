@@ -53,10 +53,11 @@ addEventListener('pageshow', (e) => e.persisted && setMenu(false));
 
 /* ---------- Focus kept in view ---------- */
 
-// Up to 1100px wide, sections off screen hold a placeholder height until they're shown (global.css).
-// Tab to something past a few of them and the browser scrolls to where it would be at those heights;
-// the sections around it then take their real heights, over a few frames, and it can end up off screen
-// or under the bar. It's watched until it holds still in view, and brought back each time it isn't.
+// Up to 1100px wide, sections off screen hold a placeholder height until they're shown (global.css;
+// wider, only until the visitor's first move, below). Tab to something past a few of them and the
+// browser scrolls to where it would be at those heights; the sections around it then take their real
+// heights, over a few frames, and it can end up off screen or under the bar. It's watched until it
+// holds still in view, and brought back each time it isn't.
 const placeholders = matchMedia('(max-width: 1100px)');
 // Keyboard focus only (a click lands on what's in view); a browser without :focus-visible counts all.
 const byKeyboard = (el: Element) => {
@@ -85,6 +86,20 @@ document.addEventListener('focusin', (e) => {
   };
   requestAnimationFrame(check);
 });
+
+/* ---------- Every section laid out at the first move, wider than a tablet ---------- */
+
+// There the scroll ruler reads the page's full height and a link scrolls smoothly to its target, so
+// the placeholder heights go at the visitor's first move (the pointer, a key, a wheel, a touch), before
+// any scroll: every section is laid out (global.css: .laid-out). Until then the first screen is all
+// there is to lay out.
+const MOVES = ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart', 'focusin', 'scroll'];
+const layOut = () => {
+  if (placeholders.matches) return;
+  root.classList.add('laid-out');
+  for (const type of MOVES) removeEventListener(type, layOut, true);
+};
+for (const type of MOVES) addEventListener(type, layOut, { capture: true, passive: true });
 
 // The button works now: it takes over from the link (global.css).
 root.classList.add('menu-ready');

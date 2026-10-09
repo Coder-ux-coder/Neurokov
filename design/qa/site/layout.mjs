@@ -2,7 +2,7 @@
 // tiny text, controls hidden under fixed elements. Optionally saves screenshots.
 // usage: node layout.mjs <base> <out-dir> [--vps=phone390,...] [--pages=/,/about/] [--fallback] [--dark] [--shots] [--zoom=200]
 import { chromium } from 'playwright';
-import { SAFE_ARGS } from './safe.mjs';
+import { SAFE_ARGS, EXE } from './safe.mjs';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -170,7 +170,7 @@ const coverCheck = async (page) => {
   });
 };
 
-const browser = await chromium.launch({ args: SAFE_ARGS });
+const browser = await chromium.launch({ executablePath: EXE, args: SAFE_ARGS });
 const report = {};
 for (const vp of VPS) {
   const ctx = await browser.newContext({ ...ALL_VPS[vp], reducedMotion: 'no-preference' });

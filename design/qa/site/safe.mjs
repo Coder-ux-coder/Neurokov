@@ -7,3 +7,7 @@ export const SAFE_ARGS = [
   '--proxy-bypass-list=localhost;127.0.0.1',
   '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1',
 ];
+
+// The browser the checks drive. Playwright's own Chromium by default; set QA_CHROMIUM to another
+// Chromium or Chrome (for example on a machine whose Playwright browsers are a different build).
+export const EXE = process.env.QA_CHROMIUM || undefined;

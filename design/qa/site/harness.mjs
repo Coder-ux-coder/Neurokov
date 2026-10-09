@@ -2,7 +2,7 @@
 // usage: node harness.mjs http://localhost:4400 [out.json] [--only=crawl,storm,booking,nojs,calm,axe,redirects]
 // Exits 1 if anything fails. Every failure is printed with the page and viewport.
 import { chromium } from 'playwright';
-import { SAFE_ARGS } from './safe.mjs';
+import { SAFE_ARGS, EXE } from './safe.mjs';
 import { AxeBuilder } from '@axe-core/playwright';
 import { writeFileSync } from 'node:fs';
 
@@ -512,7 +512,7 @@ async function redirects() {
   }
 }
 
-const browser = await chromium.launch({ args: SAFE_ARGS });
+const browser = await chromium.launch({ executablePath: EXE, args: SAFE_ARGS });
 const t0 = Date.now();
 try {
   if (want('redirects')) { console.log('redirects'); await redirects(); }

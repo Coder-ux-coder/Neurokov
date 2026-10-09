@@ -1,13 +1,13 @@
 // Screen-by-screen screenshots of a page after every reveal has settled.
 // usage: node shots.mjs <base> <out-dir> <path> [w] [h] [dpr] [--dark] [--fallback]
 import { chromium } from 'playwright';
-import { SAFE_ARGS } from './safe.mjs';
+import { SAFE_ARGS, EXE } from './safe.mjs';
 import { mkdirSync } from 'node:fs';
 const [,, base, out, path = '/', w = '390', h = '844', dpr = '1'] = process.argv;
 const dark = process.argv.includes('--dark');
 const fallback = process.argv.includes('--fallback');
 mkdirSync(out, { recursive: true });
-const b = await chromium.launch({ args: SAFE_ARGS });
+const b = await chromium.launch({ executablePath: EXE, args: SAFE_ARGS });
 const ctx = await b.newContext({ viewport: { width: +w, height: +h }, deviceScaleFactor: +dpr, isMobile: +w < 1000, hasTouch: +w < 1000 });
 if (dark) await ctx.addInitScript(() => { try { localStorage.setItem('nk-theme', 'dark'); } catch {} });
 if (fallback) await ctx.route('**/*.woff2', (r) => r.abort());

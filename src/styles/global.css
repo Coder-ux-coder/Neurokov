@@ -284,24 +284,30 @@ button {
   padding-block: calc(var(--section) * 0.6);
 }
 
-/* On a phone or tablet, a section below the first screen is laid out and painted only as it nears
-   the screen, so the first screen paints without first setting every line of text on the page in its
-   fonts: most of a phone's work before that first paint. Until then each holds a placeholder height,
-   and its real one once it has been shown. Up to the width where the scroll ruler appears, which
-   reads the page's full height. */
-@media (max-width: 1100px) {
-  main > section:not(:first-child),
-  body > .footer {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 1000px;
-  }
+/* A section below the first screen is laid out and painted only as it nears the screen, so the first
+   screen paints without first setting every line of text on the page in its fonts: most of the work
+   before that first paint. Until then each holds a placeholder height, and its real one once it has
+   been shown. Wider than a tablet, where the scroll ruler reads the page's full height, every section
+   is laid out at the visitor's first move, before any scroll (shell.ts adds .laid-out). Such a
+   section paints only inside its box and this margin round it, wide enough for what hangs over its
+   edge: the crop marks round a film or card at its very top. */
+main > section:not(:first-child),
+body > .footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+  overflow-clip-margin: 16px;
+}
 
-  /* A smooth scroll aims at where its target would be with those placeholder heights, and the
-     sections it passes take their real heights on the way: it would stop short of a link's target or
-     the next field in tab order. The browser's own jump corrects for them. */
-  html {
-    scroll-behavior: auto;
-  }
+.laid-out main > section:not(:first-child),
+.laid-out body > .footer {
+  content-visibility: visible;
+}
+
+/* A smooth scroll aims at where its target would be with those placeholder heights, and the sections
+   it passes take their real heights on the way: it would stop short of a link's target or the next
+   field in tab order. The browser's own jump corrects for them. */
+html:not(.laid-out) {
+  scroll-behavior: auto;
 }
 
 /* Column hairlines, like the grid on a drafting sheet. */

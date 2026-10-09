@@ -1,11 +1,11 @@
 // First-visit layout shifts per page (fresh context, so the font swap path runs), no scrolling.
 import { chromium } from 'playwright';
-import { SAFE_ARGS } from './safe.mjs';
+import { SAFE_ARGS, EXE } from './safe.mjs';
 const base = process.argv[2];
 const PAGES = (process.argv[3] || '/,/about/,/book/,/book/pick-a-time/,/case-studies/,/case-studies/outbound-engine/,/case-studies/psychology-platform/,/case-studies/speed-to-lead/,/faq/,/privacy/,/process/,/services/,/services/lead-conversion/,/services/lead-generation/,/services/lead-reactivation/,/terms/,/x-404/').split(',');
 const VPS = { mobile: { viewport:{width:412,height:823}, deviceScaleFactor:1.75, isMobile:true, hasTouch:true }, desktop: { viewport:{width:1350,height:940} }, phone360: { viewport:{width:360,height:740}, deviceScaleFactor:3, isMobile:true, hasTouch:true }, laptop1280: { viewport:{width:1280,height:720} }, tablet: { viewport:{width:768,height:1024}, isMobile:true, hasTouch:true, deviceScaleFactor:2 } };
 const which = (process.argv[4] ?? 'mobile,desktop').split(',');
-const b = await chromium.launch({ args: [...SAFE_ARGS, '--ignore-certificate-errors'] });
+const b = await chromium.launch({ executablePath: EXE, args: [...SAFE_ARGS, '--ignore-certificate-errors'] });
 let total = 0;
 for (const v of which) for (const path of PAGES) {
   const ctx = await b.newContext({ ...VPS[v], ignoreHTTPSErrors: true });
