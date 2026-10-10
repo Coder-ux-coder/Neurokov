@@ -16,10 +16,10 @@
     <script src="cast.js"></script>
     <script src="story.js"></script>
     <script>
-      // Case 01, told as a story: every enquiry at an online psychology platform
+      // Case 03, told as a story: every enquiry at an online psychology platform
       // needed chasing, and growth hit a ceiling. With Neurokov, new clients come
       // in and every enquiry is answered and booked, and the business grew by
-      // over 100% in a single month. Real numbers only (case 01); no amounts.
+      // over 100% in a single month. Real numbers only (case 03); no amounts.
       STAGE.setup((S) => {
         const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
         const { E, ramp, env, hit } = S;
@@ -116,7 +116,7 @@
             d.set(ramp(t, 2.7 + i * 0.7, 0.55, E.linear));
           });
         });
-        headline(0, 'Fig. 1 · Online psychology platform', 'Every enquiry<br />needed <em>chasing</em>.', 0.45, 4.1, { dark: false });
+        headline(0, 'Online psychology platform', 'Every enquiry<br />needed <em>chasing</em>.', 0.45, 4.1, { dark: false });
 
         // ---------- Acts 2 and 4: the growth chart, and its ceiling ----------
         const chart = S.g(S.cam);
@@ -205,8 +205,8 @@
             blink: blinkAt(t, [5.6, 7.4, 17.8]), headTilt: -6,
           });
         });
-        headline(1, 'Fig. 2 · The problem', 'Growth hit<br />a <em>ceiling</em>.', 4.95, 7.8, { dark: false });
-        headline(3, 'Fig. 4 · One month in', 'The business<br />more than <em>doubled</em>.', 15.95, 99, { dark: false });
+        headline(1, 'The problem', 'Growth hit<br />a <em>ceiling</em>.', 4.95, 7.8, { dark: false });
+        headline(3, 'One month in', 'The business<br />more than <em>doubled</em>.', 15.95, 99, { dark: false });
 
         // ---------- Act 3: every enquiry, on to a booking ----------
         const g3 = K.act(2);
@@ -288,13 +288,13 @@
             zap.set(ramp(t, at, 0.3, E.linear));
           } else zap.set(0);
         });
-        headline(2, 'Fig. 3 · With Neurokov', 'Every enquiry<br />becomes a <em>booking</em>.', 8.75, 15.3, { dark: false });
+        headline(2, 'With Neurokov', 'Every enquiry<br />becomes a <em>booking</em>.', 8.75, 15.3, { dark: false });
 
         // ---------- The close ----------
         K.endCard({
           at: 18.0,
           countFor: 0.9, // lands on 100 by 19.35s and holds
-          kicker: 'Case 01 · Online psychology platform · Co-founded by Mohid Zeeshan',
+          kicker: 'Case 03 · Online psychology platform · Co-founded by Mohid Zeeshan',
           big: '<b data-n>0</b>%+ growth',
           count: [0, 100],
           label: 'In a single month · New clients in, every enquiry answered',
@@ -305,7 +305,7 @@
           [8.2, '◀◀ Rewind · With Neurokov'],
           [15.6, 'One month in →'],
         ]);
-        K.note('Illustrated story · Real numbers from case 01', () => false);
+        K.note('Illustrated story · Real numbers from case 03', () => false);
         K.camera(
           [
             [0, [960, 640, 1.12]],

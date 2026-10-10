@@ -10,13 +10,14 @@ audit. About 150 words, so 55 to 60 seconds at a natural pace.
 > pipeline still runs on referrals. Some months are packed. Others go quiet.
 >
 > **(What we do, 0:10)** I'm Mohid, founder of Neurokov, and we get you clients. We find the
-> businesses that should buy from you and start real conversations with the people who decide.
+> businesses that should buy from you and reach the people who decide, by cold email and cold
+> calling.
 > Every lead that comes to you gets a personal reply in under 60 seconds, day or night. And we
 > bring back the old leads sitting in your CRM. You just show up to booked sales calls.
 >
-> **(Proof, 0:30)** For one growth agency, that was 46 qualified calls in the first 30 days, with
-> zero sales hires. A consulting firm went from replying in 19 hours to under a minute, and closed
-> over 20% more.
+> **(Proof, 0:30)** One outbound engine we built booked 17 qualified calls in its first 30 days,
+> with zero sales hires. One speed-to-lead system took a first reply from 19 hours to under a
+> minute, and the close rate went up by over 20%.
 >
 > **(No risk, 0:45)** Before we start, we agree in writing what we'll deliver. If we don't deliver
 > it, you don't pay.

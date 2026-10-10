@@ -44,8 +44,22 @@ const [headline] = study.stats;
   </div>
   <div class="case-card__head">
     <span class="label">Case {n} · {study.service}</span>
-    <span class="label">{study.client.split(',')[0]}</span>
+    {study.client && <span class="label">{study.client.split(',')[0]}</span>}
   </div>
   <Title class="case-card__title">{study.title}</Title>
-  <p class="case-card__stat"><b>{headline.value}</b> <span>{headline.label}</span></p>
+  <p class="case-card__stat">
+    <b>
+      {
+        headline.before && (
+          <span class="case-card__was">
+            {headline.before}
+            <Icon name="arrow-right" size={18} strokeWidth={2.25} />
+            <span class="sr-only">to</span>
+          </span>
+        )
+      }
+      {headline.value}
+    </b>
+    <span>{headline.label}</span>
+  </p>
 </a>

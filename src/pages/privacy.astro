@@ -1,18 +1,25 @@
 ---
-import { site } from '../data/site';
+import { ph, site } from '../data/site';
 import Legal from '../layouts/Legal.astro';
 ---
 
 <Legal
   title="Privacy Policy"
   description="How Neurokov collects, uses and protects personal information."
-  updated="October 5, 2026"
+  updated="October 10, 2026"
 >
-  <p>
+  <p data-ph={site.company ? ph('company') : undefined}>
     This policy explains what personal information {site.legalName} (“we”, “us”) collects through{' '}
     {site.url.replace('https://', '')}, why we collect it and what we do with it. We keep it short because we collect very
     little.
   </p>
+  {
+    site.company && (
+      <p data-ph={ph('company')}>
+        We are {site.company.name}, company no. {site.company.number}. Registered office: {site.company.office}.
+      </p>
+    )
+  }
 
   <h2>What we collect</h2>
   <ul>

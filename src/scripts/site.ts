@@ -8,7 +8,6 @@ import { startBooking } from './booking';
 import { startCircuits } from './circuit';
 import { startClips } from './clips';
 import { startDither } from './dither';
-import { startFlaps } from './flap';
 import { warmFonts } from './fonts';
 import { root } from './lib';
 import { startLive } from './live';
@@ -112,7 +111,6 @@ const steps = [
   startReveal,
   startVsl,
   startClips,
-  startFlaps,
   startScroll,
   startFit,
   startToolMarks,

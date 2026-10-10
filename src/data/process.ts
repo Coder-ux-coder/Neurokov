@@ -19,10 +19,10 @@ export const steps: {
   {
     icon: 'calendar-check',
     title: 'Free growth audit',
-    text: '30 minutes, 100% free. We look at where your clients come from today, where leads go cold and where your next clients will come from.',
+    text: '30 minutes on Google Meet. We look at where your clients come from today, where leads go cold and where your next clients will come from.',
     detail:
       'Bring the honest version: where your clients come from, how fast you reply to new leads and what happens to the ones who don’t buy. You leave knowing where the quickest new business is, whether you work with us or not.',
-    tag: '100% free',
+    tag: 'No cost',
     clip: 'process-audit',
     get: [
       'Where your leads go cold today',

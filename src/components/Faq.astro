@@ -1,5 +1,6 @@
 ---
 import type { Faq } from '../data/faqs';
+import { ph } from '../data/site';
 
 interface Props {
   items: Faq[];
@@ -13,7 +14,7 @@ const { items, group = 'faq' } = Astro.props;
 <div class="faq" data-reveal>
   {
     items.map((f) => (
-      <details name={group}>
+      <details name={group} data-ph={f.ph && ph(f.ph)}>
         <summary>
           {f.q}
           <span class="faq__plus" aria-hidden="true" />

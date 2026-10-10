@@ -10,12 +10,14 @@ interface Props {
   label?: string;
   /** On the right of the rule, e.g. "03 / 08". */
   index?: string;
+  /** On the first screen at most sizes: there, in place, from the first paint (global.css, [data-hold]). */
+  hold?: boolean;
 }
 
-const { title, lead, label, index } = Astro.props;
+const { title, lead, label, index, hold = false } = Astro.props;
 ---
 
-<div class="section-head">
+<div class="section-head" data-hold={hold ? '' : undefined}>
   {
     (label || index) && (
       <div class="section-head__rule" data-reveal>

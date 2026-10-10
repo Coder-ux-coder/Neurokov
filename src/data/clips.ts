@@ -12,25 +12,25 @@ export const clips: Record<string, { title: string; text: string; source?: strin
   },
   'speed-to-lead': {
     title: 'Speed-to-lead, as a story',
-    text: 'Illustrated story, with real numbers from case 03. A lead writes in at 11:47 PM. The old way, the first reply took 19 hours. With Neurokov, a personal reply goes out in under 60 seconds and the call is booked by morning.',
+    text: 'Illustrated story, with real numbers from case 02. A lead writes in at 11:47 PM. The old way, the first reply took 19 hours. With Neurokov, a personal reply goes out in under 60 seconds and the call is booked by morning.',
   },
   'outbound-engine': {
     title: 'The outbound engine, as a story',
-    text: 'Illustrated story, with real numbers from case 02. An agency that lived on referrals had great months, then quiet ones, and cold email burned a domain twice. With Neurokov the calendar fills up: 46 qualified calls in the first 30 days, with zero sales hires and the main domain untouched.',
+    text: 'Illustrated story, with real numbers from case 01. A business that lived on referrals had great months, then quiet ones, and cold email burned a domain twice. With Neurokov the calendar fills up: 17 qualified calls in the first 30 days, with zero sales hires and the main domain untouched.',
   },
   psychology: {
     title: 'The psychology platform, as a story',
-    text: 'Illustrated story, with real numbers from case 01. Every enquiry at an online psychology platform needed chasing, and growth hit a ceiling. With Neurokov, new clients flow in and every enquiry is answered, followed up and booked. The business grew by over 100% in a single month.',
+    text: 'Illustrated story, with real numbers from case 03. Every enquiry at an online psychology platform needed chasing, and growth hit a ceiling. With Neurokov, new clients flow in and every enquiry is answered, followed up and booked. The business grew by over 100% in a single month.',
   },
   'lead-generation': {
     title: 'Outbound lead generation, as a story',
-    text: 'Illustrated story, with real numbers from case 02. A founder squeezes prospecting in after client work and falls asleep at the laptop. With Neurokov, six steps run every weekday: find ideal accounts, enrich and verify them, write a personal first line, send from warmed inboxes, sort the replies by intent and book the call. In case 02 that meant 46 qualified calls in the first 30 days, with zero sales hires.',
-    source: 'case 02',
+    text: 'Illustrated story, with real numbers from case 01. A founder squeezes prospecting in after client work and falls asleep at the laptop. With Neurokov, six steps run every weekday: find ideal accounts, enrich and verify them, write a personal first line, send from warmed inboxes, sort the replies by intent and book the call. In case 01 that meant 17 qualified calls in the first 30 days, with zero sales hires.',
+    source: 'case 01',
   },
   'lead-conversion': {
     title: 'Speed to lead, as a story',
-    text: 'Illustrated story, with real numbers from case 03. New leads pour into a funnel full of cracks, and most of them roll away. With Neurokov, every lead goes through five steps: the form is submitted, the lead is checked and qualified, a personal reply goes out within 60 seconds, the call is booked on your calendar, and the CRM is updated and the team notified. In case 03 the first reply went from 19 hours to under 60 seconds.',
-    source: 'case 03',
+    text: 'Illustrated story, with real numbers from case 02. New leads pour into a funnel full of cracks, and most of them roll away. With Neurokov, every lead goes through five steps: the form is submitted, the lead is checked and qualified, a personal reply goes out within 60 seconds, the call is booked on your calendar, and the CRM is updated and the team notified. In case 02 the first reply went from 19 hours to under 60 seconds.',
+    source: 'case 02',
   },
   'lead-reactivation': {
     title: 'Lead reactivation, as a story',
@@ -38,7 +38,7 @@ export const clips: Record<string, { title: string; text: string; source?: strin
   },
   founder: {
     title: 'Mohid Zeeshan, our founder, as a story',
-    text: 'Illustrated story. Mohid, Neurokov’s founder, grew the online psychology platform he co-founded: steady months, then one more than double the last. He stands in the top 1% in lead generation, and shares what works with the sales and lead generation communities he’s part of. Your clients, found by the top 1%.',
+    text: 'Illustrated story. Mohid, Neurokov’s founder, grew the online psychology platform he co-founded: steady months, then one more than double the last. He climbs every step from outreach to replies, calls and new clients, as he has since 2023, and shares what works with the sales and lead generation communities he’s part of. Your next clients, on your calendar.',
   },
   'process-audit': {
     title: 'Step 01, the free audit, as a story',

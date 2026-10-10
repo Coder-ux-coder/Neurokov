@@ -1,7 +1,13 @@
 ---
-/** The headline numbers on a split-flap board. They flip in when the board scrolls into view. */
+/**
+ * The headline numbers on a split-flap board, standing still (they flipped in as the board scrolled
+ * into view until 2026-10-10, when the owner dropped the counting numbers). Where a case states what
+ * it was, before -> after: the old figure on small, dim tiles, an arrow, the number. Under each, what
+ * it covers (stats.ts, `note`).
+ */
 import { formatStat, heroStats, statsArePlaceholders, type Stat } from '../data/stats';
 import Flap from './Flap.astro';
+import Icon from './Icon.astro';
 
 interface Props {
   stats?: Stat[];
@@ -20,8 +26,20 @@ const { stats = heroStats } = Astro.props;
   {
     stats.map((s) => (
       <div class="board__cell">
-        <Flap value={formatStat(s)} />
+        {s.before ? (
+          <div class="board__value">
+            <Flap value={s.before} class="flap--was" />
+            <span class="board__to">
+              <Icon name="arrow-right" size={24} strokeWidth={2.5} />
+              <span class="sr-only">to</span>
+            </span>
+            <Flap value={formatStat(s)} />
+          </div>
+        ) : (
+          <Flap value={formatStat(s)} />
+        )}
         <span class="board__label">{s.label}</span>
+        {s.note && <span class="board__note">{s.note}</span>}
       </div>
     ))
   }

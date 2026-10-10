@@ -21,7 +21,7 @@
       // reads it and signs, and the stamp comes down. No amounts anywhere.
       // A 12-second loop for the process page.
       STAGE.setup((S) => {
-        const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
+        const { INK, PAPER, ORANGE, GREEN, GRAY, SHADE } = CAST;
         const { E, ramp, env, hit } = S;
         const K = STORY([[0, 12.1]]);
         const { blinkAt, headline } = K;
@@ -44,7 +44,7 @@
         const rows = Array.from({ length: ROWS }, (_, i) => {
           const y = -DH / 2 + 110 + i * 40;
           const box = S.svg('rect', { x: -DW / 2 + 30, y: y - 12, width: 24, height: 24, rx: 5, fill: PAPER, stroke: INK, 'stroke-width': 3.5 }, doc);
-          const tick = S.svg('path', { d: `M ${-DW / 2 + 34} ${y} L ${-DW / 2 + 41} ${y + 7} L ${-DW / 2 + 52} ${y - 8}`, fill: 'none', stroke: ORANGE, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, doc);
+          const tick = S.svg('path', { d: `M ${-DW / 2 + 34} ${y} L ${-DW / 2 + 41} ${y + 7} L ${-DW / 2 + 52} ${y - 8}`, fill: 'none', stroke: GREEN, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, doc);
           const line = S.svg('rect', { x: -DW / 2 + 70, y: y - 5, height: 10, rx: 5, fill: INK, opacity: 0.8 }, doc);
           return { box, tick, line, w: [250, 210, 270, 180, 236, 150][i], y };
         });

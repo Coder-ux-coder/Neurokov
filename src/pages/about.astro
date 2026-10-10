@@ -6,7 +6,6 @@ import Figure from '../components/Figure.astro';
 import Founder from '../components/Founder.astro';
 import Guarantee from '../components/Guarantee.astro';
 import Icon from '../components/Icon.astro';
-import Marquee from '../components/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Values from '../components/Values.astro';
 import { clips } from '../data/clips';
@@ -37,7 +36,7 @@ const options = [
     title: site.name,
     us: true,
     points: [
-      '46 qualified calls in 30 days for one agency',
+      '17 qualified calls in 30 days from cold outbound',
       'Every lead answered in under 60 seconds',
       'One fixed price. If we don’t deliver, you don’t pay',
       'Your lists, domains and accounts stay yours',
@@ -70,7 +69,7 @@ const wontDo = ['Websites, apps or branding', 'Running your ads or social accoun
           <div data-reveal style="--d: 320ms"><Button size="lg" label="See where your next clients are" /></div>
         </div>
         <div class="split__media" data-reveal style="--d: 160ms">
-          <Figure n="01" caption={`${clips['outbound-engine'].title}. Illustrated, with real numbers from case 02.`}>
+          <Figure caption={`${clips['outbound-engine'].title}. Illustrated, with real numbers from case 01.`}>
             <div class="marks">
               <Clip name="outbound-engine" sizes="(max-width: 900px) 100vw, 620px" eager />
             </div>
@@ -80,8 +79,6 @@ const wontDo = ['Websites, apps or branding', 'Running your ads or social accoun
     </div>
   </section>
 
-  <Marquee />
-
   <section class="section">
     <div class="container">
       <SectionHead
@@ -89,7 +86,7 @@ const wontDo = ['Websites, apps or branding', 'Running your ads or social accoun
         title="Growth we delivered for ourselves first."
         lead="Before we grew anyone else’s business, our founder grew his own."
       />
-      <Founder film="02" />
+      <Founder film />
     </div>
   </section>
 

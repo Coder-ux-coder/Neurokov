@@ -2,10 +2,11 @@
 /**
  * The founder, filed like a personnel record. No photo (the user's call):
  * credentials on the left, a third-person bio on the right, the way LeftClick
- * writes its leadership bios. With `film` (its figure number on the page), his
+ * writes its leadership bios. With `film`, his
  * story film plays above the record. Neurokov itself is new (2026); Mohid has
  * been doing this since 2023, so the record says when he started, not when the
- * company did. Every number is from the confirmed case studies or his own account.
+ * company did. Every number is from the confirmed case studies or his own account, and each can be
+ * checked: since 2026-10-10 the record claims no rank (it said "top 1%").
  */
 import { clips } from '../data/clips';
 import { site } from '../data/site';
@@ -15,14 +16,14 @@ import Icon from './Icon.astro';
 import type { IconName } from './icons';
 
 interface Props {
-  film?: string;
+  film?: boolean;
 }
 
 const { film } = Astro.props;
 
 const creds: { text: string; icon: IconName }[] = [
-  { text: `${site.founder.role}, ${site.name}`, icon: 'badge-check' },
-  { text: 'Top 1% in lead generation', icon: 'target' },
+  { text: `${site.founder.role}, ${site.name}`, icon: 'briefcase-business' },
+  { text: '150+ automations shipped', icon: 'workflow' },
   { text: 'Co-founder, online psychology platform', icon: 'heart-pulse' },
   { text: 'Grew it 100%+ in a single month', icon: 'trending-up' },
   { text: 'Doing this since 2023', icon: 'history' },
@@ -32,7 +33,7 @@ const creds: { text: string; icon: IconName }[] = [
 {
   film && (
     <div class="founder-film" data-reveal>
-      <Figure n={film} class="fig--film" caption={`${clips.founder.title}. Illustrated, in his own words.`}>
+      <Figure class="fig--film" caption={`${clips.founder.title}. Illustrated, in his own words.`}>
         <div class="marks">
           <Clip name="founder" sizes="(max-width: 1320px) 100vw, 1320px" />
         </div>
@@ -41,7 +42,6 @@ const creds: { text: string; icon: IconName }[] = [
   )
 }
 <div class="founder" data-reveal>
-  <span class="founder__file" aria-hidden="true">File 001 · Founder</span>
   <div class="founder__id">
     <span class="label label--signal">Founder</span>
     <h3 class="founder__name">{site.founder.name}</h3>
@@ -61,8 +61,9 @@ const creds: { text: string; icon: IconName }[] = [
   </div>
   <div class="founder__bio">
     <p>
-      Mohid has been growing businesses since 2023, and he’s in the top 1% in lead generation. He shares what works
-      with the sales and lead generation communities he’s part of.
+      Mohid has been growing businesses since 2023. He has shipped 150+ automations, handing 50K+ hours back to the
+      businesses he built them for, and he’s n8n certified. He shares what works with the sales and lead generation
+      communities he’s part of.
     </p>
     <p>
       He co-founded an online psychology platform and grew it by over 100% in a single month, by bringing new clients
@@ -74,7 +75,7 @@ const creds: { text: string; icon: IconName }[] = [
     <dl class="founder__stats">
       <div><dt>Doing this since</dt><dd>2023</dd></div>
       <div><dt>Growth in one month</dt><dd>100%+</dd></div>
-      <div><dt>Lead generation</dt><dd>Top 1%</dd></div>
+      <div><dt>Automations shipped</dt><dd>150+</dd></div>
     </dl>
   </div>
 </div>

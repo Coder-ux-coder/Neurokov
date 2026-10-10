@@ -2,7 +2,9 @@
 // 150 ms for a few seconds, each compared with the last one. Prints how much of the screen differs
 // at each moment and where; saves the frames that differ (and the last one) to look at.
 // Lighthouse's speed index counts every such change on the first screen against the page.
-// usage: node settle.mjs <base> <path,...> <out-dir> [--vp=mobile|desktop] [--secs=4]
+// With --no-h264 the browser says it can't play the films (H.264), like PageSpeed's: the site keeps
+// their posters then.
+// usage: node settle.mjs <base> <path,...> <out-dir> [--vp=mobile|desktop] [--secs=4] [--no-h264]
 import { chromium } from 'playwright';
 import { PNG } from 'pngjs';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -13,6 +15,7 @@ const [, , BASE, PATHS, OUT] = process.argv;
 const arg = (k, d) => process.argv.find((a) => a.startsWith(`--${k}=`))?.split('=')[1] ?? d;
 const VP = arg('vp', 'mobile');
 const SECS = Number(arg('secs', 4));
+const NO_H264 = process.argv.includes('--no-h264');
 const VPS = {
   mobile: { viewport: { width: 412, height: 823 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true },
   desktop: { viewport: { width: 1350, height: 940 }, deviceScaleFactor: 1 },
@@ -23,6 +26,13 @@ const browser = await chromium.launch({ executablePath: EXE, args: [...SAFE_ARGS
 try {
   for (const path of PATHS.split(',')) {
     const ctx = await browser.newContext({ ...VPS[VP], ignoreHTTPSErrors: true });
+    if (NO_H264)
+      await ctx.addInitScript(() => {
+        const can = HTMLMediaElement.prototype.canPlayType;
+        HTMLMediaElement.prototype.canPlayType = function (type) {
+          return /mp4|avc/i.test(type) ? '' : can.call(this, type);
+        };
+      });
     const page = await ctx.newPage();
     const frames = [];
     const t0 = Date.now();

@@ -50,7 +50,7 @@ const bookingReady = !unconfirmed.has('booking');
 
 <Base
   title={`Book a Free Growth Audit | ${site.name}`}
-  description="Book a 100% free, 30-minute growth audit. We’ll find where your leads go cold and show you exactly where your next clients will come from."
+  description="Book a free, 30-minute growth audit. We’ll find where your leads go cold and show you exactly where your next clients will come from."
   bookingDialog={false}
 >
   <section class="page-hero" data-hold>
@@ -59,7 +59,7 @@ const bookingReady = !unconfirmed.has('booking');
       <div class="runhead" data-reveal>
         <span class="label label--signal"><span data-decode>Free growth audit</span></span>
         <span class="runhead__line draw" aria-hidden="true"></span>
-        <span class="label runhead__meta">30 minutes · 100% free</span>
+        <span class="label runhead__meta">30 minutes · Google Meet</span>
       </div>
       <div class="book">
         <div class="book__copy">
@@ -86,7 +86,7 @@ const bookingReady = !unconfirmed.has('booking');
         </div>
         <div class="book__cal marks" data-reveal style="--d: 160ms">
           <div class="book__bar label" aria-hidden="true">
-            <span>Fig. 01 · Book your audit</span>
+            <span>Book your audit</span>
             <span class:list={[{ 'is-off': !bookingReady }]}>{bookingReady ? 'Live' : 'Not connected'}</span>
           </div>
           <BookingForm mode="inline" />

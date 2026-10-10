@@ -250,7 +250,7 @@
       <main>
         <div class="head">
           <h1>Pipeline overview</h1>
-          <span class="sub">All channels · First 30 days</span>
+          <span class="sub">Outbound · First 30 days</span>
           <div class="right">
             <span class="btn"><i data-i="calendar"></i>Last 30 days<i data-i="chevron-down"></i></span>
             <span class="btn"><i data-i="share-2"></i>Share report</span>
@@ -259,7 +259,7 @@
         <div class="kpis">
           <div class="panel kpi">
             <div class="label">Calls booked</div>
-            <div class="value">46</div>
+            <div class="value">17</div>
             <div class="delta">Qualified, zero sales hires</div>
           </div>
           <div class="panel kpi">
@@ -268,14 +268,14 @@
             <div class="delta">Main domain untouched</div>
           </div>
           <div class="panel kpi">
-            <div class="label">First reply</div>
-            <div class="value">41<small>s</small></div>
-            <div class="delta">Median, inbound leads</div>
+            <div class="label">Warmed inboxes</div>
+            <div class="value">36</div>
+            <div class="delta">On 12 separate domains</div>
           </div>
           <div class="panel kpi">
-            <div class="label">Close rate</div>
-            <div class="value">+20<small>%</small></div>
-            <div class="delta">vs last quarter</div>
+            <div class="label">Companies found</div>
+            <div class="value">6,000</div>
+            <div class="delta">Verified, refreshed monthly</div>
           </div>
         </div>
         <div class="grid">
@@ -294,16 +294,17 @@
             </div>
           </div>
           <div class="panel">
-            <div class="card-head"><span class="section-title">Where calls came from</span><span class="muted">30 days</span></div>
+            <div class="card-head"><span class="section-title">Calls by week</span><span class="muted">30 days</span></div>
             <div class="donut">
               <div class="ring">
-                <svg data-donut="52,33,15" data-colors="--brand,#ff9a6b,#4b4b63" data-w="16"></svg>
-                <div><b>46</b><small>calls</small></div>
+                <svg data-donut="12,18,29,41" data-colors="#4b4b63,#ffc2a3,#ff9a6b,--brand" data-w="16"></svg>
+                <div><b>17</b><small>calls</small></div>
               </div>
               <div class="legend">
-                <div><span style="background: var(--brand)"></span>Outbound<em>24</em></div>
-                <div><span style="background: #ff9a6b"></span>Inbound<em>15</em></div>
-                <div><span style="background: #4b4b63"></span>Reactivated<em>7</em></div>
+                <div><span style="background: #4b4b63"></span>Week 1<em>2</em></div>
+                <div><span style="background: #ffc2a3"></span>Week 2<em>3</em></div>
+                <div><span style="background: #ff9a6b"></span>Week 3<em>5</em></div>
+                <div><span style="background: var(--brand)"></span>Week 4 on<em>7</em></div>
               </div>
             </div>
           </div>
@@ -312,9 +313,9 @@
             <div class="chart-wrap">
               <svg
                 class="chart"
-                data-line="2,4,6,9,11,13,16,18,20,23,26,28,31,33,35,38,40,42,44,46"
-                data-y="0,15,30,45"
-                data-max="50"
+                data-line="0,1,2,2,2,4,4,5,5,6,8,9,10,10,11,14,14,15,15,17"
+                data-y="0,5,10,15"
+                data-max="20"
                 data-x="Day 1,Day 8,Day 15,Day 22,Day 30"
                 data-area
                 data-dot
@@ -322,13 +323,12 @@
             </div>
           </div>
           <div class="panel">
-            <div class="card-head"><span class="section-title">Top sources</span><span class="muted">Calls</span></div>
+            <div class="card-head"><span class="section-title">Booked from</span><span class="muted">Calls</span></div>
             <div class="flows">
-              <div class="flow"><span>Inbound lead to booked call</span><em>15</em><span class="meter"><span style="width: 100%"></span></span></div>
-              <div class="flow"><span>Agency founders, US</span><em>14</em><span class="meter"><span style="width: 93%"></span></span></div>
-              <div class="flow"><span>Marketing directors, UK</span><em>10</em><span class="meter"><span style="width: 67%"></span></span></div>
-              <div class="flow"><span>Old leads, last year</span><em>4</em><span class="meter"><span style="width: 27%"></span></span></div>
-              <div class="flow"><span>Past clients</span><em>3</em><span class="meter"><span style="width: 20%"></span></span></div>
+              <div class="flow"><span>A reply to the first email</span><em>7</em><span class="meter"><span style="width: 100%"></span></span></div>
+              <div class="flow"><span>A reply to follow-up 1</span><em>5</em><span class="meter"><span style="width: 71%"></span></span></div>
+              <div class="flow"><span>A reply to follow-up 2</span><em>3</em><span class="meter"><span style="width: 43%"></span></span></div>
+              <div class="flow"><span>A later follow-up</span><em>2</em><span class="meter"><span style="width: 29%"></span></span></div>
             </div>
           </div>
         </div>
@@ -351,8 +351,8 @@
             box-shadow: 0 18px 44px rgb(0 0 0 / 0.55); font-size: 13px">
             <span style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px;
               background: rgb(52 211 153 / 0.16); color: var(--green)"><i data-i="circle-check"></i></span>
-            <div><b style="display: block; font-size: 14px">Call booked · Inbound lead</b>
-              <span class="muted" style="font-size: 12px">First reply in 41s · just now</span></div>
+            <div><b style="display: block; font-size: 14px">Call booked · Outbound</b>
+              <span class="muted" style="font-size: 12px">A reply to follow-up 1 · just now</span></div>
           </div>`);
         A.$('.screen').append(toast);
         A.toast(toast, 3.1, 6.7);

@@ -28,6 +28,14 @@ python design/screens/render.py home-monitor                   # HTML -> design/
 python design/composite/composite.py home-feature --install    # -> src/assets/images/home-feature.jpg
 ```
 
+Without the original (on 2026-10-10 it wasn't on this machine), the finished still can stand in
+for it: undo `grade()` (sRGB: subtract the 0.012 lift, divide by 0.978, spread the saturation back
+by 1/0.92), scale it back up to the crop (3018 x 2012) and save it into `incoming/stock/` at the
+crop's offset. Run the composite without `--install`, then copy only the screen (its quad scaled
+by 2400/3018, 3 px wider, feathered) from `design/composite/out/` into the still, so the room
+around it stays as it was. `video.py` then remakes the loop from the same stand-in: its first frame
+matched the new still exactly as closely as the old loop's matched the old one.
+
 A screen's HTML sets its size with `<meta name="size" content="WxH@dpr">`, and its shape has
 to match the real display: 3:2 for the home monitor. For the loop, `node design/screens/capture.mjs
 home-monitor` saves frames of the screen's motion and `python design/composite/video.py

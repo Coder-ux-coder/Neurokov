@@ -1,30 +1,47 @@
+import { guaranteeTerms } from './guarantee';
+import { priceBands } from './pricing';
+
 export interface Faq {
   q: string;
   a: string;
+  /** The `unconfirmed` key (site.ts) of a made-up fact in the answer: the answer is marked with it until it's confirmed. */
+  ph?: string;
 }
+
+// The cost answer quotes the price bands (pricing.ts) while there are any, the guarantee answer the
+// terms (guarantee.ts); with either list empty, its answer says it without them.
+const bands = priceBands.map((b) => `${b.range} for ${b.scope.toLowerCase()}`);
+const costs: Faq = {
+  q: 'How much does it cost?',
+  a: bands.length
+    ? `One fixed price, agreed after the free audit, based on what we’re delivering: usually ${bands.slice(0, -1).join(', ')} and ${bands.at(-1)}. No hourly billing, no surprise invoices.`
+    : 'One fixed price, agreed after the free audit, based on what we’re delivering. No hourly billing, no surprise invoices. You’ll know the number before any work starts.',
+  ph: bands.length ? 'prices' : undefined,
+};
+const guarantee: Faq = {
+  q: 'What’s your guarantee?',
+  a: guaranteeTerms.length
+    ? 'Results, or you don’t pay. Before we start, we agree in writing exactly what we’ll deliver, counted on your own calendar and CRM. Nothing is invoiced until it’s met. If it isn’t, you don’t pay for the work.'
+    : 'Results, or you don’t pay. Before we start, we agree in writing exactly what we’ll deliver. If we don’t deliver it, you don’t pay for it.',
+  ph: guaranteeTerms.length ? 'guarantee' : undefined,
+};
 
 /** The five on the homepage. */
 export const homeFaqs: Faq[] = [
   {
     q: 'Is the audit really free?',
-    a: 'Yes. 100% free, 30 minutes, no strings. You leave knowing where your next clients can come from and what we’d do first, whether you work with us or not.',
+    a: 'Yes. No cost and no strings, 30 minutes. You leave knowing where your next clients can come from and what we’d do first, whether you work with us or not.',
   },
   {
     q: 'Why should we trust you?',
-    a: 'Fair question. We booked a growth agency 46 qualified calls in its first 30 days, cut a consulting firm’s first reply from 19 hours to under 60 seconds, and grew a psychology platform our CEO co-founded by over 100% in a single month. And everything we do comes with our guarantee: results, or you don’t pay. The risk sits with us.',
+    a: 'Fair question. Look at the numbers: 17 qualified calls in the first 30 days from cold outbound, a first reply cut from 19 hours to under 60 seconds, and a psychology platform our CEO co-founded grown by over 100% in a single month. Everything we do comes with our guarantee: results, or you don’t pay. The risk sits with us.',
   },
   {
     q: 'How soon will we see results?',
-    a: 'Fast. Inbound leads get a reply in under a minute from the day we launch, and outbound starts sending on day one, because the slow setup work happens before launch. One agency had 46 qualified calls in its first 30 days.',
+    a: 'Fast. Inbound leads get a reply in under a minute from the day we launch, and outbound starts sending on day one, because the slow setup work happens before launch. One outbound engine we built booked 17 qualified calls in its first 30 days.',
   },
-  {
-    q: 'What’s your guarantee?',
-    a: 'Results, or you don’t pay. Before we start, we agree in writing exactly what we’ll deliver. If we don’t deliver it, you don’t pay for it.',
-  },
-  {
-    q: 'How much does it cost?',
-    a: 'One fixed price, agreed after the free audit, based on what we’re delivering. No hourly billing, no surprise invoices. You know the number before any work starts.',
-  },
+  guarantee,
+  costs,
 ];
 
 export const faqGroups: { title: string; items: Faq[] }[] = [
@@ -37,15 +54,19 @@ export const faqGroups: { title: string; items: Faq[] }[] = [
       },
       {
         q: 'Is the audit really free?',
-        a: 'Yes. 100% free, no strings. You leave knowing where your next clients can come from, whether you work with us or not.',
+        a: 'Yes. No cost and no strings. You leave knowing where your next clients can come from, whether you work with us or not.',
       },
       {
         q: 'Why should we trust you?',
-        a: 'Look at the numbers. 46 qualified calls in 30 days for a growth agency. A consulting firm’s first reply cut from 19 hours to under 60 seconds, and its close rate up by over 20% in a quarter. A psychology platform our CEO co-founded grown by over 100% in a single month. And everything we do is guaranteed: results, or you don’t pay.',
+        a: 'Look at the numbers. 17 qualified calls in 30 days from cold outbound. A first reply cut from 19 hours to under 60 seconds, and a close rate up by over 20% in a quarter. A psychology platform our CEO co-founded grown by over 100% in a single month. And everything we do is guaranteed: results, or you don’t pay.',
       },
       {
         q: 'How soon will we see results?',
         a: 'From launch. Inbound leads get a reply in under a minute from day one, and outbound starts sending the day we go live. The launch date is in your plan, so you know exactly when day one is.',
+      },
+      {
+        q: 'Do you do cold calling, or just cold email?',
+        a: 'Both. Cold email and cold calling are what we specialize in. We find the people who should buy from you, reach them by email and by phone, and put the ones who are interested on your calendar.',
       },
       {
         q: 'Who do you work with?',
@@ -53,7 +74,7 @@ export const faqGroups: { title: string; items: Faq[] }[] = [
       },
       {
         q: 'Do we need a sales team?',
-        a: 'No. We find the buyers and book the calls. You show up and close. One growth agency got 46 qualified calls in its first 30 days with zero sales hires.',
+        a: 'No. We find the buyers and book the calls. You show up and close. One outbound engine we built booked 17 qualified calls in its first 30 days, with zero sales hires.',
       },
       {
         q: 'Do you work with healthcare businesses?',
@@ -69,21 +90,15 @@ export const faqGroups: { title: string; items: Faq[] }[] = [
       },
       {
         q: 'Do you build websites or run ads?',
-        a: 'No. We do one thing: get you new clients, through outbound, fast replies to the leads you already get, and winning back old ones. Doing one thing is how we got good enough at it to guarantee it.',
+        a: 'No. We do one thing: get you new clients, through cold email and cold calling, fast replies to the leads you already get, and winning back old ones. Doing one thing is how we got good enough at it to guarantee it.',
       },
     ],
   },
   {
     title: 'Pricing and guarantee',
     items: [
-      {
-        q: 'How much does it cost?',
-        a: 'One fixed price, agreed after the free audit, based on what we’re delivering. No hourly billing, no surprise invoices. You’ll know the number before any work starts.',
-      },
-      {
-        q: 'What’s your guarantee?',
-        a: 'Results, or you don’t pay. Before we start, we agree in writing exactly what we’ll deliver. If we don’t deliver it, you don’t pay. No fine print, no arguing.',
-      },
+      costs,
+      guarantee,
       {
         q: 'Why would you offer that?',
         a: 'Because we know what works before we write the plan, and we only take on businesses we’re sure we can help. If we’re not sure, we’ll tell you on the audit.',

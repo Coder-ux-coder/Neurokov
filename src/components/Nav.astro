@@ -12,7 +12,6 @@ const links = [
 ];
 const mobileLinks = [...links, { href: '/faq/', label: 'FAQ' }];
 const isCurrent = (href: string) => (path.startsWith(href) ? 'page' : undefined);
-const n = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
 <header class="nav" data-nav>
@@ -21,11 +20,10 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     <nav aria-label="Main">
       <ul class="nav__links">
         {
-          links.map((l, i) => (
+          links.map((l) => (
             <li>
               <a href={l.href} aria-current={isCurrent(l.href)}>
                 {l.label}
-                <sup aria-hidden="true">{n(i)}</sup>
               </a>
             </li>
           ))
@@ -58,11 +56,10 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
 <nav class="mobile-menu" id="mobile-menu" aria-label="Main" data-mobile-menu>
   <ul>
     {
-      mobileLinks.map((l, i) => (
+      mobileLinks.map((l) => (
         <li>
           <a href={l.href} aria-current={isCurrent(l.href)}>
             {l.label}
-            <sup aria-hidden="true">{n(i)}</sup>
           </a>
         </li>
       ))

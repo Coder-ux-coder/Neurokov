@@ -82,7 +82,7 @@
             blink: blinkAt(t, [1.0, 3.5]),
           });
         });
-        headline(0, 'Fig. 1 · Sound familiar?', 'Great at the work.<br />Short on <em>clients</em>.', 0.35, 4.0, { dark: false });
+        headline(0, 'Sound familiar?', 'Great at the work.<br />Short on <em>clients</em>.', 0.35, 4.0, { dark: false });
 
         // ---------- Act 2: what we do, three panels ----------
         const g2 = K.act(1);
@@ -184,7 +184,7 @@
           S.put(ck3.g, { x: 170, y: -128, s: Math.max(0.001, Math.min(1.1, S.spring(u3, 1.45, { freq: 3 }))) });
           ck3.set(ramp(u3, 1.55, 0.25));
         });
-        headline(1, 'Fig. 2 · What we do', 'We bring you<br /><em>new clients</em>.', 4.85, 11.2, { dark: false });
+        headline(1, 'What we do', 'We bring you<br /><em>new clients</em>.', 4.85, 11.2, { dark: false });
 
         // ---------- Act 3: how we work, four steps ----------
         const g3 = K.act(2);
@@ -247,7 +247,7 @@
             S.put(p, { x: NODES[i] + (i === 2 ? 0 : 0), y: LY - 190 + fly, r: i === 2 ? -18 : 0, s: Math.max(0.001, k) * (i === 2 ? 1.4 : 1), o: t > STEP_AT[i] - 0.05 ? 1 : 0 });
           });
         });
-        headline(2, 'Fig. 3 · How we work', 'Four steps to<br />a <em>full calendar</em>.', 12.05, 16.4, { dark: false });
+        headline(2, 'How we work', 'Four steps to<br />a <em>full calendar</em>.', 12.05, 16.4, { dark: false });
 
         // ---------- The close ----------
         K.endCard({

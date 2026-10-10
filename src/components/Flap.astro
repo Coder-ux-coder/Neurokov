@@ -1,8 +1,9 @@
 ---
 /**
  * A split-flap readout. The server renders the final characters, so the value
- * reads fine without JavaScript; flap.ts blanks the tiles and flips them in.
- * Screen readers get the plain value.
+ * reads fine without JavaScript. The stats boards stand as rendered; only the
+ * process page's step counter flips (flap.ts, scroll.ts). Screen readers get
+ * the plain value.
  */
 interface Props {
   value: string;

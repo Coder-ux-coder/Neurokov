@@ -8,6 +8,8 @@
   const INK = (C.INK = '#121212');
   const PAPER = (C.PAPER = '#f2efe8');
   const ORANGE = (C.ORANGE = '#ff4f00');
+  // Every tick: a tick says something went right, so it's green, never the orange (the owner, 2026-10-10).
+  const GREEN = (C.GREEN = '#22a35a');
   const GRAY = (C.GRAY = '#cfc8ba');
   const SHADE = (C.SHADE = '#e4ddd0');
   const LW = (C.LW = 5);
@@ -324,7 +326,7 @@
   };
 
   // A tick in an orange disc, drawn on with p (0..1).
-  C.check = function (parent, { r = 28, fill = ORANGE } = {}) {
+  C.check = function (parent, { r = 28, fill = GREEN } = {}) {
     const g = S.g(parent);
     const disc = S.svg('circle', { r, fill, stroke: INK, 'stroke-width': LW }, g);
     const tick = S.svg('path', { d: `M ${-r * 0.45} 0 L ${-r * 0.1} ${r * 0.34} L ${r * 0.48} ${-r * 0.36}`, fill: 'none', stroke: INK, 'stroke-width': r * 0.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);

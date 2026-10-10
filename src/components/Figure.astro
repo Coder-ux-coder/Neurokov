@@ -1,19 +1,15 @@
 ---
-/** A numbered figure with a caption rule underneath, like a plate in a report. */
+/** A figure with a caption rule underneath, like a plate in a report. (Numbered "Fig. 01" until
+ *  2026-10-10: the owner dropped the numbering labels.) */
 interface Props {
-  n: string;
   caption: string;
   class?: string;
 }
 
-const { n, caption, class: cls } = Astro.props;
-const num = n.padStart(2, '0'); // Fig. 01, however the page counts
+const { caption, class: cls } = Astro.props;
 ---
 
 <figure class:list={['fig', cls]}>
   <slot />
-  <figcaption class="fig__cap">
-    <b>Fig. {num}</b>
-    <span>{caption}</span>
-  </figcaption>
+  <figcaption class="fig__cap">{caption}</figcaption>
 </figure>

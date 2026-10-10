@@ -1,9 +1,10 @@
 ---
 /**
  * The landing page, laid out like LeftClick's (the user's model) and kept to the point: who we
- * are and the guarantee, the intro video, the real numbers, the tools we work with, the psychology
- * platform as the featured case (with its co-founder's words), the rest of the work, the founder,
- * the process, the guarantee, questions and one thing to do: book the free audit.
+ * are and the guarantee, the intro video, the real numbers, a B2B client as the featured case, the
+ * rest of the work, the founder, the process, the guarantee, questions and one thing to do: book the
+ * free audit. Proof is shown as clairvo.io shows it: what runs and the numbers it makes, never a
+ * client's name (the user, 2026-10-10).
  */
 import Board from '../components/Board.astro';
 import Button from '../components/Button.astro';
@@ -15,7 +16,6 @@ import Figure from '../components/Figure.astro';
 import Founder from '../components/Founder.astro';
 import Guarantee from '../components/Guarantee.astro';
 import Icon from '../components/Icon.astro';
-import Marquee from '../components/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Steps from '../components/Steps.astro';
 import Vsl from '../components/Vsl.astro';
@@ -29,8 +29,9 @@ import Base from '../layouts/Base.astro';
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: `${site.url}/` };
 const at = (n: number) => `${String(n).padStart(2, '0')} / 05`;
 
-// The featured case: the psychology platform Mohid co-founded. The rest follow as cards.
-const featured = cases.find((c) => c.slug === 'psychology-platform')!;
+// The featured case: case 01, a client like the businesses we sell to (since 2026-10-10; it was the
+// psychology platform Mohid co-founded, which a buyer can't check). The rest follow as cards.
+const featured = cases[0];
 const more = cases.filter((c) => c !== featured);
 ---
 
@@ -55,8 +56,8 @@ const more = cases.filter((c) => c !== featured);
         <div class="hero__copy">
           <div class="hero__pitch">
             <p class="lead" data-reveal style="--d: 260ms">
-              We find the businesses that should buy from you, answer every lead in under a minute and put qualified sales
-              calls on your calendar. You show up and close.
+              We find the businesses that should buy from you, reach them by cold email and cold calling, answer every lead
+              in under a minute and put qualified sales calls on your calendar. You show up and close.
             </p>
             <div class="hero__cta" data-reveal style="--d: 360ms">
               <Button size="lg" label="Book your free audit" />
@@ -73,9 +74,7 @@ const more = cases.filter((c) => c !== featured);
     </div>
   </section>
 
-  <Marquee />
-
-  <!-- 01 The featured case: the psychology platform -->
+  <!-- 01 The featured case: the outbound engine -->
   <section class="section">
     <div class="container split split--top">
       <div class="split__copy">
@@ -83,14 +82,15 @@ const more = cases.filter((c) => c !== featured);
           <span class="label label--signal"><span data-decode>Featured work</span></span>
           <span class="label">{at(1)}</span>
         </div>
-        <h2 class="h2" data-reveal data-split>A psychology platform, grown 100%+ in a single month.</h2>
-        <p class="lead" data-reveal style="--d: 120ms">{featured.summary}</p>
-        <ul class="checks lead" data-reveal style="--d: 160ms">
+        <h2 class="h2" data-reveal data-split>The outbound engine: 17 qualified calls in 30 days.</h2>
+        {/* What runs, then the numbers it made: the case's own walk-through and figures. */}
+        <p class="lead" data-reveal style="--d: 120ms">{featured.how}</p>
+        <ul class="stats stats--ruled" data-reveal style="--d: 160ms">
           {
-            featured.outcomes.map((o) => (
-              <li>
-                <Icon name="check" size={20} />
-                {o}
+            featured.stats.map((s) => (
+              <li class="stat">
+                <span class="stat__value">{s.value}</span>
+                <span class="stat__label">{s.label}</span>
               </li>
             ))
           }
@@ -100,7 +100,7 @@ const more = cases.filter((c) => c !== featured);
         </div>
       </div>
       <div class="split__media" data-reveal style="--d: 120ms">
-        <Figure n="01" class="fig--film" caption={`${clips[featured.clip].title}. Illustrated, with this case’s real numbers.`}>
+        <Figure class="fig--film" caption={`${clips[featured.clip].title}. Illustrated, with this case’s real numbers.`}>
           <div class="marks">
             <Clip name={featured.clip} sizes="(max-width: 900px) 100vw, 620px" />
           </div>
@@ -147,7 +147,7 @@ const more = cases.filter((c) => c !== featured);
         title="Doing this since 2023."
         lead="Neurokov is new. The experience behind it isn’t."
       />
-      <Founder film="02" />
+      <Founder film />
     </div>
   </section>
 

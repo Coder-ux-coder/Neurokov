@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "preview", "--", "--port", "4322"],
       "port": 4322
+    },
+    {
+      "name": "neurokov-review",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["design/qa/site/serve.mjs", "dist", "4400"],
+      "port": 4400
     }
   ]
 }

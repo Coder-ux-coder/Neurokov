@@ -18,11 +18,12 @@
     <script>
       // Mohid Zeeshan, Neurokov's founder, in his own words (2026-10-06): he
       // co-founded an online psychology platform and grew it by over 100% in a
-      // single month (case 01), he's in the top 1% in lead generation, he shares
-      // what works, and he's been doing this since 2023 (Neurokov itself is new).
-      // Act 1: his own platform, more than doubled. Act 2: the top of the
-      // pyramid. Act 3: what he shares. The close: his real credentials. An
-      // illustrated figure, not a likeness.
+      // single month (case 03), he shares what works, and he's been doing this
+      // since 2023 (Neurokov itself is new). Since 2026-10-10 the film claims no
+      // rank ("top 1%" can't be checked): it shows his record, which can.
+      // Act 1: his own platform, more than doubled. Act 2: every step from
+      // outreach to clients, climbed since 2023. Act 3: what he shares. The
+      // close: his real credentials. An illustrated figure, not a likeness.
       STAGE.setup((S) => {
         const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
         const { E, ramp, env, hit } = S;
@@ -79,9 +80,9 @@
             blink: blinkAt(t, [1.2, 4.6]), headTilt: -4,
           });
         });
-        headline(0, 'Fig. 1 · Mohid Zeeshan, founder', 'He grew his own<br /><em>business</em> first.', 0.35, 6.0, { dark: false });
+        headline(0, 'Mohid Zeeshan, founder', 'He grew his own<br /><em>business</em> first.', 0.35, 6.0, { dark: false });
 
-        // ---------- Act 2: the top of the pyramid ----------
+        // ---------- Act 2: every step, outreach to clients ----------
         const g2 = K.act(1);
         S.svg('rect', { x: -600, y: -600, width: 3200, height: 2400, fill: PAPER }, g2);
         K.paper(g2, { floor: 870 });
@@ -90,13 +91,14 @@
           { y: 765, w: 1000, fill: SHADE, label: 'RUNS OUTREACH' },
           { y: 660, w: 760, fill: '#dcd3c3', label: 'GETS REPLIES' },
           { y: 555, w: 520, fill: GRAY, label: 'BOOKS CALLS' },
-          { y: 450, w: 280, fill: ORANGE, label: 'TOP 1%' },
+          // (a touch smaller than the old "TOP 1%", so the longer label keeps clear of the step's edges)
+          { y: 450, w: 280, fill: ORANGE, label: 'WINS CLIENTS', size: 28 },
         ];
         const tierEls = TIERS.map((T, i) => {
           const g = S.g(g2);
           S.svg('rect', { x: PX - T.w / 2 + 7, y: T.y + 9, width: T.w, height: 105, fill: INK }, g);
           const box = S.svg('rect', { x: PX - T.w / 2, y: T.y, width: T.w, height: 105, fill: T.fill, stroke: INK, 'stroke-width': 5 }, g);
-          text(g, T.label, { x: PX, y: T.y + 64, 'text-anchor': 'middle', 'font-size': i === 3 ? 34 : 24, 'font-weight': i === 3 ? 700 : 600, 'letter-spacing': 3, fill: INK });
+          text(g, T.label, { x: PX, y: T.y + 64, 'text-anchor': 'middle', 'font-size': T.size ?? 24, 'font-weight': i === 3 ? 700 : 600, 'letter-spacing': 3, fill: INK });
           return { g, box, T };
         });
         // The crowd thins as the steps rise, read row by row: a crowd two deep
@@ -182,8 +184,8 @@
             S.put(c.g, { x: c.x, y: c.y, r: lean, sx: c.s, sy: c.s * (1 + 0.03 * Math.sin(t * 5 + i * 1.7)), o: 1 });
           });
         });
-        // (broken after "in", and a touch smaller, so its end stays clear of him as he climbs)
-        headline(1, 'Fig. 2 · Where he stands', 'Top 1% in <em>lead</em><br /><em>generation</em>.', 6.8, 10.6, { dark: false, size: 80 });
+        // (two short lines, and a touch smaller, so their ends stay clear of him as he climbs)
+        headline(1, 'Where he stands', 'Every step,<br /><em>since 2023</em>.', 6.8, 10.6, { dark: false, size: 80 });
 
         // ---------- Act 3: what he shares ----------
         const g3 = K.act(2);
@@ -265,14 +267,14 @@
             });
           });
         });
-        headline(2, 'Fig. 3 · In the community', 'He shares<br /><em>what works</em>.', 11.2, 14.6, { dark: false });
+        headline(2, 'In the community', 'He shares<br /><em>what works</em>.', 11.2, 14.6, { dark: false });
 
         // ---------- The close ----------
         K.endCard({
           at: 14.9,
           kicker: 'Mohid Zeeshan · Founder, Neurokov',
-          big: 'Your clients, found<br />by <em>the top 1%</em>.',
-          label: 'Grew his own platform 100%+ in a month · Top 1% in lead generation · Doing this since 2023',
+          big: 'Your next clients,<br /><em>on your calendar</em>.',
+          label: 'Grew his own platform 100%+ in a month · 150+ automations shipped · Doing this since 2023',
           cta: 'Book a free audit →',
           size: 104,
         });

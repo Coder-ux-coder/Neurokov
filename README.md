@@ -14,9 +14,9 @@ booking page (Google Workspace), and booking answers are emailed through Web3For
 
 | Address | Page |
 | --- | --- |
-| `/` | Home, laid out like LeftClick's: who we are and the guarantee, the intro video, the real numbers, the tools we work with, the psychology platform as the featured case (with its co-founder's words), more of the work, the founder, the process, the guarantee, FAQs and the booking button |
-| `/services/` | The three services, each with its own page: `lead-generation` (outbound), `lead-conversion` (every lead answered in under 60 seconds), `lead-reactivation` (old leads, new clients), and a working model of how leads get answered |
-| `/case-studies/` | Three case studies, each with its own page: `psychology-platform`, `outbound-engine`, `speed-to-lead`, and the record: the photo of a pipeline dashboard |
+| `/` | Home, laid out like LeftClick's: who we are and the guarantee, the intro video, the real numbers (each with a line on what it covers, the way clairvo.io shows its numbers, and the reply time as before → after), a B2B client as the featured case (case 01, the outbound engine: how it runs and its three numbers), more of the work, the founder, the process, the guarantee and its terms, FAQs and the booking button |
+| `/services/` | The three services, each with its own page: `lead-generation` (outbound), `lead-conversion` (every lead answered in under 60 seconds), `lead-reactivation` (old leads, new clients), a working model of how leads get answered, and what each costs |
+| `/case-studies/` | Three case studies, each with its own page: `outbound-engine`, `speed-to-lead` and `psychology-platform` (the B2B clients first, the platform Mohid co-founded last), and the record: the photo of a pipeline dashboard |
 | `/process/` | The four steps from the free audit to launch and scaling what works, and what Neurokov needs from the client |
 | `/about/` | Who's behind Neurokov, the problem it solves and how it works |
 | `/faq/` | Questions on pricing, the guarantee, security and more |
@@ -29,9 +29,8 @@ and case study retired in October 2026 redirect to the pages that replaced them 
 ## The home page
 
 Modelled on LeftClick's: get to the point and don't repeat it. The header and the guarantee, the
-intro video, the real numbers, the tools we work with, one featured case told in full, the rest of
-the work, the founder, the process, the guarantee, questions and one thing to do. Nothing on it
-makes you wait.
+intro video, the real numbers, one featured case told in full, the rest of the work, the founder,
+the process, the guarantee, questions and one thing to do. Nothing on it makes you wait.
 
 - **The intro video.** Until there's a recording of Mohid, an illustrated film says what we do and
   how we work (`design/clips/intro.html`). The script, recording tips and where the files go are in

@@ -43,7 +43,7 @@ const sections = [
 ];
 ---
 
-<Base title={`${study.title}: ${study.client} | ${site.name}`} description={study.summary}>
+<Base title={`${study.client ? `${study.title}: ${study.client}` : `${study.title} case study`} | ${site.name}`} description={study.summary}>
   <section class="page-hero page-hero--paper" data-hold>
     <div class="gridlines" aria-hidden="true"></div>
     <div class="container page-hero__inner">
@@ -55,9 +55,9 @@ const sections = [
       </div>
       <h1 class="h1" data-reveal data-split>{study.title}</h1>
       <dl class="paper-meta" data-reveal style="--d: 160ms" data-ph={ph}>
-        <div><dt>Client</dt><dd>{study.client}</dd></div>
+        {study.client && <div><dt>Client</dt><dd>{study.client}</dd></div>}
         <div><dt>Service</dt><dd>{study.service}</dd></div>
-        <div><dt>Headline</dt><dd>{study.stats[0].value} {study.stats[0].label}</dd></div>
+        <div><dt>Headline</dt><dd>{study.stats[0].before && `${study.stats[0].before} to `}{study.stats[0].value} {study.stats[0].label}</dd></div>
       </dl>
       <div class="abstract" data-reveal style="--d: 240ms" data-ph={ph}>
         <span class="label">Abstract</span>
@@ -69,7 +69,7 @@ const sections = [
   <section class="section" style="padding-top: 0">
     <div class="container">
       <div data-reveal data-hold>
-        <Figure n="1" class="fig--film" caption={`${clips[study.clip].title}. Illustrated, with this case’s real numbers.`}>
+        <Figure class="fig--film" caption={`${clips[study.clip].title}. Illustrated, with this case’s real numbers.`}>
           <div class="marks">
             <Clip name={study.clip} sizes="(max-width: 1320px) 100vw, 1320px" eager />
           </div>
@@ -80,7 +80,16 @@ const sections = [
           study.stats.map((s, i) => (
             <div class="card" data-reveal style={`--d: ${i * 90}ms`}>
               <span class="label">Result {String(i + 1).padStart(2, '0')}</span>
-              <span class="stat__value">{s.value}</span>
+              <span class="stat__value">
+                {s.before && (
+                  <span class="stat__was">
+                    {s.before}
+                    <Icon name="arrow-right" size={20} strokeWidth={2.25} />
+                    <span class="sr-only">to</span>
+                  </span>
+                )}
+                {s.value}
+              </span>
               <span class="stat__label">{s.label}</span>
             </div>
           ))
@@ -106,7 +115,7 @@ const sections = [
       <section class="section section--tight" style="padding-top: 0">
         <div class:list={['container', study.figures.length > 1 ? 'grid-2' : 'charts--one']}>
           {study.figures.map((f, i) => (
-            <Chart figure={f} n={String(i + 2)} />
+            <Chart figure={f} />
           ))}
         </div>
       </section>

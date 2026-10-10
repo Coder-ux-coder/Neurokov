@@ -4,7 +4,6 @@ import CaseCard from '../../components/CaseCard.astro';
 import Cta from '../../components/Cta.astro';
 import Figure from '../../components/Figure.astro';
 import Guarantee from '../../components/Guarantee.astro';
-import Marquee from '../../components/Marquee.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import Steps from '../../components/Steps.astro';
@@ -20,13 +19,13 @@ const anyPlaceholder = cases.some((c) => c.placeholder);
 const callouts = [
   { x: 33.6, y: 30.4, w: 64, text: '01 Calls booked', delay: 1.5 },
   { x: 47, y: 47, w: 54, text: '02 Replies per day', delay: 1.7 },
-  { x: 63.5, y: 57.6, w: 40, text: '03 Lead to booked call', delay: 1.9, flip: true },
+  { x: 63.5, y: 57.6, w: 40, text: '03 Booked from', delay: 1.9, flip: true },
 ];
 ---
 
 <Base
   title={`Case Studies | ${site.name}`}
-  description="A business grown 100%+ in a month, 46 qualified calls in 30 days, leads answered in under 60 seconds. What we built and what it changed."
+  description="17 qualified calls in 30 days, leads answered in under 60 seconds, a business grown 100%+ in a month. What we built and what it changed."
 >
   <PageHero
     label="Case studies"
@@ -54,8 +53,8 @@ const callouts = [
         </div>
         <h2 class="h2" data-reveal data-split>Booked calls, not vanity metrics.</h2>
         <p class="lead" data-reveal style="--d: 120ms">
-          We booked a growth agency 46 qualified calls in its first 30 days, cut a consulting firm’s first reply from 19
-          hours to under 60 seconds, and grew a psychology platform our CEO co-founded by over 100% in a single month.
+          Our outbound booked 17 qualified calls in its first 30 days. Our speed-to-lead cut a first reply from 19 hours
+          to under 60 seconds. And a psychology platform our CEO co-founded grew by over 100% in a single month.
         </p>
         <p class="lead" data-reveal style="--d: 180ms">
           We don’t sell software, impressions or slide decks. We find your buyers, start the conversations and hand you the
@@ -64,11 +63,11 @@ const callouts = [
         <div data-reveal style="--d: 240ms"><Button label="Get the same results" /></div>
       </div>
       <div class="split__media" data-reveal style="--d: 120ms">
-        <Figure n="01" caption="Pipeline overview: calls booked, replies per day and where new clients come from.">
+        <Figure caption="Pipeline overview: calls booked, replies per day and which email got the reply.">
           <div class="marks">
             <Visual
               name="home-feature"
-              alt="A monitor on a desk showing a pipeline dashboard: calls booked, replies per day and leads turned into booked calls"
+              alt="A monitor on a desk showing a pipeline dashboard: calls booked, replies per day, calls by week and which email got the reply"
               icon="target"
               ratio="3 / 2"
               sizes="(max-width: 900px) 100vw, 620px"
@@ -94,8 +93,6 @@ const callouts = [
       </div>
     </div>
   </section>
-
-  <Marquee />
 
   <section class="section section--deep">
     <div class="container">

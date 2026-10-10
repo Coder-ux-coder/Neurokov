@@ -193,3 +193,188 @@ What PageSpeed counts (Lighthouse 13.5, read from its source and the reports):
   Rebuilt without the image cache: all 175 images and every page byte for byte the same.
 - BLOCKED: Netlify skipped fa64412, 9f0a456 and a83e637 ("Skipped" on the public deploys page); live
   is still b043ce4. Needs the owner's login: stopped builds, credits, then "Trigger deploy".
+
+## Round 5 (2026-10-10): the first screen still from its first paint; a new Netlify project
+
+- Hosting (owner): a new Netlify account and project, "neurokov" (Free plan, created 2026-10-09),
+  the domain moved to it (Namecheap DNS: A @ 75.2.60.5, www CNAME neurokov.netlify.app). Round 4's
+  BLOCKED is resolved: b6c2bc3 is live there. Every push to main is a production deploy, which costs
+  credits on this plan: the round goes out in one push.
+- PageSpeed on b6c2bc3, home, a warm run. Phone: FCP 930, LCP 938, SI 1114, TBT 0, CLS 0. Laptop:
+  FCP 296, LCP 327, SI 382.
+  - What the phone's browser really saw: the HTML's first byte at 19 ms, its last at 345, the first
+    paint at 483 (the poster in it: LCP the same), speed index 520, the last change on screen at
+    2,447 ms.
+  - Phone speed index = 1.4 × that observed one + 0.4 × a layout-based one (965 here).
+- P9 FIXED (global.css): the first screen ([data-hold]) no longer rises 16 px into place, and its
+  rules (.draw) are there from the first frame. Speed index counts every frame after the first paint
+  that differs from the last one. The rise (0.6 s) and the hero rule's draw (it waits for site.js, then
+  0.2 + 1.3 s) kept the home page's first screen changing until 2.4 s on PageSpeed.
+  - Lighthouse, phone, no H.264, 9 interleaved runs: observed SI less FCP 36 -> 4 ms on the home page.
+    The 4 ms is a headless scrollbar fading, not the page.
+  - Parts of the 36 ms: the text's rise about 20 ms, the rule's draw 12, the film's rise 0-4.
+  - Every page, phone: 28-66 -> 4-5 ms. Laptop: 42-99 -> 1-5 ms, except about (25 ms: below).
+  - On PageSpeed's phone formula that is about 45 ms less on the home page.
+  - CORRECTION to round 3's REJECTED ("drawing the hero rule from the first frame, at most 2 ms of
+    speed index"): it was 12 ms of the observed speed index.
+  - stylediff: only the animation properties and transform (identity matrix -> none) of the first
+    screen's blocks. Screen-reader-only spans inside them are now placed from another ancestor: the
+    identity transform made each block a containing block. Buttons and heroes are isolated, and
+    nothing inside a first screen sits above z-index 4 (the bar is 50, the grain 80).
+- Netlify (Free plan, projects created after 2026-08-19): a "Powered by Netlify" badge on every page,
+  for every visitor.
+  - How: `<script async src="/.netlify/scripts/hud?variant=public">` added to the HTML as served
+    (10 KB, cached 60 s), which is then sent chunked.
+  - Off in Project configuration > General > Powered by Netlify badge (the owner's setting). Turned off
+    on 2026-10-10 with the owner's OK: the live HTML has had no hud script since, and the plain
+    (uncompressed) response now has a Content-Length.
+- Investigated, no change:
+  - Home page HTML size. 33 KB as served, compressed: the poster 12.3 KB, the CSS 11.2, the markup
+    9.6. That is two round trips in Lighthouse's model: FCP 930, where one would give about 780.
+    Without the poster it's still 20.5 KB. One round trip would need the poster out of the page (LCP
+    waits for it) and the CSS split into a first-screen part and the rest (sections unstyled if the
+    rest comes late). Not done. Most other pages are two round trips for the same reason (their posters).
+  - Netlify's edge. From here every body arrives about 120 ms after its headers, whatever the size:
+    13 KB FAQ, 33 KB home, 33 KB font. These are mostly cache misses (fwd=miss), each edge keeping its
+    own cache. A smaller page would not arrive sooner.
+  - A fresh browser (PageSpeed's). It sets the first visit in the fallback fonts, and on Windows each
+    size of each face loads the system font again: 1 MB, 1.5-5 ms each, 58 ms before the first paint,
+    plus 34 ms shaping first lines. Locally the first paint is then often the bar alone, with the hero
+    100 ms later.
+    - <link rel=expect blocking=render> (paint once the hero is parsed) made every first paint whole,
+      but 30 ms later than the hero came without it, and Lighthouse's FCP 100 ms worse. Not done.
+    - PageSpeed's run painted the hero with its first frame (LCP = FCP = 483).
+  - Lighthouse keeps local storage between runs in one browser. After a page's first run it loads as a
+    return visit (fonts preloaded), which locally cost FAQ and book about 130 ms of estimated FCP.
+    PageSpeed starts fresh: lh.mjs --fresh.
+- REJECTED: holding the logo marquee still until the visitor's first move. It shows on the first
+  screen only on a laptop, on about: 25 ms of the observed speed index, 14 ms of the estimate. Its
+  logos (tools.svg) would then pop in at that move. (Moot since round 6: the strip is gone.)
+- Kit: settle.mjs --no-h264; lh.mjs --fresh.
+
+## Round 6 (2026-10-10): the critic's points, then proof the clairvo.io way (out with round 7)
+
+- The owner's picks from a critic's ten points: the B2B cases first (case 01 the outbound engine, 02
+  speed-to-lead, 03 the psychology platform; the films' case numbers re-rendered), "top 1%" replaced
+  by checkable facts (150+ automations shipped, 50K+ hours handed back, n8n certified, since 2023;
+  the founder film re-rendered), "No fine print, no arguing." gone, the logo marquee gone
+  (Marquee.astro). Price bands (pricing.ts), the guarantee's terms (guarantee.ts) and a company line
+  (site.ts) MADE UP at the owner's request and gated as placeholders: `npm run build` fails until the
+  owner confirms or drops them.
+- P10 FIXED (services/index.astro, SectionHead `hold`, global.css): with the marquee gone, /services/'
+  "What we do" landed on the first screen from 548 px up and drew in after the first paint. It's held
+  now, its rule (`.section-head__rule::after`) drawn from the first frame. settle.mjs: every first
+  screen final from the first paint on /, /case-studies/, /about/ and /services/, phone and laptop.
+- The owner, later the same day, after clairvo.io: no named clients (the made-up names went), no
+  made-up "before" numbers (the made-up "1 in 5 calls closed to 1 in 4" didn't match "20%+"); a
+  number and what it covers instead. The board's line under each number is `note` (stats.ts); home's
+  featured case shows how it runs and its three numbers in a row (`.stats--ruled`), not the outcomes
+  list. Placeholders left: guarantee, prices, company.
+- The owner: keep the look (the texture, the stamp, the films, the board), about 25% "more serious".
+  Page changes are the browser's crossfade in 0.2 s (was an orange wipe), headline words rise in
+  0.85 s, 40 ms apart (was 1.05 s, 60 ms). A calmer stamp without the sheet's shake was tried and
+  REJECTED by the owner ("it should shake, like previously... that is necessary"): both as before.
+- P11 FIXED (global.css; the owner saw "Results, or you don't pay" cut at the top, and the % cut):
+  - The CTA's outlined ticker clipped both ways. On a first visit its stand-in face (fallback.css,
+    sized to Archivo's widths) stands taller than the 0.9 line, and the letters' tops were cut flat.
+    Now `overflow-x: clip` only.
+  - The board's % in the stand-in face, which has no narrow widths, overflowed its tile (ink 29 px in
+    a 27 px tile at 1280): signs on a first visit are drawn at scaleX(0.78).
+  - Every headline word's mask (.w) shaved its last letter's right edge: the tight tracking ends the
+    word's box before its ink does (the r of "for"). Padded 0.12em at the sides, paid back by margins.
+  - Found with textclip.mjs (new): every clipping box that holds text, shot as is and showing all, on
+    a first and a later visit, at 1280x640 and 390x844. Before: 102 flagged on 8 pages, nearly all
+    headlines (and the services page's working model, whose dot moves between the two shots: now
+    skipped). After: 0 on all 16 pages. Copies with the old mask and the old ticker box were flagged
+    (9 headlines on home; the ticker on a first visit).
+- Sizes (Brotli q5, streamed): /book/ 13,219 (156 to spare, was 97), /faq/ 13,087 (288, was 231).
+- The owner, last that day: case 01's calls are 17 in its first 30 days, a feasible number (was 46),
+  on every page, in the films (outbound-engine: a call most working days, 2, 3, 5, 5 then 2 a week;
+  its referral month cut to 11 calls so the story still climbs), on the dashboard photo and the share
+  image. The two B2B clients undescribed: no "growth agency", "consulting firm" or "partners" (the
+  owner has their numbers, not who they were); the film kickers say "Cold email" and "Inbound leads".
+  Cold calling and cold email named as what Neurokov specializes in (home's lead, the services, a
+  new FAQ, the site description).
+- The strip under the opening is back on home, services, about and the case studies, listing what we
+  specialize in instead of the tools (the owner: the tools were irrelevant). Marquee.astro reads
+  specialties.ts, the site's own line icons in orange. Three copies of its list, moved on by a third
+  (`marquee-third`): one copy is 2,073 px, never narrower than the strip's window up to 5120 px
+  (with two, 3440 px and wider showed a gap at the loop's end).
+- Ticks green (the owner: a red tick reads as wrong). `--ok` (#1d7a4a on paper, 4.6:1; #5fd39a in the
+  dark theme and the dark bands) on the hero's shield, the guarantee and booking notes, every check
+  list and the "for you" column; the founder's role icon a briefcase, not a badge with a tick. The
+  films' tick badges `CAST.GREEN` (#22a35a, the ink tick on it 5.8:1), process-scope's drawn ticks
+  too; 12 films re-rendered.
+- The dashboard photo redone without the stock photo: the finished still with its grade undone stood
+  in for it (incoming/stock/, not kept), the screen re-composited and pasted back inside the glass
+  only (the room around it unchanged). It shows case 01: 17 calls, 92% placement, 36 inboxes on 12
+  domains, 6,000 companies; calls by week 2, 3, 5, 7; calls by the email that got the reply. The
+  loop (home-feature.mp4) re-made from the same stand-in.
+- P12 FIXED (Footer.astro; the owner): the footer's "Book a free audit" was a plain link to /book/,
+  the one booking link on the site that left the page; every other opens the booking popup. It's
+  a booking link now (`data-book`, booking.ts), the book page without JavaScript as before, and
+  `#pick` on the pick-a-time page, as Button.astro does.
+- P13 FIXED (global.css, `.footer__word`): the footer wordmark, a link home, was 30-41 px tall on
+  phones (fitted to the width at line-height 0.8), the one target layout.mjs still found under 44 px
+  on every page. 8 px more box above and below, paid back by its margins: nothing moves.
+
+## Round 7 (2026-10-10): less decoration, the owner's list (one push, with rounds 5 and 6)
+
+- "100% free" said once a page, in the opening's promise (home, the services, the book pages); the
+  CTA, the footer, the FAQs and the process's first step say "free" or "no cost" (home said it six
+  times).
+- The numbering labels gone: the menu's 01-04, every "Fig. 01" (captions, charts, the working
+  model, the booking panel, the share image, and inside the eight films that had them: 26 kickers,
+  re-rendered), the founder's "File 001". Kept, as not named: the sections' 01 / 05 counters, case
+  and step numbers, the photo's numbered callouts, the case pages' "Result 01".
+- The moving strip under the opening gone again ("drop the logo marquee"): Marquee.astro,
+  specialties.ts and their icons and styles. Cold calling and cold email stay in the copy.
+- The board's numbers stand still: no blanking and flipping in on scroll (startFlaps gone); the
+  process page's step counter still flips as it scrolls.
+- The reply time as a simple before -> after, the one result with a stated before (19 hours, case
+  02): the board shows 19H on small dim tiles, an arrow, <60S; the case card and the case page
+  "19 hrs -> <60s". The others have no stated before and stay as they are.
+  - P14 FIXED (global.css): the case page's result card split it as "19 / hrs / <60s" at 820 px,
+    its arrow stranded at the right (the before's box shrank and its text wrapped), and as
+    "19 hrs ->" over "<60s" at 1280. The before never breaks now (`white-space: nowrap`) and is half
+    size there, as on the board: one line at 1280, 390 and 320; over "<60s" at 820. The board: one
+    line from 360 px up, over it at 320. The chart's "<60 s" is "<60s", as everywhere else.
+- No starting price (the owner started to give one, then said not to). The made-up price bands on
+  /services/ (pricing.ts) are still there, gated.
+- The photo's third callout and caption follow its new dashboard ("Booked from", "which email got
+  the reply").
+- The made-up company gone (the owner: remove "· Company no. 00000000"): Neurokov isn't registered,
+  so site.ts `company` is null. The footer reads "© 2026 Neurokov. All rights reserved." and /terms/
+  and /privacy/ name the trading name alone (no "Neurokov Ltd", dummy number or office). Placeholders
+  left: guarantee, prices.
+- P15 FIXED (booking.ts): on the book pages a booking button that scrolls the page to its panel (the
+  footer's, since P12) left the clicks after the first to land on whatever the scroll carried under
+  the pointer. On /book/ that's the footer's email link, just above it: harness storm, "request failed
+  document mailto:...". A visitor's double click would have opened their mail app. Clicks are now
+  dropped until the scroll ends (`scrollend`, or 1 s), and only when the page actually scrolls.
+- A founder photo was offered and dropped the same day (the owner: "don't put the image in"): none on
+  the site, as before.
+- The last made-up facts settled before launch (the owner, asked): the price bands dropped
+  (pricing.ts empty), so /services/ loses "What it costs" (its sections count to 04) and the FAQ's
+  cost answer names no figure; the guarantee's terms confirmed as written (guarantee.ts). `unconfirmed`
+  is empty and `npm run build`, Netlify's command, passes: "No placeholders left."
+- QA on the release build (`npm run build`, no placeholders):
+  - harness: 0 failures, 88 warnings (long tasks while crawling; films cut off mid-load by the rapid
+    clicks), 1905 s. Before P15 it failed once: the mailto: above.
+  - layout.mjs: 17 pages at 12 sizes, nothing flagged; small targets 0 everywhere (P13).
+  - textclip.mjs: 0 on all 16 pages at 1280x640 and 390x844, first and later visit. One run flagged
+    home's case headline: the label over it, a [data-decode] scramble, caught between the two shots
+    (no clipping; 0 on two re-runs).
+  - settle.mjs: every first screen final from its first paint, phone and laptop, all 17 pages.
+  - Sizes (Brotli q5, streamed): /book/ 13,172 (203 to spare), /faq/ 13,056 (319).
+  - The footer's booking link (a scratch test): the popup on /, /about/ and a case page at 1280 and
+    390, the address unchanged; on /book/ its form comes into view, on pick-a-time its picker;
+    without JavaScript a link to /book/. Without JavaScript Playwright's click flaked when it jumped
+    straight to the footer: sections below the first screen keep placeholder heights until shown,
+    so the footer's contents weren't drawn yet. A visitor scrolls there first.
+  - Lighthouse (--fresh, 3 runs): laptop home 100, services 99 (CLS 0, TBT 4 / 105 ms). The phone
+    runs were slowed by the machine (benchmark 717-954 against the 1850 the CPU factor assumes; a
+    browser tab outside the tests used a whole core), so the release was measured in turns against
+    the live version (b6c2bc3) built alongside: home, phone, perf 83/85 against 79/83, TBT 694/575
+    against 879/695 ms, LCP 1558/1501 against 1759/1625 ms, 842 DOM nodes against 920, 13 requests
+    against 14. No worse anywhere.

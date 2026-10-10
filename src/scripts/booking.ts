@@ -342,11 +342,34 @@ export function startBooking() {
   const inline = document.querySelector<HTMLElement>('div[data-booking]');
   const inlineForm = inline?.querySelector('form');
 
+  // A booking button that has a book page scroll to its panel: the clicks after the one that asked
+  // for it, a double click's second say, would land on whatever the scroll carries under the pointer
+  // (in the footer, the email link above the booking link). They're dropped till the scroll is over.
+  let holdClicksTill = -Infinity;
+  document.addEventListener(
+    'click',
+    (e) => {
+      if (e.timeStamp >= holdClicksTill) return;
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    true,
+  );
+
+  /** Scrolls `el` to the top of the window; `at`, the time of the click that asked for it. */
+  function bringToTop(el: HTMLElement, at = -Infinity) {
+    const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    if (Math.abs(el.getBoundingClientRect().top - pad) < 2) return;
+    el.scrollIntoView({ block: 'start' });
+    holdClicksTill = at + 1000;
+    addEventListener('scrollend', () => (holdClicksTill = -Infinity), { once: true });
+  }
+
   /** The book page's panel (the form, or by now the booking page) comes into view, unless it's already there. */
-  function panelIntoView() {
+  function panelIntoView(at?: number) {
     const panel = inline?.parentElement;
     const top = panel?.getBoundingClientRect().top ?? 0;
-    if (top < 0 || top > innerHeight / 2) panel?.scrollIntoView({ block: 'start' });
+    if (panel && (top < 0 || top > innerHeight / 2)) bringToTop(panel, at);
   }
 
   if (inline && inlineForm) {
@@ -373,13 +396,13 @@ export function startBooking() {
     const picker = document.querySelector<HTMLElement>('[data-booking-page]');
     if (picker) {
       e.preventDefault();
-      picker.scrollIntoView({ block: 'start' });
+      bringToTop(picker, e.timeStamp);
       picker.focus({ preventScroll: true });
       return;
     }
     if (inline && inlineForm) {
       e.preventDefault();
-      panelIntoView();
+      panelIntoView(e.timeStamp);
       if (inlineForm.hidden) inline.querySelector<HTMLElement>('[data-booking-time]')?.focus({ preventScroll: true });
       else focusForm(inlineForm, true);
       return;

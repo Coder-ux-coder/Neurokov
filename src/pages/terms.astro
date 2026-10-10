@@ -1,14 +1,22 @@
 ---
-import { site } from '../data/site';
+import { guaranteeTerms } from '../data/guarantee';
+import { ph, site } from '../data/site';
 import Legal from '../layouts/Legal.astro';
 ---
 
-<Legal title="Terms of Service" description="The terms that apply when you use the Neurokov website." updated="October 5, 2026">
-  <p>
+<Legal title="Terms of Service" description="The terms that apply when you use the Neurokov website." updated="October 10, 2026">
+  <p data-ph={site.company ? ph('company') : undefined}>
     These terms apply to your use of this website, run by {site.legalName} (“we”, “us”). By using the site you
     agree to them. Client projects are covered by a separate written agreement, and that agreement wins if the two ever
     conflict.
   </p>
+  {
+    site.company && (
+      <p data-ph={ph('company')}>
+        We are {site.company.name}, company no. {site.company.number}. Registered office: {site.company.office}.
+      </p>
+    )
+  }
 
   <h2>Using this site</h2>
   <p>
@@ -28,6 +36,22 @@ import Legal from '../layouts/Legal.astro';
     We work hard to keep this site accurate and available, but it’s provided “as is”. Descriptions of our services are
     general. What we deliver for you is defined in your written plan, including our guarantee.
   </p>
+
+  {
+    guaranteeTerms.length > 0 && (
+      <Fragment>
+        <h2>Our guarantee</h2>
+        <p>Results, or you don’t pay. Your written plan sets out what we’ll deliver, and these terms apply to it.</p>
+        <ul data-ph={ph('guarantee')}>
+          {guaranteeTerms.map((t) => (
+            <li>
+              <strong>{t.term}.</strong> {t.text}
+            </li>
+          ))}
+        </ul>
+      </Fragment>
+    )
+  }
 
   <h2>Limitation of liability</h2>
   <p>

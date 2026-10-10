@@ -24,6 +24,7 @@
   --accent: #ff4f00;
   /* Orange that passes AA as small text or an icon on paper. */
   --accent-ink: #b83500;
+  /* Green for what's right: every tick and every "done" (4.6:1 on paper). */
   --ok: #1d7a4a;
 
   --board: #141413;
@@ -79,6 +80,7 @@
 
   --accent: #ff5a1f;
   --accent-ink: #ff7a45;
+  --ok: #5fd39a;
 
   --board: #090908;
   --board-2: #1c1c1a;
@@ -102,6 +104,7 @@
   --line-strong: rgb(242 239 232 / 0.32);
   --grid: rgb(242 239 232 / 0.06);
   --accent-ink: #ff7a45;
+  --ok: #5fd39a;
   --btn-bg: #f2efe8;
   --btn-fg: #121212;
   background: var(--board);
@@ -278,6 +281,11 @@ button {
 
 .section--deep {
   background: var(--bg-deep);
+}
+
+/* Two in a row keep a line between them. */
+.section--deep + .section--deep {
+  border-top: 1px solid var(--line);
 }
 
 .section--tight {
@@ -717,10 +725,11 @@ html:not(.laid-out) {
 @media (max-width: 1100px) {
   .btn__label > span,
   .board__label,
+  .board__note,
   .stat__label,
   .case-card__head .label,
   .circuit__text,
-  .fig__cap span,
+  .fig__cap,
   .faq summary,
   .promise > span {
     text-wrap: balance;
@@ -911,15 +920,6 @@ html:not(.js) .nav {
   text-decoration: none;
 }
 
-.nav__links a sup {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 500;
-  line-height: 1;
-  color: var(--text-3);
-  transition: color 0.25s;
-}
-
 .nav__links a::after {
   content: '';
   position: absolute;
@@ -937,11 +937,6 @@ html:not(.js) .nav {
 .nav__links a[aria-current='page']::after {
   transform: scaleX(1);
   transform-origin: left;
-}
-
-.nav__links a:hover sup,
-.nav__links a[aria-current='page'] sup {
-  color: var(--accent-ink);
 }
 
 .nav__end {
@@ -1039,14 +1034,6 @@ html:not(.js) .nav {
     line-height: 1.05;
     text-decoration: none;
   }
-
-  .mobile-menu li a sup {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0;
-    color: var(--accent-ink);
-  }
 }
 
 /* In ems like the menu breakpoint: with large text the button would push the menu button off the screen. */
@@ -1102,7 +1089,7 @@ html:not(.js) .nav {
   width: 1.15em;
   height: 1.15em;
   margin-top: 0.14em;
-  color: var(--accent-ink);
+  color: var(--ok);
 }
 
 /* Dark ink on the orange: 5.7:1 in the light theme, 6:1 in the dark. */
@@ -1198,7 +1185,7 @@ html:not(.js) .nav {
 .cta__note .icon {
   flex: none;
   margin-top: 1px;
-  color: var(--accent-ink);
+  color: var(--ok);
 }
 
 @media (max-width: 960px) {
@@ -1279,10 +1266,32 @@ html:not(.js) .nav {
   justify-content: flex-start;
 }
 
+/* A case's numbers in a row under a rule, a column each, the way clairvo.io sets its figures
+   (home's featured case). Three still fit side by side on a 320px phone. */
+.stats--ruled {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.2rem), 1fr));
+  gap: 18px clamp(18px, 3vw, 40px);
+  justify-self: stretch;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.stats--ruled .stat {
+  align-content: start;
+  min-width: 0;
+}
+
 /* ---------- Split-flap board ---------- */
 
 .board {
   --board-gap: clamp(14px, 2vw, 30px);
+  /* The tiles' size. The cap keeps five tiles (4em, the longest value) inside the narrowest cell, the
+     same size in every cell. It only bites under 320px, or when the reader has set large text. */
+  --flap-size: min(
+    clamp(1.6rem, 1rem + 1.6vw, 2.7rem),
+    calc((100cqi - (2 * var(--cols, 4) - 1) * var(--board-gap)) / var(--cols, 4) / 4.1)
+  );
   container-type: inline-size;
   display: grid;
   grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
@@ -1315,6 +1324,15 @@ html:not(.js) .nav {
   color: var(--board-dim);
 }
 
+/* What the number covers (stats.ts), close under its label and in plain case. */
+.board__note {
+  margin-top: -6px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.4;
+  color: var(--board-dim);
+}
+
 @media (max-width: 760px) {
   .board {
     --cols: 2 !important;
@@ -1337,13 +1355,50 @@ html:not(.js) .nav {
   line-height: 1;
 }
 
-/* On the board, the cap keeps five tiles (4em, the longest value) inside the narrowest cell, the same
-   size in every cell. It only bites under 320px, or when the reader has set large text. */
 .board .flap {
-  font-size: min(
-    clamp(1.6rem, 1rem + 1.6vw, 2.7rem),
-    calc((100cqi - (2 * var(--cols, 4) - 1) * var(--board-gap)) / var(--cols, 4) / 4.1)
-  );
+  font-size: var(--flap-size);
+}
+
+/* Before -> after (stats.ts `before`): the old figure on smaller, dimmer tiles, an arrow, then the
+   number, on one line in every cell from 360 px wide up (narrower, the old figure and the arrow take
+   a line above). */
+.board__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.1em 0.08em;
+  font-size: var(--flap-size);
+}
+
+.board .flap--was {
+  font-size: 0.45em;
+  opacity: 0.55;
+}
+
+.board__to {
+  display: flex;
+  color: var(--accent);
+}
+
+.board__to .icon {
+  width: 0.42em;
+  height: 0.42em;
+}
+
+/* A wide board has room for a bigger old figure and arrow. */
+@container (min-width: 1050px) {
+  .board__value {
+    gap: 0.12em 0.2em;
+  }
+
+  .board .flap--was {
+    font-size: 0.55em;
+  }
+
+  .board__to .icon {
+    width: 0.6em;
+    height: 0.6em;
+  }
 }
 
 .fc {
@@ -1427,6 +1482,18 @@ html:not(.js) .nav {
 
 .fc--signal > span > i {
   font-family: var(--signs);
+}
+
+/* On a first visit they're set in the stand-in face (.cold), which has no narrow widths: drawn
+   narrower instead, so the % shows whole there too. */
+.cold .fc--signal > .fc__t > i,
+.cold .fc--signal > .fc__ft > i {
+  transform: scaleX(0.78);
+}
+
+.cold .fc--signal > .fc__b > i,
+.cold .fc--signal > .fc__fb > i {
+  transform: translateY(-50%) scaleX(0.78);
 }
 
 /* ---------- The video (home): what we do and how we work (Vsl.astro) ---------- */
@@ -1550,107 +1617,10 @@ html:not(.js) .nav {
   color: var(--text);
 }
 
-/* ---------- Ticker (the tools we build on) ---------- */
-
-.marquee {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  height: 76px;
-  padding-left: max(var(--gutter), calc((100vw - var(--max)) / 2));
-  border-block: 1px solid var(--line-strong);
-  background: var(--bg);
-  overflow: hidden;
-}
-
-.marquee__label {
-  flex: none;
-  max-width: 190px;
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1.5;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
-.marquee__viewport {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-
-.marquee__track {
-  display: flex;
-  width: max-content;
-  animation: marquee 52s linear infinite;
-}
-
-.marquee:hover .marquee__track {
-  animation-play-state: paused;
-}
-
-.marquee__list {
-  display: flex;
-  align-items: center;
-  gap: 34px;
-  padding-right: 34px;
-  list-style: none;
-}
-
-.marquee__item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-2);
-  font-size: 1.02rem;
-  font-weight: 650;
-  font-stretch: 112%;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  transition: color 0.3s;
-}
-
-.marquee__item::after {
-  content: '/';
-  margin-left: 24px;
-  font-family: var(--mono);
-  font-weight: 400;
-  color: var(--line-strong);
-}
-
-.marquee__item:hover {
-  color: var(--accent-ink);
-}
-
-.marquee__item svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
+/* The CTA's ticker (.cta__track) runs on this. */
 @keyframes marquee {
   to {
     transform: translateX(-50%);
-  }
-}
-
-@media (max-width: 720px) {
-  .marquee {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    height: auto;
-    padding: 18px 0;
-  }
-
-  .marquee__label {
-    max-width: none;
-    padding-inline: var(--gutter);
   }
 }
 
@@ -1869,9 +1839,6 @@ html:not(.js) .nav {
 }
 
 .fig__cap {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
   margin-top: 14px;
   padding-top: 10px;
   border-top: 1px solid var(--line);
@@ -1880,26 +1847,6 @@ html:not(.js) .nav {
   font-size: 0.72rem;
   line-height: 1.5;
   letter-spacing: 0.03em;
-}
-
-.fig__cap b {
-  flex: none;
-  color: var(--text);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.fig__cap span {
-  text-align: right;
-}
-
-/* On a phone the caption runs to several lines: set flush left after the figure number, it reads
-   as a paragraph rather than a ragged right-hand column. */
-@media (max-width: 640px) {
-  .fig__cap span {
-    text-align: left;
-  }
 }
 
 /* A film across the full column still fits the screen, caption and all. */
@@ -2095,7 +2042,6 @@ html:not(.js) .nav {
 }
 
 /* Without JavaScript the tools' logos never load (site.ts): their names stand alone. */
-:root:not(.js) .marquee__item svg,
 :root:not(.js) .tag svg {
   display: none;
 }
@@ -2146,6 +2092,22 @@ html:not(.js) .nav {
 .specs {
   row-gap: clamp(40px, 5vw, 64px);
   column-gap: clamp(20px, 3vw, 44px);
+}
+
+/* A price band on its sheet (pricing.ts), and the line under the sheets. */
+.spec .spec__price {
+  color: var(--text);
+  font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2rem);
+  font-weight: 800;
+  font-stretch: 112%;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.spec__note {
+  max-width: 48rem;
+  margin-top: clamp(28px, 3vw, 40px);
 }
 
 .step__n {
@@ -2423,6 +2385,24 @@ html:not(.js) .nav {
   letter-spacing: -0.03em;
 }
 
+/* Before -> after (cases.ts `before`): what it was, dimmer, then an arrow. */
+.case-card__was,
+.stat__was {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  margin-right: 0.25em;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.case-card__was .icon,
+.stat__was .icon {
+  width: 0.7em;
+  height: 0.7em;
+  color: var(--accent-ink);
+}
+
 /* ---------- Founder: a personnel file ---------- */
 
 .founder-film {
@@ -2437,21 +2417,6 @@ html:not(.js) .nav {
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--card-2);
-}
-
-.founder__file {
-  position: absolute;
-  top: 0;
-  left: clamp(24px, 4vw, 56px);
-  transform: translateY(-50%);
-  padding: 5px 10px;
-  background: var(--text);
-  color: var(--bg);
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .founder__id {
@@ -2880,10 +2845,6 @@ html:not(.js) .nav {
   color: var(--ok);
 }
 
-:root[data-theme='dark'] .circuit__node.is-done .circuit__state {
-  color: #5fd39a;
-}
-
 /* ---------- The machine (home) ---------- */
 
 .machine {
@@ -3143,6 +3104,8 @@ html:not(.js) .nav {
     var(--card-2);
 }
 
+/* The sheet shakes with the stamp's impact (the owner wants it: "it should shake... vibrate a
+   little bit"). */
 .js .guarantee.is-in .banner {
   animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) 0.98s;
 }
@@ -3182,6 +3145,36 @@ html:not(.js) .nav {
   margin-top: 12px;
   padding-top: 18px;
   border-top: 1px solid var(--line-strong);
+}
+
+/* The guarantee's terms (guarantee.ts): what counts, who judges, by when and what isn't covered. */
+.banner__terms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 28px;
+  margin-top: 4px;
+}
+
+.banner__terms dt {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.banner__terms dd {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+@media (max-width: 600px) {
+  .banner__terms {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .stamp {
@@ -3293,16 +3286,8 @@ html:not(.js) .nav {
 }
 
 .chart__head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
-}
-
-/* "Fig. 02" stays on one line; on a phone the title beside it wraps instead. */
-.chart__head > .label {
-  flex: none;
 }
 
 .chart__title {
@@ -3431,7 +3416,7 @@ html:not(.js) .nav {
 }
 
 .compare .card--us li .icon {
-  color: var(--accent-ink);
+  color: var(--ok);
 }
 
 /* ---------- FAQ ---------- */
@@ -3616,7 +3601,11 @@ html:not(.js) .nav {
   bottom: clamp(10px, 1.2vw, 20px);
   z-index: -1;
   pointer-events: none;
-  overflow: hidden;
+  /* Cut at the sides only: on a first visit the stand-in face (fallback.css) stands taller than the
+     line, and a box that clipped both ways cut the letters' tops off. (Where clip isn't known, the
+     section's own overflow still keeps the line from widening the page.) */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .cta__track {
@@ -3760,8 +3749,18 @@ html:not(.js) .nav {
   border-left: 1px solid var(--line-strong);
 }
 
+/* A before -> after shares a line where the card is wide enough; where it isn't, the before (smaller,
+   as on the board) sits over the after rather than splitting. */
 .stat-cards .stat__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: 0.1em;
   font-size: clamp(2.4rem, 1.6rem + 2vw, 3.6rem);
+}
+
+.stat-cards .stat__was {
+  font-size: 0.5em;
 }
 
 .stat-cards .stat__label {
@@ -3937,7 +3936,7 @@ html:not(.js) .nav {
 
 .checks .icon {
   margin-top: 3px;
-  color: var(--accent-ink);
+  color: var(--ok);
 }
 
 /* Problems rather than promises: a muted cross instead of the accent check. */
@@ -4310,9 +4309,12 @@ html:not(.js) .nav {
   overflow-wrap: normal;
 }
 
+/* 44 px to tap on a phone, whatever size the word is fitted to (30 px at 320 px wide): 8 px more
+   box above and below, paid back by the margins, so nothing moves. */
 .footer__word {
   display: block;
-  margin-top: clamp(56px, 7vw, 96px);
+  margin-top: calc(clamp(56px, 7vw, 96px) - 8px);
+  padding-block: 8px;
   color: var(--text);
   font-size: min(13vw, 11.5rem);
   font-weight: 850;
@@ -4322,7 +4324,7 @@ html:not(.js) .nav {
   text-transform: uppercase;
   white-space: nowrap;
   text-decoration: none;
-  margin-bottom: clamp(20px, 3vw, 40px);
+  margin-bottom: calc(clamp(20px, 3vw, 40px) - 8px);
 }
 
 .footer__word > span {
@@ -4557,8 +4559,7 @@ html:not(.themes) .motion-toggle,
   display: block;
 }
 
-/* Paused: the tickers stop where they are and the status light stays on. */
-.still .marquee__track,
+/* Paused: the ticker stops where it is and the status light stays on. */
 .still .cta__track {
   animation-play-state: paused;
 }
@@ -4704,26 +4705,17 @@ html:not(.themes) .motion-toggle,
   transform: none;
 }
 
-/* The first screen ([data-hold]) doesn't wait for the script: it is all there in the first frame the
-   page paints, headline and film included, and rises a little into place. Nothing on it is hidden,
-   cut into words or wiped open, so what the visitor came for shows (and the browser counts the page
-   as painted) as soon as the page arrives, however slowly the script follows. data-hold marks a
+/* The first screen ([data-hold]) doesn't wait for the script, and doesn't move: it is all there, in
+   place, in the first frame the page paints, headline, film and rules included. Nothing on it is
+   hidden, cut into words, wiped open or slid into place, so what the visitor came for shows as soon
+   as the page arrives, however slowly the script follows, and the page has settled with its first
+   paint (a speed index counts every change to the first screen after that one). data-hold marks a
    whole opening section, or one block below it that still shows on the first screen (a film, the
    first row of cards). */
-.js:not(.calm) [data-hold] [data-reveal]:not([data-reveal='none']),
-.js:not(.calm) [data-reveal][data-hold]:not([data-reveal='none']) {
+.js [data-hold] [data-reveal],
+.js [data-reveal][data-hold] {
   opacity: 1;
-  animation: rise-in 0.6s var(--ease-out) calc(var(--d, 0ms) / 2) both;
-}
-
-@keyframes rise-in {
-  from {
-    transform: translateY(16px);
-  }
-
-  to {
-    transform: none;
-  }
+  transform: none;
 }
 
 /* Containers that animate their children instead of themselves. */
@@ -4767,18 +4759,17 @@ html:not(.themes) .motion-toggle,
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  /* Room above and below the line for what stands out of it (taller capitals in the fallback font,
-     descenders), paid back so the line doesn't move. */
-  padding-top: 0.2em;
-  margin-top: -0.2em;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  /* Room around the word for what stands out of it, paid back so the line doesn't move: above and
+     below, taller capitals in the fallback font and descenders; at the sides, a letter's ink past its
+     advance (the tight tracking ends a word before its last letter does: the r of "for" was shaved). */
+  padding: 0.2em 0.12em 0.08em;
+  margin: -0.2em -0.12em -0.08em;
 }
 
 .w > span {
   display: inline-block;
-  transition: transform 1.05s var(--ease-out);
-  transition-delay: calc(var(--d, 0ms) + var(--wi, 0) * 60ms);
+  transition: transform 0.85s var(--ease-out);
+  transition-delay: calc(var(--d, 0ms) + var(--wi, 0) * 40ms);
 }
 
 /* Under .js like every other hidden start, so words already cut stay readable if the script dies
@@ -4803,38 +4794,22 @@ html:not(.themes) .motion-toggle,
   transform: scaleX(1);
 }
 
-/* Page changes: the old page lifts away, the new one wipes up over orange. */
+/* On the first screen they're drawn from the first frame (data-hold, above), a section head's rule too. */
+.js [data-hold] .draw,
+.js [data-hold] .section-head__rule::after {
+  transform: none;
+}
+
+/* Page changes: the browser's own crossfade, kept short (while it runs, taps on the new page are
+   lost; Back and Forward skip it, Base.astro). The bar stays put (view-transition-name: nav). */
 @view-transition {
   navigation: auto;
 }
 
-::view-transition-image-pair(root) {
-  background: #ff4f00;
-}
-
-/* Short: while it runs, taps on the new page are lost (and Back or Forward skips it, Base.astro). */
-::view-transition-old(root) {
-  animation: vt-out 0.2s var(--ease-in-out) both;
-}
-
+::view-transition-group(root),
+::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: vt-in 0.32s var(--ease-in-out) 0.04s both;
-}
-
-@keyframes vt-out {
-  to {
-    opacity: 0;
-    transform: translateY(-3vh);
-  }
-}
-
-@keyframes vt-in {
-  from {
-    clip-path: inset(100% 0 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
+  animation-duration: 0.2s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4865,35 +4840,11 @@ html:not(.themes) .motion-toggle,
     transition: none;
   }
 
-  .marquee__track,
   .cta__track,
   .book__bar span:last-child::before,
   .js .guarantee.is-in .banner,
   .js .guarantee.is-in .stamp {
     animation: none;
-  }
-
-  /* Held still, the tools strip would leave most tools out of sight: it lists them all, in rows. */
-  .marquee__track,
-  .marquee__list {
-    flex-wrap: wrap;
-  }
-
-  .marquee__track {
-    width: auto;
-  }
-
-  .marquee__list {
-    row-gap: 12px;
-  }
-
-  .marquee__list[aria-hidden='true'] {
-    display: none;
-  }
-
-  .marquee__viewport {
-    -webkit-mask-image: none;
-    mask-image: none;
   }
 
   ::view-transition-old(root),
@@ -4938,7 +4889,6 @@ html:not(.themes) .motion-toggle,
   .motion-toggle,
   .ruler,
   .skip-link,
-  .marquee,
   .cta__ticker,
   .clip__toggle,
   .clip__full,

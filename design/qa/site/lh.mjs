@@ -1,12 +1,17 @@
 // Lighthouse runner: N runs per page per form factor, medians of every metric that matters.
-// usage: node lh.mjs <base-url> <out.json> [--runs=5] [--pages=/,/about/] [--ff=mobile,desktop] [--throttle=simulate|devtools] [--live]
+// usage: node lh.mjs <base-url> <out.json> [--runs=5] [--pages=/,/about/] [--ff=mobile,desktop] [--throttle=simulate|devtools] [--live] [--fresh]
 // --live measures a real address (neurokov.com): without it the browser can reach localhost only.
+// --fresh starts a new browser for every run, as PageSpeed does. Otherwise one browser does them all, and
+// Lighthouse keeps local storage between runs: from the second run on a page loads as a return visit
+// (fonts.ts: the web fonts asked for with the page), with fonts and system caches already warm.
 // Besides Lighthouse's estimates it reports what the browser really saw (obs: the FCP, LCP and speed index of
 // the unthrottled load, which Lighthouse's model starts from) and the HTML's size in 14,600-byte TCP windows.
 import lighthouse from 'lighthouse';
 import desktopConfig from 'lighthouse/core/config/desktop-config.js';
 import * as chromeLauncher from 'chrome-launcher';
-import { writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const BASE = process.argv[2];
 const OUT = process.argv[3];
@@ -15,6 +20,7 @@ const RUNS = Number(arg('runs', 5));
 const ALL = '/,/about/,/book/,/book/pick-a-time/,/case-studies/,/case-studies/outbound-engine/,/case-studies/psychology-platform/,/case-studies/speed-to-lead/,/faq/,/privacy/,/process/,/services/,/services/lead-conversion/,/services/lead-generation/,/services/lead-reactivation/,/terms/,/this-page-does-not-exist/';
 const PAGES = (arg('pages', 'all') === 'all' ? ALL : arg('pages')).split(',');
 const LIVE = process.argv.includes('--live');
+const FRESH = process.argv.includes('--fresh');
 // PageSpeed Insights doesn't slow its CPU 4x: it sets the slowdown per machine (October 2026: 1.2x on
 // a machine scoring about 1330 for phones, 1x on one scoring about 820 for laptops). To see what it
 // sees, slow this machine to the same speed: --cpu=mobile:1.7,desktop:2.2 on one that scores 1850.
@@ -27,11 +33,14 @@ const FFS = arg('ff', 'mobile,desktop').split(',');
 const THROTTLE = arg('throttle', 'simulate');
 const CATS = arg('cats', 'performance,accessibility,best-practices,seo').split(',');
 
-const chrome = await chromeLauncher.launch({
-  // QA_CHROMIUM picks the browser; otherwise chrome-launcher finds the installed Chrome.
-  chromePath: process.env.QA_CHROMIUM || undefined,
-  chromeFlags: ['--headless=new', '--no-sandbox', '--ignore-certificate-errors', '--disable-gpu', ...(LIVE ? [] : ['--proxy-server=http://127.0.0.1:9', '--proxy-bypass-list=localhost;127.0.0.1', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'])],
-});
+const launch = (userDataDir) =>
+  chromeLauncher.launch({
+    // QA_CHROMIUM picks the browser; otherwise chrome-launcher finds the installed Chrome.
+    chromePath: process.env.QA_CHROMIUM || undefined,
+    userDataDir,
+    chromeFlags: ['--headless=new', '--no-sandbox', '--ignore-certificate-errors', '--disable-gpu', ...(LIVE ? [] : ['--proxy-server=http://127.0.0.1:9', '--proxy-bypass-list=localhost;127.0.0.1', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'])],
+  });
+const shared = FRESH ? null : await launch();
 
 const median = (xs) => {
   const s = xs.filter((x) => x != null && !Number.isNaN(x)).sort((a, b) => a - b);
@@ -46,12 +55,21 @@ try {
     for (const path of PAGES) {
       const runs = [];
       for (let i = 0; i < RUNS; i++) {
+        const profile = FRESH ? mkdtempSync(join(tmpdir(), 'lh-')) : undefined;
+        const chrome = shared ?? (await launch(profile));
         const flags = { port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: CATS, throttlingMethod: THROTTLE };
         if (CPU[ff]) flags.throttling = { ...THROTTLING[ff], cpuSlowdownMultiplier: CPU[ff] };
         const config = ff === 'desktop' ? desktopConfig : undefined;
         let r = await lighthouse(BASE + path, flags, config);
         // A run now and then comes back empty (no paint seen): run it again.
         for (let retry = 0; retry < 2 && !r?.lhr?.audits?.['first-contentful-paint']?.numericValue; retry++) r = await lighthouse(BASE + path, flags, config);
+        if (FRESH) {
+          await chrome.kill();
+          // Windows may still hold the profile a moment after the browser quits: then it stays in the temp folder.
+          try {
+            rmSync(profile, { recursive: true, force: true, maxRetries: 5 });
+          } catch {}
+        }
         const lhr = r.lhr;
         const a = lhr.audits;
         const num = (id) => a[id]?.numericValue ?? null;
@@ -106,6 +124,6 @@ try {
     }
   }
 } finally {
-  await chrome.kill();
+  await shared?.kill();
 }
 writeFileSync(OUT, JSON.stringify(results, null, 2));

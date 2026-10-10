@@ -4,14 +4,14 @@ import Cta from '../../components/Cta.astro';
 import Guarantee from '../../components/Guarantee.astro';
 import Icon from '../../components/Icon.astro';
 import Machine from '../../components/Machine.astro';
-import Marquee from '../../components/Marquee.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import ServiceRows from '../../components/ServiceRows.astro';
 import type { IconName } from '../../components/icons';
 import { industries } from '../../data/industries';
+import { priceBands, priceNote } from '../../data/pricing';
 import { services } from '../../data/services';
-import { site } from '../../data/site';
+import { ph, site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
 
 const promises: { icon: IconName; title: string; text: string }[] = [
@@ -47,6 +47,9 @@ const promises: { icon: IconName; title: string; text: string }[] = [
   },
 ];
 const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${String(of).padStart(2, '0')}`;
+// The sections' numbers: four, and a fifth while there are price bands to show (pricing.ts).
+const sections = priceBands.length ? 5 : 4;
+const at = (n: number) => n2(n - 1, sections);
 ---
 
 <Base
@@ -58,18 +61,18 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
     label="Services"
     meta={`${String(services.length).padStart(2, '0')} services`}
     title="New clients, from every direction."
-    lead="New buyers found for you, every lead you already get answered in under a minute, and old leads turned back into deals."
+    lead="New buyers reached by cold email and cold calling, every lead you already get answered in under a minute, and old leads turned back into deals."
     cta="Find your fastest route to clients"
     promise="And the audit is 100% free."
   />
 
-  <Marquee />
-
   <section class="section">
     <div class="container">
+      {/* On the first screen from a phone up, with nothing between it and the opening any more. */}
       <SectionHead
+        hold
         label="What we do"
-        index="01 / 04"
+        index={at(1)}
         title="Three ways we bring you clients."
         lead="Each one starts with a free audit and is judged on one thing: booked calls that turn into new clients."
       />
@@ -85,7 +88,7 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
     <div class="container">
       <SectionHead
         label="How it works"
-        index="02 / 04"
+        index={at(2)}
         title="Every lead answered in under 60 seconds."
         lead="Here’s how we handle the leads you already get, as a working model. Leads land from every channel, get checked against your ideal client, answered and booked while your team gets on with the day."
       />
@@ -97,7 +100,7 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
     <div class="container">
       <SectionHead
         label="Every client"
-        index="03 / 04"
+        index={at(3)}
         title="What every client gets."
         lead="Whichever service you start with, you get the same six things."
       />
@@ -124,7 +127,7 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
     <div class="container">
       <SectionHead
         label="Industries"
-        index="04 / 04"
+        index={at(4)}
         title="Built for service businesses."
         lead="Different industries, same problem: great work, and not enough clients to do it for. Here’s what we deliver where you work."
       />
@@ -151,6 +154,39 @@ const n2 = (i: number, of: number) => `${String(i + 1).padStart(2, '0')} / ${Str
       </ol>
     </div>
   </section>
+
+  {
+    priceBands.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <SectionHead
+            label="Pricing"
+            index={at(5)}
+            title="What it costs."
+            lead="One fixed price for the setup and the first 60 days, agreed after the free audit. Here’s where it usually lands."
+          />
+          <div class="grid-3 specs" data-ph={ph('prices')}>
+            {priceBands.map((p, i) => (
+              <article class="spec" data-reveal style={`--d: ${(i % 3) * 90}ms`}>
+                <div class="spec__top">
+                  <span class="spec__n">{n2(i, priceBands.length)}</span>
+                  <span class="card__icon">
+                    <Icon name={p.icon} />
+                  </span>
+                </div>
+                <h3 class="h3">{p.scope}</h3>
+                <p class="spec__price">{p.range}</p>
+                <p>{p.text}</p>
+              </article>
+            ))}
+          </div>
+          <p class="muted spec__note" data-reveal data-ph={ph('prices')}>
+            {priceNote}
+          </p>
+        </div>
+      </section>
+    )
+  }
 
   <section class="section section--tight">
     <div class="container"><Guarantee /></div>

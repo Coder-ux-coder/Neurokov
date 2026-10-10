@@ -31,7 +31,7 @@ export const services: Service[] = [
     icon: 'target',
     card: 'We find the companies that should buy from you and put qualified sales calls on your calendar.',
     title: 'Qualified calls on your calendar.',
-    sub: 'We find your buyers, start the conversations and book the calls. You show up and close. One agency got 46 qualified calls in its first 30 days.',
+    sub: 'We find your buyers, reach them by cold email and cold calling, and book the calls. You show up and close. One outbound engine we built booked 17 qualified calls in its first 30 days.',
     signs: [
       'Your pipeline runs on referrals, so some months are packed and others are silent.',
       'You’ve tried cold email before, and it burned a domain or booked nothing.',
@@ -40,8 +40,8 @@ export const services: Service[] = [
     ],
     intro: [
       'You don’t want more emails sent or more names in a spreadsheet. You want sales calls with people who can say yes. That’s what we’re paid for.',
-      'We work out who actually buys from you, find those companies and the people who make the call, and start conversations that read like you wrote them yourself. When someone’s interested, the call goes straight onto your calendar.',
-      'No sales hires, and no risk to your main domain. For one growth agency, that meant 46 qualified calls in the first 30 days, with inbox placement above 90%.',
+      'We work out who actually buys from you, find those companies and the people who make the call, and reach them by cold email and cold calling, in words that sound like your own. When someone’s interested, the call goes straight onto your calendar.',
+      'No sales hires, and no risk to your main domain. That’s how one outbound engine we built booked 17 qualified calls in its first 30 days, with inbox placement above 90%.',
     ],
     included: [
       {
@@ -97,7 +97,7 @@ export const services: Service[] = [
       },
       {
         q: 'How soon will we see calls?',
-        a: 'Sending starts the day we launch. The slow parts, like warming up new inboxes, happen before launch, so day one is a real sending day. One agency had 46 qualified calls in its first 30 days.',
+        a: 'Sending starts the day we launch. The slow parts, like warming up new inboxes, happen before launch, so day one is a real sending day. One outbound engine we built booked 17 qualified calls in its first 30 days.',
       },
       {
         q: 'What if it doesn’t work?',
@@ -110,7 +110,7 @@ export const services: Service[] = [
     ],
     metaTitle: 'Outbound Lead Generation: Qualified Sales Calls, Booked | Neurokov',
     metaDescription:
-      'We find your buyers, start real conversations and put qualified sales calls on your calendar, without risking your main domain. Results, or you don’t pay.',
+      'We find your buyers, reach them by cold email and cold calling and put qualified sales calls on your calendar, without risking your main domain. Results, or you don’t pay.',
   },
   {
     slug: 'lead-conversion',
@@ -118,7 +118,7 @@ export const services: Service[] = [
     icon: 'timer',
     card: 'Every lead that comes to you gets a reply in under 60 seconds and a call on your calendar.',
     title: 'Every lead answered in under 60 seconds.',
-    sub: 'The leads you already pay for stop going cold. Each one gets a personal reply in under a minute, day or night, and the good ones book a call. One consulting firm lifted its close rate by over 20%.',
+    sub: 'The leads you already pay for stop going cold. Each one gets a personal reply in under a minute, day or night, and the good ones book a call. One speed-to-lead system we built lifted a close rate by over 20%.',
     signs: [
       'New leads wait hours, sometimes days, for a first reply.',
       'By the time you call back, they’ve booked with someone else.',
@@ -128,7 +128,7 @@ export const services: Service[] = [
     intro: [
       'The fastest reply usually wins the client. Most businesses take hours to answer a new lead, and by then the lead has booked a call with someone else.',
       'We make sure that never happens to you. Every enquiry gets a personal reply in under a minute, whether it lands at 2pm on a Tuesday or 11pm on a Sunday. Good-fit leads book a call with the right person, and nobody slips through the cracks.',
-      'For one consulting firm, the first reply went from 19 hours to under 60 seconds, and the close rate went up by over 20% in a single quarter.',
+      'In one speed-to-lead system we built, the first reply went from 19 hours to under 60 seconds, and the close rate went up by over 20% in a single quarter.',
     ],
     included: [
       {
@@ -192,7 +192,7 @@ export const services: Service[] = [
     ],
     metaTitle: 'Inbound Lead Conversion: Every Lead Answered in 60 Seconds | Neurokov',
     metaDescription:
-      'Every new lead gets a personal reply in under 60 seconds, day or night, and good-fit leads book a call straight away. One firm lifted its close rate by over 20%. Results, or you don’t pay.',
+      'Every new lead gets a personal reply in under 60 seconds, day or night, and good-fit leads book a call straight away. One system we built lifted a close rate by over 20%. Results, or you don’t pay.',
   },
   {
     slug: 'lead-reactivation',

@@ -1,9 +1,10 @@
 ---
 /**
- * The guarantee, stamped onto a ruled sheet. The stamp lands when the banner
- * scrolls into view and the sheet shakes with the impact (CSS only).
+ * The guarantee, stamped onto a ruled sheet, with its terms (guarantee.ts). The stamp lands when the
+ * banner scrolls into view and the sheet shakes with the impact (CSS only).
  */
-import { site } from '../data/site';
+import { guaranteeTerms } from '../data/guarantee';
+import { ph, site } from '../data/site';
 import Button from './Button.astro';
 
 // One stamp per page, so a fixed id: the same build gives the same page every time.
@@ -43,9 +44,21 @@ const ink = 'stamp-ink';
       <span class="label label--signal">The {site.name} guarantee</span>
       <h2 class="h2" data-split>Results, or you don’t pay.</h2>
       <p class="lead">
-        Before we start, we write down exactly what we’ll deliver. If we don’t deliver it, you don’t pay. No fine print,
-        no arguing. We only take on businesses we’re sure we can help, so the risk sits with us.
+        Before we start, we write down exactly what we’ll deliver. If we don’t deliver it, you don’t pay. We only take on
+        businesses we’re sure we can help, so the risk sits with us.
       </p>
+      {
+        guaranteeTerms.length > 0 && (
+          <dl class="banner__terms" data-ph={ph('guarantee')}>
+            {guaranteeTerms.map((t) => (
+              <div>
+                <dt>{t.term}</dt>
+                <dd>{t.text}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
       <ul class="stats stats--left">
         <li class="stat"><span class="stat__value">Free</span><span class="stat__label">audit, always</span></li>
         <li class="stat"><span class="stat__value">Day one</span><span class="stat__label">leads answered</span></li>

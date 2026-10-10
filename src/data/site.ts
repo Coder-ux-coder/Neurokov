@@ -6,19 +6,33 @@
  * outlines them on the page, and `npm run build` refuses to finish while any
  * are left. Delete a key once the real value is in.
  */
-export const unconfirmed = new Set<string>([]);
+export const unconfirmed = new Set<string>([
+  // None left. Facts made up on 2026-10-10 at the owner's request were settled before launch the same
+  // day: the guarantee's terms confirmed (guarantee.ts); the price bands (pricing.ts), the company
+  // (`company`, below), the client names and the "before" numbers dropped.
+]);
 
 /** The data-ph value for a key that is still a placeholder, else undefined (attribute omitted). */
 export const ph = (key: string) => (unconfirmed.has(key) ? key : undefined);
 
+/**
+ * The registered company, in the footer and the legal pages. Neurokov isn't registered yet: a made-up
+ * one ("Neurokov Ltd", a dummy number and office) stood here for a day and went at the owner's word
+ * (2026-10-10), so the site names the trading name alone. Once it is registered, put the real name,
+ * number and registered office here (`company` and `legalName` follow).
+ */
+type Company = { name: string; number: string; office: string };
+const company = null as Company | null;
+
 export const site = {
   name: 'Neurokov',
-  // Not registered yet, so the footer and legal pages use the trading name. Put the registered name here once it exists.
-  legalName: 'Neurokov',
+  company,
+  // The name the footer and the legal pages go by: the registered one once there is one.
+  legalName: company?.name ?? 'Neurokov',
   url: 'https://neurokov.com',
   title: 'Neurokov | We get B2B service businesses new clients',
   description:
-    'Neurokov is a lead generation agency. We find your buyers, book qualified sales calls on your calendar and make sure no lead goes cold. Results, or you don’t pay.',
+    'Neurokov is a lead generation agency for cold email and cold calling. We find your buyers, book qualified sales calls on your calendar and make sure no lead goes cold. Results, or you don’t pay.',
   email: 'mohid@neurokov.com',
   // The booking form's answers are emailed to `email` the moment the form is sent, booked or not,
   // through Web3Forms. Its access key is public by design: it only ever sends to the address it was made for.

@@ -19,7 +19,7 @@
     <script>
       // Inbound lead conversion, as a board game (services.ts: "Speed to
       // lead"). Act 1: a leaky funnel; most leads drop out of its cracks and roll
-      // away. Act 2: NK-01 hops through the five steps. The number is case 03's:
+      // away. Act 2: NK-01 hops through the five steps. The number is case 02's:
       // the first reply went from 19 hours to under 60 seconds.
       STAGE.setup((S) => {
         const { INK, PAPER, ORANGE, GRAY, SHADE } = CAST;
@@ -131,7 +131,7 @@
             sweats[i].set(ramp(t, a, 0.6, E.linear));
           });
         });
-        headline(0, 'Fig. 1 · Sound familiar?', 'Leads slipping<br />through <em>the cracks</em>.', 0.35, 4.25, { dark: false });
+        headline(0, 'Sound familiar?', 'Leads slipping<br />through <em>the cracks</em>.', 0.35, 4.25, { dark: false });
 
         // ---------- Act 2: speed to lead, square by square ----------
         const g2 = K.act(1);
@@ -259,13 +259,13 @@
           per: 1.95,
           blink: [7.4, 9.9, 13.3],
         });
-        headline(1, 'Fig. 2 · With Neurokov', 'Every lead answered<br />in <em>about a minute</em>.', 4.95, 6.05, { dark: false });
-        headline(1, 'Fig. 3 · Every lead', 'Form fill to<br /><em>booked call</em>.', board.last + 1.1, 99, { dark: false });
+        headline(1, 'With Neurokov', 'Every lead answered<br />in <em>about a minute</em>.', 4.95, 6.05, { dark: false });
+        headline(1, 'Every lead', 'Form fill to<br /><em>booked call</em>.', board.last + 1.1, 99, { dark: false });
 
         // ---------- Act 3: the number ----------
         K.endCard({
           at: 17.0,
-          kicker: 'Inbound lead conversion · Real numbers from case 03',
+          kicker: 'Inbound lead conversion · Real numbers from case 02',
           was: '19 hrs',
           now: 'under <em>60 s</em>',
           label: 'First reply to a new lead · 20%+ higher close rate',
@@ -273,7 +273,7 @@
           size: 118,
         });
         K.wipes([[4.6, 'With Neurokov →']]);
-        K.note('Illustrated story · Real numbers from case 03', () => false);
+        K.note('Illustrated story · Real numbers from case 02', () => false);
         K.camera(
           [
             [0, [960, 600, 1.08]],

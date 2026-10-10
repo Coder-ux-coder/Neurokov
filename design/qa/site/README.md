@@ -21,12 +21,18 @@ node lh.mjs https://localhost:4443 out.json --runs=5   # Lighthouse medians, pho
   control once, twice and ten times fast. It runs the booking flow with Web3Forms and Google
   Calendar mocked (it never sends a real form), and checks the site without JavaScript and with
   reduced motion. Use `--only=crawl,booking,storm,nojs,calm,redirects` to run part of it.
-- `lh.mjs` runs Lighthouse several times per page and reports the median of each measure.
+- `lh.mjs` runs Lighthouse several times per page and reports the median of each measure. With
+  `--fresh` each run gets a new browser, as on PageSpeed: otherwise every run after a page's first
+  loads it as a return visit (Lighthouse keeps local storage, so the web fonts come with the page).
 - `loaf.mjs` lists the long animation frames on a page and the scripts behind them, with the CPU
   slowed as on a phone (`CPU=4`).
 - `layout.mjs` checks every page at phone and tablet sizes: text over text, anything off the side
   of the screen or clipped, touch targets under 44 px, tiny text, and controls hidden under a
   fixed bar (`--shots` saves screenshots too).
+- `textclip.mjs` finds text that a box around it cuts off, by pixels: every clipping box that holds
+  text is shot as it is and again showing everything, on a first visit (stand-in fonts) and a later
+  one. It caught what `layout.mjs` can't see: letters' tops and a last letter's edge cut by a box
+  their glyphs stand out of.
 - `shots.mjs` takes screen-by-screen screenshots of a page, once its reveals have settled.
 - `shifts.mjs` measures each page's layout shifts on a first visit, at five screen sizes.
 - `vdiff.mjs` compares two builds pixel by pixel, with motion stopped (proof that a change for
@@ -42,7 +48,8 @@ node lh.mjs https://localhost:4443 out.json --runs=5   # Lighthouse medians, pho
   with counts that don't depend on the machine's speed (elements styled, objects laid out), several
   builds loaded in turn.
 - `settle.mjs` lists what changes on a page's first screen after its first paint, frame by frame
-  (Lighthouse's speed index counts every such change).
+  (Lighthouse's speed index counts every such change). `--no-h264` loads it as PageSpeed's browser
+  does, which keeps the films' posters.
 - `firstpaint.mjs` breaks a Lighthouse run's main-thread work before the first paint into tasks;
   `firstscreen.mjs` lists which blocks show on the first screen at sixteen screen sizes.
 - `rehash.mjs` sets `script-src` in `public/_headers` to the hashes the built pages need.
@@ -65,6 +72,13 @@ PageSpeed did, which reports it as `cpuSlowdownMultiplier`). Lighthouse simulate
   the first paint (a film, a button appearing) counts against it.
 - PageSpeed's headless Chrome plays no H.264: the site's films keep their posters there (lib.ts:
   `filmsPlay`). So does Playwright's own Chromium; the installed Google Chrome plays them.
+- The first screen is final in the first paint: nothing on it fades, rises, draws or decodes in
+  (global.css, `[data-hold]`). However still the page is after that paint, a phone's speed index
+  can't come in under 1.4 × the first paint PageSpeed's browser saw + 0.4 × Lighthouse's estimate of
+  it: for the home page in October 2026, 1.4 × 483 + 0.4 × 930, about 1,050 ms.
+- PageSpeed starts a new browser for every run. In a fresh browser the fallback fonts cost most of the
+  first paint's work (each size of each face loads the system font again), and a page can paint the
+  bar first and the rest a frame later. Compare builds with `lh.mjs --fresh`.
 
 ## On Windows
 

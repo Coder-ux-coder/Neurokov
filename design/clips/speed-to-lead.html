@@ -16,9 +16,9 @@
     <script src="cast.js"></script>
     <script src="story.js"></script>
     <script>
-      // Case 03, told as a story: a lead writes in at 11:47 PM. The old way, the
+      // Case 02, told as a story: a lead writes in at 11:47 PM. The old way, the
       // first reply took 19 hours; with Neurokov it goes out in under 60
-      // seconds and the call is booked by morning. Real numbers only (case 03).
+      // seconds and the call is booked by morning. Real numbers only (case 02).
       //
       // Layout: the headline owns the top left of the frame (x < 1100, y < 360),
       // so each set keeps that corner clear. The camera zooms about 1.2 around
@@ -115,7 +115,7 @@
           trail1.setAttribute('stroke-dashoffset', (-t * 40).toFixed(1));
           trail1.setAttribute('opacity', (ramp(t, 3.5, 0.3) * (1 - ramp(t, 4.4, 0.4))).toFixed(3));
         });
-        headline(0, 'Fig. 1 · <b>11:47 PM</b> · A new enquiry', 'A lead writes in<br />at <em>11:47 PM</em>.', 0.45, 4.3);
+        headline(0, '<b>11:47 PM</b> · A new enquiry', 'A lead writes in<br />at <em>11:47 PM</em>.', 0.45, 4.3);
 
         // ---------- Act 2: the old way ----------
         const g2 = act(1);
@@ -171,7 +171,7 @@
           S.put(sun2.g, { x: -60 + 120 * ramp(t, 5.9, 2.2, E.linear), y: 110 - 200 * day, o: lit });
           S.put(moon2, { x: 40, y: -70, o: 1 - lit });
         });
-        headline(1, 'Fig. 2 · The old way', 'The first reply<br />took <em>19 hours</em>.', 5.35, 8.85);
+        headline(1, 'The old way', 'The first reply<br />took <em>19 hours</em>.', 5.35, 8.85);
 
         // ---------- Act 3: with Neurokov ----------
         const g3 = act(2);
@@ -242,7 +242,7 @@
           const p = S.spring(t, 9.8);
           S.put(watch, { x: 1740, y: 150, s: Math.max(0.001, Math.min(p, 1.1)) * 0.9 });
         });
-        headline(2, 'Fig. 3 · With Neurokov · <b>11:47 PM</b>', 'The reply goes out<br />in <em>under 60 seconds</em>.', 10.2, 15.75);
+        headline(2, 'With Neurokov · <b>11:47 PM</b>', 'The reply goes out<br />in <em>under 60 seconds</em>.', 10.2, 15.75);
         // and she books: her phone, up close
         const panel = S.g(g3);
         S.svg('rect', { x: -340, y: -250, width: 680, height: 500, rx: 40, fill: '#ffe9dc', stroke: INK, 'stroke-width': 6 }, panel);
@@ -308,12 +308,12 @@
           mug.set(t);
           S.put(note, { x: 1150, y: 540, s: Math.max(0.001, Math.min(S.spring(t, 16.95), 1.2)) });
         });
-        headline(3, 'Fig. 4 · 7:30 AM', 'Booked while<br />you <em>slept</em>.', 16.7, 99, { dark: false });
+        headline(3, '7:30 AM', 'Booked while<br />you <em>slept</em>.', 16.7, 99, { dark: false });
 
         // the case in numbers, to close
         K.endCard({
           at: 18.25,
-          kicker: 'Case 03 · Speed-to-lead · Management consulting firm',
+          kicker: 'Case 02 · Speed-to-lead · Inbound leads',
           was: '19 hrs',
           now: 'under <em>60 s</em>',
           label: 'First reply to a new lead',
@@ -323,7 +323,7 @@
           [9.4, '◀◀ Rewind · With Neurokov'],
           [16.2, 'Next morning →'],
         ]);
-        K.note('Illustrated story · Real numbers from case 03', (t) => t < 16.2);
+        K.note('Illustrated story · Real numbers from case 02', (t) => t < 16.2);
 
         // the camera: framed on the set, with a slow push through each act
         K.camera(
